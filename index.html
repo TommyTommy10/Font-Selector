@@ -73,18 +73,15 @@
 <body>
     <div class="container">
         <input required="" type="text" name="text" class="input" id="search-input">
-        <label class="label" for="search-input">Cerca canzoni</label>
+        <label class="label" for="search-input">Search songs</label>
     </div>
     <div class="search-results" id="results"></div>
 
     <script>
-        const songs = [
-            "Song 1",
-            "Song 2",
-            "Song 3",
-            "Song 4",
-            "Song 5"
-        ];
+        const songs = [];
+        for (let i = 1; i <= 1753; i++) {
+            songs.push(`Song ${i}`);
+        }
 
         document.getElementById('search-input').addEventListener('input', function() {
             const query = this.value.toLowerCase();

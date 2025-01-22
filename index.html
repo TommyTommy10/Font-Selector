@@ -1,265 +1,114 @@
+<!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   Messaging App
-  </title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-  <style>
-   body {
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Messaging App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
             font-family: 'Roboto', sans-serif;
         }
-  </style>
- </head>
- <body class="bg-gray-100">
-  <div class="flex h-screen">
-   <!-- Sidebar -->
-   <div class="w-1/4 bg-white border-r border-gray-200">
-    <div class="p-4 border-b border-gray-200">
-     <h1 class="text-xl font-bold">
-      Messaging App
-     </h1>
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-1/4 bg-white border-r border-gray-200">
+            <div class="p-4 border-b border-gray-200">
+                <h1 class="text-xl font-bold">Messaging App</h1>
+            </div>
+            <div class="p-4">
+                <input class="w-full p-2 border border-gray-300 rounded" placeholder="Search..." type="text"/>
+            </div>
+            <div class="overflow-y-auto h-full">
+                <!-- User List -->
+                <div class="p-4 border-b border-gray-200 flex items-center cursor-pointer" onclick="selectUser ('User  1')">
+                    <img alt="Profile picture of user 1" class="w-10 h-10 rounded-full mr-3" src="https://storage.googleapis.com/a1aa/image/SvMPtfU55a36e0V4h1JayMcG6XE9K3i30UeG5euNVgelCGeBF.jpg"/>
+                    <div>
+                        <p class="font-bold">User  1</p>
+                        <p class="text-sm text-gray-600">Last message from User 1</p>
+                    </div>
+                </div>
+                <!-- Repeat for other users -->
+                <div class="p-4 border-b border-gray-200 flex items-center cursor-pointer" onclick="selectUser ('User  2')">
+                    <img alt="Profile picture of user 2" class="w-10 h-10 rounded-full mr-3" src="https://storage.googleapis.com/a1aa/image/DzumFffwPcnfLpE0tG3gPxtAhIN4yhAk8ao7trG92WkBhhPoA.jpg"/>
+                    <div>
+                        <p class="font-bold">User  2</p>
+                        <p class="text-sm text-gray-600">Last message from User 2</p>
+                    </div>
+                </div>
+                <!-- Add more users as needed -->
+            </div>
+        </div>
+        <!-- Main Chat Area -->
+        <div class="w-3/4 flex flex-col">
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
+                <div class="flex items-center">
+                    <img id="selectedUser Image" alt="Profile picture of selected user" class="w-10 h-10 rounded-full mr-3" src="https://storage.googleapis.com/a1aa/image/fWqOezfXrldRLI7VWB7jmmLow2eCC4i3mXvcYXKh6Xy1BDfgC.jpg"/>
+                    <div>
+                        <p id="selectedUser Name" class="font-bold">Selected User</p>
+                        <p class="text-sm text-gray-600">Online</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="chatArea" class="flex-1 p-4 overflow-y-auto bg-gray-50">
+                <!-- Chat messages will be appended here -->
+            </div>
+            <div class="p-4 border-t border-gray-200 bg-white">
+                <div class="flex items-center">
+                    <input id="messageInput" class="w-full p-2 border border-gray-300 rounded mr-2" placeholder="Type a message..." type="text"/>
+                    <button id="sendButton" class="bg-blue-500 text-white p-2 rounded">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="p-4">
-     <input class="w-full p-2 border border-gray-300 rounded" placeholder="Search..." type="text"/>
-    </div>
-    <div class="overflow-y-auto h-full">
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 1" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/SvMPtfU55a36e0V4h1JayMcG6XE9K3i30UeG5euNVgelCGeBF.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 1
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 1
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 2" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/DzumFffwPcnfLpE0tG3gPxtAhIN4yhAk8ao7trG92WkBhhPoA.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 2
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 2
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 3" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/7UwWiBpflLSZRK3SwT9Xc01KCay4bjAy8GikxOcfXspZwwHUA.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 3
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 3
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 4" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/X9BelRvvEPXweEhVr4ufd9HXn85x7cfXMOqKvmynzr4ICDfgC.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 4
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 4
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 5" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/msaPyEo6GPotGBp7UFZV8yeLRfK55TveVriZq8bpkirQhhPoA.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 5
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 5
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 6" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/OVp7LmiOfoxUayZZtqTxfOQuWfwIfWLfmewrhtsFPwKZFM8BF.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 6
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 6
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 7" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/4j2kB2Z5oyqqE9uCgyIKjnxVTIR1eNC4lWrk7rgzfTMjwwHUA.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 7
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 7
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 8" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/STeerKfq6HT3qI2eGURLTVfz4U4yOOaAGh4jwAwdcq65EGeBF.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 8
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 8
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 9" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/6GelUknICAU4f0aHirrjMimoKy0QitjfVeOVXUzDa8ugBDfgC.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 9
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 9
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 10" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/XQW574xOYZphHJy6VJoAx599TP1Jqe5O4hOJhAsLqfzawwHUA.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 10
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 10
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 11" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/tu21Ux3Qke3ZditpXcTfsiRVH3dX4JUlAXfM2qsDL6n2ghPoA.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 11
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 11
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 12" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/bR1rIu4zF7LgPdnqcXltlNYEmqfHE8aenHX7GwZQHQYfghPoA.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 12
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 12
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 13" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/AZg0iC2kRcpUEVp61bLNzXOplUhCl655Pk0xUnlBYKaKM8BF.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 13
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 13
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 14" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/DJaI3KGvFO7pFJffogmdszDeI6kV4IfbmxQHUci0nVGWCDfgC.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 14
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 14
-       </p>
-      </div>
-     </div>
-     <div class="p-4 border-b border-gray-200 flex items-center">
-      <img alt="Profile picture of user 15" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/IcJeijer64tHyUnxfViGBGSZvPY6AFvE5av4R8Y50cCsghPoA.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        User 15
-       </p>
-       <p class="text-sm text-gray-600">
-        Last message from User 15
-       </p>
-      </div>
-     </div>
-    </div>
-   </div>
-   <!-- Main Chat Area -->
-   <div class="w-3/4 flex flex-col">
-    <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
-     <div class="flex items-center">
-      <img alt="Profile picture of selected user" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/fWqOezfXrldRLI7VWB7jmmLow2eCC4i3mXvcYXKh6Xy1BDfgC.jpg" width="40"/>
-      <div>
-       <p class="font-bold">
-        Selected User
-       </p>
-       <p class="text-sm text-gray-600">
-        Online
-       </p>
-      </div>
-     </div>
-     <div>
-      <button class="text-gray-600 hover:text-gray-800">
-       <i class="fas fa-ellipsis-v">
-       </i>
-      </button>
-     </div>
-    </div>
-    <div class="flex-1 p-4 overflow-y-auto bg-gray-50">
-     <div class="flex mb-4">
-      <img alt="Profile picture of selected user" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/fWqOezfXrldRLI7VWB7jmmLow2eCC4i3mXvcYXKh6Xy1BDfgC.jpg" width="40"/>
-      <div class="bg-white p-3 rounded-lg shadow">
-       <p class="text-sm">
-        Hello! How are you?
-       </p>
-      </div>
-     </div>
-     <div class="flex mb-4 justify-end">
-      <div class="bg-blue-500 text-white p-3 rounded-lg shadow">
-       <p class="text-sm">
-        I'm good, thank you! How about you?
-       </p>
-      </div>
-      <img alt="Profile picture of current user" class="w-10 h-10 rounded-full ml-3" height="40" src="https://storage.googleapis.com/a1aa/image/gaO9cGs4GRreQCOVuTUxtQ6sqKbtrL10MDus4q12TCTPY4DKA.jpg" width="40"/>
-     </div>
-     <div class="flex mb-4">
-      <img alt="Profile picture of selected user" class="w-10 h-10 rounded-full mr-3" height="40" src="https://storage.googleapis.com/a1aa/image/fWqOezfXrldRLI7VWB7jmmLow2eCC4i3mXvcYXKh6Xy1BDfgC.jpg" width="40"/>
-      <div class="bg-white p-3 rounded-lg shadow">
-       <p class="text-sm">
-        I'm doing well, thanks for asking!
-       </p>
-      </div>
-     </div>
-     <div class="flex mb-4 justify-end">
-      <div class="bg-blue-500 text-white p-3 rounded-lg shadow">
-       <p class="text-sm">
-        Great to hear!
-       </p>
-      </div>
-      <img alt="Profile picture of current user" class="w-10 h-10 rounded-full ml-3" height="40" src="https://storage.googleapis.com/a1aa/image/gaO9cGs4GRreQCOVuTUxtQ6sqKbtrL10MDus4q12TCTPY4DKA.jpg" width="40"/>
-     </div>
-    </div>
-    <div class="p-4 border-t border-gray-200 bg-white">
-     <div class="flex items-center">
-      <input class="w-full p-2 border border-gray-300 rounded mr-2" placeholder="Type a message..." type="text"/>
-      <button class="bg-blue-500 text-white p-2 rounded">
-       <i class="fas fa-paper-plane">
-       </i>
-      </button>
-     </div>
-    </div>
-   </div>
-  </div>
- </body>
+
+    <script>
+        // Function to select a user
+        function selectUser (userName) {
+            document.getElementById('selectedUser Name').innerText = userName;
+            // You can change the image based on the selected user if needed
+            // document.getElementById('selectedUser Image').src = 'URL_TO_USER_IMAGE';
+            document.getElementById('chatArea').innerHTML = ''; // Clear chat area for new user
+        }
+
+        // Function to send a message
+        document.getElementById('sendButton').addEventListener('click', function() {
+            const messageInput = document.getElementById('messageInput');
+            const messageText = messageInput.value.trim();
+
+            if (messageText) {
+                // Create message element
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'flex mb-4 justify-end';
+                messageDiv.innerHTML = `
+                    <div class="bg-blue-500 text-white p-3 rounded-lg shadow">
+                        <p class="text-sm">${messageText}</p>
+                    </div>
+                    <img alt="Profile picture of current user" class="w-10 h-10 rounded-full ml-3" src="https://storage.googleapis.com/a1aa/image/gaO9cGs4GRreQCOVuTUxtQ6sqKbtrL10MDus4q12TCTPY4DKA.jpg"/>
+                `;
+                document.getElementById('chatArea').appendChild(messageDiv);
+                messageInput.value = ''; // Clear input field
+                messageInput.focus(); // Focus back on input
+            }
+        });
+
+        // Allow sending message with Enter key
+        document.getElementById('messageInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('sendButton').click();
+            }
+        });
+    </script>
+</body>
 </html>

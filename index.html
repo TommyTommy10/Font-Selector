@@ -1,795 +1,910 @@
-// QUANTUM NEXUS
-// Un gioco futuristico basato su GitHub
-// Questo è il file principale che orchestrerà l'esperienza di gioco
-
-class QuantumNexus {
-  constructor() {
-    this.gameState = {
-      universe: new Universe(),
-      player: new Player(),
-      commitHistory: [],
-      quantumEntities: [],
-      dimensionalRifts: new Map(),
-      timeline: new Timeline(),
-      neuroInterface: new NeuroInterface()
-    };
-    
-    this.gitHubAPI = new GitHubIntegration({
-      // Configurazione per l'integrazione con GitHub
-      useCommitsAsEnergy: true,
-      useBranchesAsDimensions: true,
-      useIssuesAsQuests: true,
-      usePullRequestsAsAlliances: true,
-      useActionsAsQuantumEvents: true
-    });
-    
-    this.renderer = new HolographicRenderer();
-    this.physics = new QuantumPhysicsEngine();
-    this.ai = new AdaptiveIntelligence();
-  }
-  
-  async initialize() {
-    // Inizializzazione del gioco
-    console.log("Inizializzazione di Quantum Nexus...");
-    
-    // Carica la cronologia dei commit del giocatore
-    await this.gitHubAPI.loadPlayerHistory();
-    
-    // Genera l'universo basato sui dati del repository
-    this.gameState.universe.generate(this.gitHubAPI.getRepositoryData());
-    
-    // Imposta la modalità di gioco in base all'attività del giocatore su GitHub
-    this.setGameMode();
-    
-    // Inizializza il sistema di progresso quantico
-    this.initializeQuantumProgression();
-    
-    // Inizializza il sistema di eventi dinamici
-    this.initializeDynamicEvents();
-    
-    console.log("Quantum Nexus è pronto! Benvenuto nel multiverso del codice.");
-  }
-  
-  setGameMode() {
-    // Analizza lo stile di coding del giocatore per personalizzare l'esperienza
-    const codingStyle = this.gitHubAPI.analyzeCodingStyle();
-    
-    if (codingStyle.isCreative) {
-      this.gameState.universe.setMode("CREATOR");
-    } else if (codingStyle.isAnalytical) {
-      this.gameState.universe.setMode("ARCHITECT");
-    } else if (codingStyle.isCollaborative) {
-      this.gameState.universe.setMode("DIPLOMAT");
-    } else {
-      this.gameState.universe.setMode("EXPLORER");
-    }
-    
-    console.log(`Modalità di gioco impostata: ${this.gameState.universe.mode}`);
-  }
-  
-  initializeQuantumProgression() {
-    // Sistema di progresso basato su meccaniche quantistiche
-    this.gameState.player.setQuantumAbilities([
-      new QuantumAbility("TimeRefactor", "Modifica il codice attraverso le linee temporali"),
-      new QuantumAbility("CodeEntanglement", "Crea connessioni quantistiche tra frammenti di codice"),
-      new QuantumAbility("BugCollapse", "Risolvi bug attraverso il collasso della funzione d'onda"),
-      new QuantumAbility("AlgorithmicSuperposition", "Mantieni algoritmi in superposizione per efficienze multiple")
-    ]);
-  }
-  
-  initializeDynamicEvents() {
-    // Eventi che cambiano in base all'attività reale su GitHub
-    this.gitHubAPI.subscribeToEvents("commit", (data) => {
-      this.gameState.universe.spawnEnergyNode(data);
-    });
-    
-    this.gitHubAPI.subscribeToEvents("issue", (data) => {
-      this.gameState.universe.createQuest(data);
-    });
-    
-    this.gitHubAPI.subscribeToEvents("pull_request", (data) => {
-      this.gameState.universe.openDimensionalPortal(data);
-    });
-  }
-  
-  update(deltaTime) {
-    // Aggiorna lo stato del gioco
-    this.physics.update(this.gameState, deltaTime);
-    this.ai.update(this.gameState, deltaTime);
-    this.gameState.timeline.advance(deltaTime);
-    
-    // Verifica eventi quantistici
-    this.checkQuantumEvents();
-    
-    // Aggiorna l'interfaccia neurale
-    this.gameState.neuroInterface.update(this.gameState.player);
-    
-    // Renderizza il nuovo stato
-    this.renderer.render(this.gameState);
-  }
-  
-  checkQuantumEvents() {
-    // Verificare se si sono verificati eventi quantistici nel codice del giocatore
-    const anomalies = this.physics.detectQuantumAnomalies(this.gameState);
-    
-    for (const anomaly of anomalies) {
-      if (anomaly.type === "TIMELINE_SPLIT") {
-        this.handleTimelineSplit(anomaly);
-      } else if (anomaly.type === "DIMENSIONAL_MERGE") {
-        this.handleDimensionalMerge(anomaly);
-      } else if (anomaly.type === "ALGORITHMIC_BREAKTHROUGH") {
-        this.handleAlgorithmicBreakthrough(anomaly);
-      }
-    }
-  }
-  
-  handleTimelineSplit(anomaly) {
-    console.log("Evento quantistico: Divisione della timeline!");
-    this.gameState.timeline.split(anomaly.sourcePoint);
-    this.gameState.player.notifyTimelineSplit();
-    
-    // Crea nuovi rami nella repository GitHub
-    this.gitHubAPI.createBranch(`quantum-timeline-${Date.now()}`);
-  }
-  
-  handleDimensionalMerge(anomaly) {
-    console.log("Evento quantistico: Fusione dimensionale!");
-    const affectedDimensions = this.gameState.dimensionalRifts.get(anomaly.riftId);
-    
-    if (affectedDimensions) {
-      this.gameState.universe.mergeDimensions(affectedDimensions);
-      this.gameState.player.increasePower(anomaly.energyReleased);
-      
-      // Esegui il merge dei branch corrispondenti
-      this.gitHubAPI.mergeBranches(affectedDimensions.map(d => d.branchName));
-    }
-  }
-  
-  handleAlgorithmicBreakthrough(anomaly) {
-    console.log("Evento quantistico: Svolta algoritmica!");
-    this.gameState.player.unlockAbility(anomaly.abilityName);
-    
-    // Crea una nuova issue su GitHub per celebrare la scoperta
-    this.gitHubAPI.createIssue({
-      title: `Svolta Quantistica: ${anomaly.abilityName}`,
-      body: `Il giocatore ha scoperto una nuova abilità quantistica attraverso un'innovazione algoritmica!`,
-      labels: ["quantum-breakthrough", "game-event"]
-    });
-  }
-}
-
-// Classi di supporto
-
-class Universe {
-  constructor() {
-    this.dimensions = [];
-    this.physicsConstants = {
-      quantumCoherence: 0.87,
-      entanglementFactor: 1.21,
-      superpositionLimit: 12
-    };
-    this.mode = "EXPLORER";
-    this.energyNodes = [];
-    this.quests = [];
-  }
-  
-  generate(repositoryData) {
-    // Genera l'universo basato sui dati del repository
-    const complexity = this.calculateComplexity(repositoryData);
-    const harmony = this.calculateHarmony(repositoryData);
-    const evolution = this.calculateEvolution(repositoryData);
-    
-    this.dimensions = this.generateDimensions(complexity, harmony, evolution);
-    console.log(`Universo generato con ${this.dimensions.length} dimensioni.`);
-  }
-  
-  calculateComplexity(repoData) {
-    // Calcola la complessità dell'universo in base al repository
-    return repoData.codebase.size * 0.01 + 
-           repoData.languages.length * 0.5 + 
-           Math.log(repoData.commits.length + 1) * 2;
-  }
-  
-  calculateHarmony(repoData) {
-    // Calcola l'armonia dell'universo in base al repository
-    const linesAdded = repoData.commits.reduce((sum, commit) => sum + commit.additions, 0);
-    const linesRemoved = repoData.commits.reduce((sum, commit) => sum + commit.deletions, 0);
-    
-    return (linesAdded - linesRemoved) / (linesAdded + linesRemoved + 1) + 1;
-  }
-  
-  calculateEvolution(repoData) {
-    // Calcola l'evoluzione dell'universo in base al repository
-    const firstCommitDate = new Date(repoData.commits[0].date);
-    const lastCommitDate = new Date(repoData.commits[repoData.commits.length - 1].date);
-    
-    const ageInDays = (lastCommitDate - firstCommitDate) / (1000 * 60 * 60 * 24);
-    const commitFrequency = repoData.commits.length / (ageInDays + 1);
-    
-    return commitFrequency * Math.log(ageInDays + 1);
-  }
-  
-  generateDimensions(complexity, harmony, evolution) {
-    // Genera le dimensioni dell'universo di gioco
-    const dimensionCount = Math.floor(3 + complexity * 0.5);
-    const dimensions = [];
-    
-    for (let i = 0; i < dimensionCount; i++) {
-      dimensions.push({
-        id: `dim-${i}`,
-        type: this.getDimensionType(i, harmony),
-        stability: 0.5 + Math.sin(i * harmony) * 0.4,
-        evolutionRate: evolution * (0.8 + Math.random() * 0.4),
-        entities: []
-      });
-    }
-    
-    return dimensions;
-  }
-  
-  getDimensionType(index, harmony) {
-    const types = [
-      "LOGICAL", "ABSTRACT", "QUANTUM", "PARADOXICAL", 
-      "RECURSIVE", "PARALLEL", "FRACTAL", "VOID"
-    ];
-    
-    const typeIndex = Math.floor((index * harmony) % types.length);
-    return types[typeIndex];
-  }
-  
-  setMode(mode) {
-    this.mode = mode;
-    
-    // Adatta l'universo alla modalità di gioco
-    if (mode === "CREATOR") {
-      this.physicsConstants.quantumCoherence *= 1.2;
-    } else if (mode === "ARCHITECT") {
-      this.physicsConstants.entanglementFactor *= 1.3;
-    } else if (mode === "DIPLOMAT") {
-      this.physicsConstants.superpositionLimit *= 1.5;
-    }
-  }
-  
-  spawnEnergyNode(commitData) {
-    // Crea un nodo di energia basato su un commit
-    const energyValue = commitData.additions * 0.5 - commitData.deletions * 0.3;
-    
-    if (energyValue > 0) {
-      const node = {
-        id: `energy-${Date.now()}`,
-        position: this.calculateNodePosition(commitData),
-        energy: energyValue,
-        stability: Math.min(1.0, commitData.files.length / 10),
-        color: this.getColorFromCommitType(commitData)
-      };
-      
-      this.energyNodes.push(node);
-      console.log(`Nodo di energia generato: ${node.energy.toFixed(2)} unità`);
-    }
-  }
-  
-  calculateNodePosition(commitData) {
-    // Calcola una posizione nello spazio 3D basata sui dati del commit
-    const hashSum = commitData.hash.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
-    
-    return {
-      x: (hashSum % 1000) / 1000 * 200 - 100,
-      y: (commitData.additions - commitData.deletions) / 10,
-      z: (hashSum % 500) / 500 * 200 - 100
-    };
-  }
-  
-  getColorFromCommitType(commitData) {
-    // Determina il colore del nodo in base al tipo di commit
-    const message = commitData.message.toLowerCase();
-    
-    if (message.includes("fix") || message.includes("bug")) {
-      return [0, 0.7, 1]; // Azzurro
-    } else if (message.includes("feat") || message.includes("add")) {
-      return [0, 1, 0.4]; // Verde
-    } else if (message.includes("refactor")) {
-      return [1, 0.6, 0]; // Arancione
-    } else if (message.includes("docs")) {
-      return [0.6, 0.3, 1]; // Viola
-    } else {
-      return [1, 1, 1]; // Bianco
-    }
-  }
-  
-  createQuest(issueData) {
-    // Crea una missione basata su un'issue
-    const quest = {
-      id: `quest-${issueData.id}`,
-      title: issueData.title,
-      description: issueData.body,
-      difficulty: this.calculateQuestDifficulty(issueData),
-      rewards: this.calculateQuestRewards(issueData),
-      dimension: this.selectQuestDimension(issueData),
-      completed: false
-    };
-    
-    this.quests.push(quest);
-    console.log(`Nuova missione creata: ${quest.title}`);
-  }
-  
-  calculateQuestDifficulty(issueData) {
-    // Calcola la difficoltà della missione
-    let difficulty = 1;
-    
-    // Analisi del corpo dell'issue
-    if (issueData.body) {
-      const wordCount = issueData.body.split(/\s+/).length;
-      difficulty += wordCount / 50;
-    }
-    
-    // Analisi delle etichette
-    if (issueData.labels.includes("bug")) {
-      difficulty *= 1.5;
-    }
-    if (issueData.labels.includes("enhancement")) {
-      difficulty *= 1.2;
-    }
-    if (issueData.labels.includes("documentation")) {
-      difficulty *= 0.8;
-    }
-    
-    return Math.min(10, Math.max(1, difficulty));
-  }
-  
-  calculateQuestRewards(issueData) {
-    // Calcola le ricompense della missione
-    const baseDifficulty = this.calculateQuestDifficulty(issueData);
-    
-    return {
-      experience: Math.floor(baseDifficulty * 50),
-      quantumEnergy: Math.floor(baseDifficulty * 25),
-      abilityPoints: Math.floor(baseDifficulty / 2)
-    };
-  }
-  
-  selectQuestDimension(issueData) {
-    // Seleziona la dimensione più adatta per la missione
-    let bestDimension = this.dimensions[0];
-    let bestMatch = -1;
-    
-    for (const dimension of this.dimensions) {
-      let match = 0;
-      
-      // Analisi del titolo e del corpo dell'issue
-      const text = `${issueData.title} ${issueData.body}`.toLowerCase();
-      
-      if (dimension.type === "LOGICAL" && text.match(/bug|error|fix|issue|problem/)) {
-        match += 2;
-      }
-      
-      if (dimension.type === "ABSTRACT" && text.match(/design|architecture|pattern|structure/)) {
-        match += 2;
-      }
-      
-      if (dimension.type === "QUANTUM" && text.match(/optimization|performance|speed|efficiency/)) {
-        match += 2;
-      }
-      
-      if (dimension.type === "PARADOXICAL" && text.match(/contradiction|inconsistent|unexpected/)) {
-        match += 2;
-      }
-      
-      if (match > bestMatch) {
-        bestMatch = match;
-        bestDimension = dimension;
-      }
-    }
-    
-    return bestDimension.id;
-  }
-  
-  openDimensionalPortal(pullRequestData) {
-    // Apre un portale dimensionale basato su una pull request
-    const sourceDimension = this.getDimensionFromBranch(pullRequestData.head);
-    const targetDimension = this.getDimensionFromBranch(pullRequestData.base);
-    
-    if (sourceDimension && targetDimension) {
-      const portal = {
-        id: `portal-${pullRequestData.id}`,
-        source: sourceDimension.id,
-        target: targetDimension.id,
-        stability: pullRequestData.changedFiles < 10 ? 0.8 : 0.5,
-        energy: pullRequestData.additions * 0.1 + pullRequestData.deletions * 0.05,
-        state: "OPEN"
-      };
-      
-      console.log(`Portale dimensionale aperto tra ${sourceDimension.type} e ${targetDimension.type}`);
-      return portal;
-    }
-    
-    return null;
-  }
-  
-  getDimensionFromBranch(branchName) {
-    // Mappa un branch name a una dimensione
-    // Strategia semplice: usa il modulo del hash del nome
-    const hash = branchName.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
-    const index = hash % this.dimensions.length;
-    
-    return this.dimensions[index];
-  }
-  
-  mergeDimensions(affectedDimensions) {
-    console.log(`Fusione di ${affectedDimensions.length} dimensioni in corso...`);
-    
-    // Logica di fusione delle dimensioni
-    // Qui si potrebbero unire gli elementi di più dimensioni
-  }
-}
-
-class Player {
-  constructor() {
-    this.stats = {
-      codeAffinity: 1,
-      quantumUnderstanding: 1,
-      dimensionalResonance: 1,
-      timelineAwareness: 1
-    };
-    
-    this.inventory = [];
-    this.abilities = [];
-    this.progress = {
-      level: 1,
-      experience: 0,
-      questsCompleted: 0
-    };
-  }
-  
-  setQuantumAbilities(abilities) {
-    this.abilities = abilities;
-    console.log(`Inizializzate ${abilities.length} abilità quantistiche`);
-  }
-  
-  unlockAbility(abilityName) {
-    const ability = this.abilities.find(a => a.name === abilityName);
-    if (ability) {
-      ability.unlocked = true;
-      console.log(`Abilità sbloccata: ${abilityName}`);
-    }
-  }
-  
-  increasePower(amount) {
-    // Aumenta il potere del giocatore
-    this.stats.codeAffinity += amount * 0.1;
-    this.stats.quantumUnderstanding += amount * 0.15;
-    this.stats.dimensionalResonance += amount * 0.08;
-    this.stats.timelineAwareness += amount * 0.12;
-    
-    console.log(`Potere aumentato di ${amount.toFixed(2)} unità`);
-  }
-  
-  notifyTimelineSplit() {
-    this.progress.experience += 50;
-    console.log("Il giocatore ha acquisito esperienza da una divisione temporale");
-  }
-}
-
-class Timeline {
-  constructor() {
-    this.currentTime = 0;
-    this.branches = [{
-      id: "main",
-      startPoint: 0,
-      events: []
-    }];
-    this.activeBranch = "main";
-  }
-  
-  advance(deltaTime) {
-    this.currentTime += deltaTime;
-    
-    // Gestione degli eventi temporali
-    const branch = this.branches.find(b => b.id === this.activeBranch);
-    
-    if (branch) {
-      // Attiva gli eventi programmati
-      const pendingEvents = branch.events.filter(e => !e.triggered && e.time <= this.currentTime);
-      
-      for (const event of pendingEvents) {
-        console.log(`Evento temporale attivato: ${event.description}`);
-        event.triggered = true;
-        
-        if (event.callback) {
-          event.callback();
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Nexus - Gioco GitHub Futuristico</title>
+    <style>
+        :root {
+            --primary-color: #00c8ff;
+            --secondary-color: #9d00ff;
+            --accent-color: #6aff00;
+            --dark-color: #0d1117;
+            --darker-color: #090c10;
+            --light-color: #c9d1d9;
+            --code-color: #0d3c61;
         }
-      }
-    }
-  }
-  
-  split(sourcePoint) {
-    const newBranchId = `timeline-${Date.now()}`;
-    
-    // Crea un nuovo ramo temporale
-    this.branches.push({
-      id: newBranchId,
-      startPoint: sourcePoint,
-      events: []
-    });
-    
-    console.log(`Nuova linea temporale creata: ${newBranchId}`);
-    return newBranchId;
-  }
-  
-  scheduleEvent(branchId, time, description, callback) {
-    const branch = this.branches.find(b => b.id === branchId);
-    
-    if (branch) {
-      branch.events.push({
-        time,
-        description,
-        callback,
-        triggered: false
-      });
-      
-      console.log(`Evento programmato su ${branchId}: ${description} al tempo ${time}`);
-      return true;
-    }
-    
-    return false;
-  }
-}
-
-class NeuroInterface {
-  constructor() {
-    this.connectionStrength = 0.5;
-    this.cognitiveLinkActive = false;
-    this.neuralImprints = [];
-  }
-  
-  update(player) {
-    // Simulazione dell'interfaccia neurale
-    this.connectionStrength = Math.min(1.0, this.connectionStrength + 0.001);
-    
-    if (this.connectionStrength > 0.8 && !this.cognitiveLinkActive) {
-      this.activateCognitiveLink();
-    }
-  }
-  
-  activateCognitiveLink() {
-    this.cognitiveLinkActive = true;
-    console.log("Collegamento cognitivo attivato! Nuove abilità disponibili.");
-  }
-  
-  createNeuralImprint(codeFragment) {
-    // Crea un'impronta neurale dal codice del giocatore
-    const imprint = {
-      id: `imprint-${Date.now()}`,
-      codeSignature: this.generateCodeSignature(codeFragment),
-      resonanceFrequency: Math.random() * 0.5 + 0.5,
-      neuralPathways: this.generateNeuralPathways()
-    };
-    
-    this.neuralImprints.push(imprint);
-    console.log(`Nuova impronta neurale creata: ${imprint.id}`);
-    return imprint;
-  }
-  
-  generateCodeSignature(codeFragment) {
-    // Genera una firma univoca dal codice
-    return codeFragment.split('')
-      .reduce((acc, char, idx) => acc + char.charCodeAt(0) * (idx + 1), 0) % 1000000;
-  }
-  
-  generateNeuralPathways() {
-    // Genera percorsi neurali casuali
-    const pathwayCount = Math.floor(Math.random() * 5) + 3;
-    const pathways = [];
-    
-    for (let i = 0; i < pathwayCount; i++) {
-      pathways.push({
-        source: Math.floor(Math.random() * 100),
-        target: Math.floor(Math.random() * 100),
-        strength: Math.random() * 0.7 + 0.3
-      });
-    }
-    
-    return pathways;
-  }
-}
-
-class QuantumAbility {
-  constructor(name, description) {
-    this.name = name;
-    this.description = description;
-    this.level = 1;
-    this.unlocked = false;
-    this.cooldown = 0;
-    this.energy = 100;
-  }
-  
-  use() {
-    if (!this.unlocked) {
-      console.log(`L'abilità ${this.name} non è ancora sbloccata!`);
-      return false;
-    }
-    
-    if (this.cooldown > 0) {
-      console.log(`L'abilità ${this.name} è in raffreddamento per altri ${this.cooldown.toFixed(1)} secondi`);
-      return false;
-    }
-    
-    if (this.energy < 20) {
-      console.log(`Energia insufficiente per usare ${this.name}`);
-      return false;
-    }
-    
-    console.log(`Utilizzo dell'abilità ${this.name}`);
-    this.energy -= 20;
-    this.cooldown = 30 / this.level;
-    
-    return true;
-  }
-  
-  upgrade() {
-    if (this.level < 10) {
-      this.level++;
-      console.log(`${this.name} potenziata al livello ${this.level}`);
-      return true;
-    }
-    
-    return false;
-  }
-}
-
-// Classi di integrazione
-
-class GitHubIntegration {
-  constructor(config) {
-    this.config = config;
-    this.repositoryData = null;
-    this.eventHandlers = {
-      commit: [],
-      issue: [],
-      pull_request: []
-    };
-  }
-  
-  async loadPlayerHistory() {
-    // Simulazione del caricamento della cronologia da GitHub
-    console.log("Caricamento della cronologia GitHub del giocatore...");
-    
-    // In un'implementazione reale, qui si utilizzerebbero le API di GitHub
-    this.repositoryData = {
-      name: "quantum-nexus-player",
-      codebase: { size: 12500 },
-      languages: ["JavaScript", "Python", "HTML", "CSS"],
-      commits: [
-        { hash: "a1b2c3", message: "Initial commit", additions: 500, deletions: 0, date: "2023-01-01", files: 5 },
-        { hash: "d4e5f6", message: "Add quantum mechanics", additions: 300, deletions: 50, date: "2023-01-15", files: 3 },
-        { hash: "g7h8i9", message: "Fix time paradox bug", additions: 20, deletions: 15, date: "2023-02-01", files: 1 }
-        // Altri commit sarebbero caricati qui
-      ]
-    };
-    
-    console.log("Cronologia caricata con successo!");
-  }
-  
-  getRepositoryData() {
-    return this.repositoryData;
-  }
-  
-  analyzeCodingStyle() {
-    // Analizza lo stile di coding del giocatore
-    const commits = this.repositoryData.commits;
-    
-    let creativeScore = 0;
-    let analyticalScore = 0;
-    let collaborativeScore = 0;
-    
-    for (const commit of commits) {
-      const message = commit.message.toLowerCase();
-      
-      // Valutazione creativa
-      if (message.includes("add") || message.includes("create") || message.includes("implement")) {
-        creativeScore += 1;
-      }
-      
-      // Valutazione analitica
-      if (message.includes("fix") || message.includes("optimize") || message.includes("refactor")) {
-        analyticalScore += 1;
-      }
-      
-      // Valutazione collaborativa
-      if (message.includes("merge") || message.includes("integrate") || message.includes("collaboration")) {
-        collaborativeScore += 1;
-      }
-    }
-    
-    // Normalizza i punteggi
-    const total = Math.max(1, creativeScore + analyticalScore + collaborativeScore);
-    creativeScore /= total;
-    analyticalScore /= total;
-    collaborativeScore /= total;
-    
-    return {
-      isCreative: creativeScore > 0.4,
-      isAnalytical: analyticalScore > 0.4,
-      isCollaborative: collaborativeScore > 0.4
-    };
-  }
-  
-  subscribeToEvents(eventType, callback) {
-    if (this.eventHandlers[eventType]) {
-      this.eventHandlers[eventType].push(callback);
-      console.log(`Sottoscrizione agli eventi di tipo ${eventType}`);
-    }
-  }
-  
-  createBranch(branchName) {
-    console.log(`Creazione del branch ${branchName} su GitHub`);
-    // In un'implementazione reale, qui si creerebbe un branch su GitHub
-  }
-  
-  mergeBranches(branchNames) {
-    console.log(`Merge dei branch ${branchNames.join(", ")} su GitHub`);
-    // In un'implementazione reale, qui si farebbe il merge dei branch su GitHub
-  }
-  
-  createIssue(issueData) {
-    console.log(`Creazione dell'issue "${issueData.title}" su GitHub`);
-    // In un'implementazione reale, qui si creerebbe un'issue su GitHub
-  }
-}
-
-class HolographicRenderer {
-  constructor() {
-    this.effectsEnabled = true;
-    this.qualityLevel = "HIGH";
-    this.lastFrameTime = Date.now();
-  }
-  
-  render(gameState) {
-    const currentTime = Date.now();
-    const deltaTime = (currentTime - this.lastFrameTime) / 1000;
-    this.lastFrameTime = currentTime;
-    
-    // Simulazione del rendering
-    console.log(`Rendering del frame. Delta: ${deltaTime.toFixed(3)}s`);
-    
-    // In un'implementazione reale, qui si renderizzerebbero gli elementi del gioco
-  }
-}
-
-class QuantumPhysicsEngine {
-  constructor() {
-    this.simulationAccuracy = 0.95;
-    this.quantumFluctuations = [];
-  }
-  
-  update(gameState, deltaTime) {
-    // Simulazione della fisica quantistica
-    this.updateQuantumFluctuations(deltaTime);
-    this.updateEntanglement(gameState);
-    this.updateSuperposition(gameState);
-  }
-  
-  updateQuantumFluctuations(deltaTime) {
-    // Aggiornamento delle fluttuazioni quantistiche
-    // Qui si simulerebbero le fluttuazioni casuali nell'universo quantistico
-  }
-  
-  updateEntanglement(gameState) {
-    // Aggiornamento dell'entanglement quantistico
-    // Qui si simulerebbero le connessioni entangled tra entità quantistiche
-  }
-  
-  updateSuperposition(gameState) {
-    // Aggiornamento della superposizione
-    // Qui si simulerebbero gli stati di superposizione delle entità
-  }
-  
-  detectQuantumAnomalies(gameState) {
-    // Rileva anomalie quantistiche nella simulazione
-    const anomalies = [];
-    
-    // Genera casualmente anomalie per scopi dimostrativi
-    if (Math.random() < 0.01) {
-      anomalies.push({
-        type: "TIMELINE_SPLIT",
-        sourcePoint: gameState.timeline.currentTime,
-        intensity: Math
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: var(--darker-color);
+            color: var(--light-color);
+            overflow: hidden;
+            user-select: none;
+        }
+        
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #webgl-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .overlay {
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        #hud {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--darker-color);
+        }
+        
+        .level {
+            background-color: var(--dark-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 12px;
+            color: var(--primary-color);
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 0 20px;
+        }
+        
+        .left-panel {
+            width: 300px;
+            padding: 20px;
+            pointer-events: all;
+        }
+        
+        .panel {
+            background-color: rgba(13, 17, 23, 0.8);
+            border: 1px solid rgba(0, 200, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(0, 200, 255, 0.1);
+        }
+        
+        .panel-title {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .icon {
+            font-size: 16px;
+        }
+        
+        .dimension-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .dimension {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .dimension:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .dimension.active {
+            background-color: rgba(0, 200, 255, 0.1);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .dimension-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .dimension-type {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .stability {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .stability-value {
+            color: var(--accent-color);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 35%;
+            border-radius: 3px;
+            box-shadow: 0 0 8px var(--primary-color);
+        }
+        
+        .quest-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .quest {
+            padding: 10px;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quest:hover {
+            background-color: rgba(255, 255, 255, 0.07);
+            transform: translateY(-2px);
+        }
+        
+        .quest-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .quest-title {
+            font-weight: bold;
+        }
+        
+        .quest-difficulty {
+            font-size: 12px;
+            color: var(--accent-color);
+        }
+        
+        .quest-desc {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        
+        .quest-rewards {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+        }
+        
+        .quest-reward {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--primary-color);
+        }
+        
+        .bottom-panel {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(0deg, rgba(9, 12, 16, 0.9) 0%, rgba(9, 12, 16, 0) 100%);
+        }
+        
+        .abilities {
+            display: flex;
+            gap: 15px;
+            pointer-events: all;
+        }
+        
+        .ability {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        
+        .ability:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
+        }
+        
+        .ability::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+        
+        .ability-icon {
+            font-size: 22px;
+            color: var(--primary-color);
+        }
+        
+        .cooldown {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: height 0.5s;
+        }
+        
+        .neurallink {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: linear-gradient(90deg, var(--darker-color), var(--code-color));
+            border: 1px solid var(--primary-color);
+            pointer-events: all;
+            cursor: pointer;
+        }
+        
+        .neurallink-pulse {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 200, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 200, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 200, 255, 0); }
+        }
+        
+        .right-sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            width: 350px;
+            background-color: rgba(13, 17, 23, 0.9);
+            border-left: 1px solid rgba(0, 200, 255, 0.3);
+            padding: 20px;
+            transform: translateX(350px);
+            transition: transform 0.3s;
+            pointer-events: all;
+            z-index: 10;
+            overflow-y: auto;
+        }
+        
+        .right-sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .sidebar-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--light-color);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0.6;
+        }
+        
+        .tab.active {
+            opacity: 1;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .commit-history {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .commit {
+            padding: 12px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .commit-message {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .commit-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .energy-node {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.03);
+            margin-bottom: 10px;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .node-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+        
+        .node-details {
+            flex: 1;
+        }
+        
+        .node-energy {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .notification-center {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .notification {
+            background-color: rgba(13, 17, 23, 0.9);
+            border-left: 3px solid var(--primary-color);
+            padding: 12px;
+            border-radius: 6px;
+            animation: slideIn 0.3s forwards, fadeOut 0.3s forwards 4.7s;
+            pointer-events: all;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            background-color: var(--dark-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--light-color);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+        
+        .property-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .property {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .property-name {
+            font-weight: bold;
+        }
+        
+        .property-value {
+            color: var(--primary-color);
+        }
+        
+        .ability-detail {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .ability-detail:last-child {
+            border-bottom: none;
+        }
+        
+        .ability-detail-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ability-info {
+            flex: 1;
+        }
+        
+        .ability-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .ability-description {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            color: var(--darker-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 200, 255, 0.3);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .left-panel {
+                width: 250px;
+            }
+            
+            .right-sidebar {
+                width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="webgl-container"></div>
+        
+        <div class="overlay">
+            <div id="hud">
+                <div class="header">
+                    <div class="logo">QUANTUM NEXUS</div>
+                    <div class="player-info">
+                        <div class="avatar">QN</div>
+                        <span class="player-name">DevExplorer</span>
+                        <div class="level">Lvl 5</div>
+                    </div>
+                </div>
+                
+                <div class="main-content">
+                    <div class="left-panel">
+                        <div class="panel">
+                            <div class="panel-title">
+                                <span class="icon">⚛️</span> Statistiche Quantistiche
+                            </div>
+                            <div class="stats">
+                                <div class="stat">
+                                    <div class="stat-value">42</div>
+                                    <div class="stat-label">Affinità Codice</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">37</div>
+                                    <div class="stat-label">Risonanza</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">25</div>
+                                    <div class="stat-label">Consapevolezza</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="panel">
+                            <div class="panel-title">
+                                <span class="icon">🌌</span> Dimensioni
+                            </div>
+                            <div class="dimension-list">
+                                <div class="dimension active">
+                                    <div class="dimension-name">
+                                        <span>Logica</span>
+                                        <span class="dimension-type">LOGICAL</span>
+                                    </div>
+                                    <div class="stability">
+                                        <span class="stability-value">87%</span>
+                                    </div>
+                                </div>
+                                <div class="dimension">
+                                    <div class="dimension-name">
+                                        <span>Astratta</span>
+                                        <span class="dimension-type">ABSTRACT</span>
+                                    </div>
+                                    <div class="stability">
+                                        <span class="stability-value">63%</span>
+                                    </div>
+                                </div>
+                                <div class="dimension">
+                                    <div class="dimension-name">
+                                        <span>Quantica</span>
+                                        <span class="dimension-type">QUANTUM</span>
+                                    </div>
+                                    <div class="stability">
+                                        <span class="stability-value">42%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="panel">
+                            <div class="panel-title">
+                                <span class="icon">🎯</span> Missioni Attive
+                            </div>
+                            <div class="quest-list">
+                                <div class="quest">
+                                    <div class="quest-header">
+                                        <div class="quest-title">Bug nella Matrice Temporale</div>
+                                        <div class="quest-difficulty">⭐⭐⭐</div>
+                                    </div>
+                                    <div class="quest-desc">Risolvi il paradosso nel codice dell'algoritmo temporale</div>
+                                    <div class="quest-rewards">
+                                        <div class="quest-reward">150 XP</div>
+                                        <div class="quest-reward">75 QE</div>
+                                    </div>
+                                </div>
+                                <div class="quest">
+                                    <div class="quest-header">
+                                        <div class="quest-title">Ottimizzazione del Flusso Quantico</div>
+                                        <div class="quest-difficulty">⭐⭐</div>
+                                    </div>
+                                    <div class="quest-desc">Migliora l'efficienza del nodo di energia primario</div>
+                                    <div class="quest-rewards">
+                                        <div class="quest-reward">100 XP</div>
+                                        <div class="quest-reward">50 QE</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bottom-panel">
+                    <div class="abilities">
+                        <div class="ability" title="TimeRefactor">
+                            <div class="ability-icon">⏱️</div>
+                            <div class="cooldown" style="height: 20%"></div>
+                        </div>
+                        <div class="ability" title="CodeEntanglement">
+                            <div class="ability-icon">🔄</div>
+                            <div class="cooldown" style="height: 0%"></div>
+                        </div>
+                        <div class="ability" title="BugCollapse">
+                            <div class="ability-icon">🐛</div>
+                            <div class="cooldown" style="height: 50%"></div>
+                        </div>
+                        <div class="ability" title="AlgorithmicSuperposition" style="opacity: 0.5">
+                            <div class="ability-icon">📊</div>
+                            <div class="cooldown" style="height: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="neurallink">
+                        <div class="neurallink-pulse"></div>
+                        <span>Collegamento Neurale: 78%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="right-sidebar">
+            <div class="sidebar-close">×</div>
+            <div class="tabs">
+                <div class="tab active" data-tab="commits">Commit</div>
+                <div class="tab" data-tab="energy">Energia</div>
+                <div class="tab" data-tab="abilities">Abilità</div>
+            </div>
+            
+            <div class="tab-content active" data-tab-content="commits">
+                <div class="commit-history">
+                    <div class="commit">
+                        <div class="commit-message">Fix time paradox bug</div>
+                        <div class="commit-details">
+                            <span>g7h8i9</span>
+                            <span>1 Febbraio 2023</span>
+                        </div>
+                    </div>
+                    <div class="commit">
+                        <div class="commit-message">Add quantum mechanics</div>
+                        <div class="commit-details">
+                            <span>d4e5f6</span>
+                            <span>15 Gennaio 2023</span>
+                        </div>
+                    </div>
+                    <div class="commit">
+                        <div class="commit-message">Initial commit</div>
+                        <div class="commit-details">
+                            <span>a1b2c3</span>
+                            <span>1 Gennaio 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" data-tab-content="energy">
+                <div class="energy-nodes">
+                    <div class="energy-node">
+                        <div class="node-color" style="background-color: #00c8ff;"></div>
+                        <div class="node-details">
+                            <div>Nodo di Rifacimento Temporale</div>
+                            <div class="node-energy">84.2 QE</div>
+                        </div>
+                    </div>
+                    <div class="energy-node">
+                        <div class="node-color" style="background-color: #6aff00;"></div>
+                        <div class="node-details">
+                            <div>Nodo di Innovazione Algoritmica</div>
+                            <div class="node-energy">125.7 QE</div>
+                        </div>
+                    </div>
+                    <div class="energy-node">
+                        <div class="node-color" style="background-color: #ff9d00;"></div>
+                        <div class="node-details">
+                            <div>Nodo di Refactoring Quantico</div>
+                            <div class="node-energy">67.3 QE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" data-tab-content="abilities">
+                <div class="ability-details">
+                    <div class="ability-detail">
+                        <div class="ability-detail-icon">⏱️</div>
+                        <div class="ability-info">
+                            <div class="ability-name">TimeRefactor</div>
+                            <div class="ability-description">Modifica il codice attraverso le linee temporali, permettendoti di correggere errori passati senza causare paradossi.</div>
+                            <div>Livello: 3</div>
+                        </div>
+                    </div>
+                    <div class="ability-detail">
+                        <div class="ability-detail-icon">🔄</div>
+                        <div class="ability-info">
+                            <div class="ability-name">CodeEntanglement</div>
+                            <div class="ability-description">Crea connessioni quantistiche tra frammenti di codice, permettendo cambiamenti simultanei in più file.</div>
+                            <div>Livello: 2</div>
+                        </div>
+                    </div>
+                    <div class="ability-detail">
+                        <div class="ability-detail-icon">🐛</div>
+                        <div class="ability-info">
+                            <div class="ability-name">BugCollapse</div>
+                            <div class="ability-description">Risolvi bug attraverso il collasso della funzione d'onda, visualizzando tutti i possibili stati del codice.</div>
+                            <div>Livello: 1</div>
+                        </div>
+                    </div>
+                    <div class="ability-detail" style="opacity: 0.5">
+                        <div class="ability-detail-icon">📊</div>
+                        <div class="ability-info">
+                            <div class="ability-name">AlgorithmicSuperposition</div>
+                            <div class="ability-description">Mantieni algoritmi in superposizione per eseguire calcoli multipli simultaneamente.</div>
+                            <div>Livello: 0 (Bloccato)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="notification-center">
+            <!-- Le notifiche verranno aggiunte dinamicamente -->
+        </div>
+        
+        <div class="modal" id="dimension-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Dimensione Logica</div>
+                    <div class="modal-close">×</div>
+                </div>
+                <div class="modal-body">
+                    <div class="property-list">
+                        <div class="property">
+                            <div class="property-name">Tipo:</div>
+                            <div class="property-value">LOGICAL</div>
+                        </div>
+                        <div class="property">
+                            <div class="property-name">Stabilità:</div>
+                            <div class="property-value">87%</div>
+                        </div>
+                        <div class="property">
+                            <div class="property-name">Tasso di Evoluzione:</div>
+                            <div class="property-value">1.24</div>
+                        </div>

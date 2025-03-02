@@ -1,119 +1,795 @@
-<html>
-<head>
-    <title>Font Selector</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-            @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Amatic+SC&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bilbo+Swash+Caps&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Euphoria+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fondamento&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Garamond&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Herr+Von+Muellerhoff&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Italianno&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Italiana&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=League+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lobster+Two&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Meddon&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merienda&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montez&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Monsieur+La+Doulaise&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Niconne&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Norican&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Over+the+Rainbow&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Pangolin&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poiret+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Zeyada&display=swap');
-    @font-face {
-        font-family: 'Apple Chancery';
-        src: url('https://example.com/path-to-apple-chancery.woff') format('woff');
+// QUANTUM NEXUS
+// Un gioco futuristico basato su GitHub
+// Questo è il file principale che orchestrerà l'esperienza di gioco
+
+class QuantumNexus {
+  constructor() {
+    this.gameState = {
+      universe: new Universe(),
+      player: new Player(),
+      commitHistory: [],
+      quantumEntities: [],
+      dimensionalRifts: new Map(),
+      timeline: new Timeline(),
+      neuroInterface: new NeuroInterface()
+    };
+    
+    this.gitHubAPI = new GitHubIntegration({
+      // Configurazione per l'integrazione con GitHub
+      useCommitsAsEnergy: true,
+      useBranchesAsDimensions: true,
+      useIssuesAsQuests: true,
+      usePullRequestsAsAlliances: true,
+      useActionsAsQuantumEvents: true
+    });
+    
+    this.renderer = new HolographicRenderer();
+    this.physics = new QuantumPhysicsEngine();
+    this.ai = new AdaptiveIntelligence();
+  }
+  
+  async initialize() {
+    // Inizializzazione del gioco
+    console.log("Inizializzazione di Quantum Nexus...");
+    
+    // Carica la cronologia dei commit del giocatore
+    await this.gitHubAPI.loadPlayerHistory();
+    
+    // Genera l'universo basato sui dati del repository
+    this.gameState.universe.generate(this.gitHubAPI.getRepositoryData());
+    
+    // Imposta la modalità di gioco in base all'attività del giocatore su GitHub
+    this.setGameMode();
+    
+    // Inizializza il sistema di progresso quantico
+    this.initializeQuantumProgression();
+    
+    // Inizializza il sistema di eventi dinamici
+    this.initializeDynamicEvents();
+    
+    console.log("Quantum Nexus è pronto! Benvenuto nel multiverso del codice.");
+  }
+  
+  setGameMode() {
+    // Analizza lo stile di coding del giocatore per personalizzare l'esperienza
+    const codingStyle = this.gitHubAPI.analyzeCodingStyle();
+    
+    if (codingStyle.isCreative) {
+      this.gameState.universe.setMode("CREATOR");
+    } else if (codingStyle.isAnalytical) {
+      this.gameState.universe.setMode("ARCHITECT");
+    } else if (codingStyle.isCollaborative) {
+      this.gameState.universe.setMode("DIPLOMAT");
+    } else {
+      this.gameState.universe.setMode("EXPLORER");
     }
-    </style>
-    <script>
-        function changeFont() {
-            const selectedFont = document.getElementById('fontSelector').value;
-            document.body.style.fontFamily = selectedFont;
+    
+    console.log(`Modalità di gioco impostata: ${this.gameState.universe.mode}`);
+  }
+  
+  initializeQuantumProgression() {
+    // Sistema di progresso basato su meccaniche quantistiche
+    this.gameState.player.setQuantumAbilities([
+      new QuantumAbility("TimeRefactor", "Modifica il codice attraverso le linee temporali"),
+      new QuantumAbility("CodeEntanglement", "Crea connessioni quantistiche tra frammenti di codice"),
+      new QuantumAbility("BugCollapse", "Risolvi bug attraverso il collasso della funzione d'onda"),
+      new QuantumAbility("AlgorithmicSuperposition", "Mantieni algoritmi in superposizione per efficienze multiple")
+    ]);
+  }
+  
+  initializeDynamicEvents() {
+    // Eventi che cambiano in base all'attività reale su GitHub
+    this.gitHubAPI.subscribeToEvents("commit", (data) => {
+      this.gameState.universe.spawnEnergyNode(data);
+    });
+    
+    this.gitHubAPI.subscribeToEvents("issue", (data) => {
+      this.gameState.universe.createQuest(data);
+    });
+    
+    this.gitHubAPI.subscribeToEvents("pull_request", (data) => {
+      this.gameState.universe.openDimensionalPortal(data);
+    });
+  }
+  
+  update(deltaTime) {
+    // Aggiorna lo stato del gioco
+    this.physics.update(this.gameState, deltaTime);
+    this.ai.update(this.gameState, deltaTime);
+    this.gameState.timeline.advance(deltaTime);
+    
+    // Verifica eventi quantistici
+    this.checkQuantumEvents();
+    
+    // Aggiorna l'interfaccia neurale
+    this.gameState.neuroInterface.update(this.gameState.player);
+    
+    // Renderizza il nuovo stato
+    this.renderer.render(this.gameState);
+  }
+  
+  checkQuantumEvents() {
+    // Verificare se si sono verificati eventi quantistici nel codice del giocatore
+    const anomalies = this.physics.detectQuantumAnomalies(this.gameState);
+    
+    for (const anomaly of anomalies) {
+      if (anomaly.type === "TIMELINE_SPLIT") {
+        this.handleTimelineSplit(anomaly);
+      } else if (anomaly.type === "DIMENSIONAL_MERGE") {
+        this.handleDimensionalMerge(anomaly);
+      } else if (anomaly.type === "ALGORITHMIC_BREAKTHROUGH") {
+        this.handleAlgorithmicBreakthrough(anomaly);
+      }
+    }
+  }
+  
+  handleTimelineSplit(anomaly) {
+    console.log("Evento quantistico: Divisione della timeline!");
+    this.gameState.timeline.split(anomaly.sourcePoint);
+    this.gameState.player.notifyTimelineSplit();
+    
+    // Crea nuovi rami nella repository GitHub
+    this.gitHubAPI.createBranch(`quantum-timeline-${Date.now()}`);
+  }
+  
+  handleDimensionalMerge(anomaly) {
+    console.log("Evento quantistico: Fusione dimensionale!");
+    const affectedDimensions = this.gameState.dimensionalRifts.get(anomaly.riftId);
+    
+    if (affectedDimensions) {
+      this.gameState.universe.mergeDimensions(affectedDimensions);
+      this.gameState.player.increasePower(anomaly.energyReleased);
+      
+      // Esegui il merge dei branch corrispondenti
+      this.gitHubAPI.mergeBranches(affectedDimensions.map(d => d.branchName));
+    }
+  }
+  
+  handleAlgorithmicBreakthrough(anomaly) {
+    console.log("Evento quantistico: Svolta algoritmica!");
+    this.gameState.player.unlockAbility(anomaly.abilityName);
+    
+    // Crea una nuova issue su GitHub per celebrare la scoperta
+    this.gitHubAPI.createIssue({
+      title: `Svolta Quantistica: ${anomaly.abilityName}`,
+      body: `Il giocatore ha scoperto una nuova abilità quantistica attraverso un'innovazione algoritmica!`,
+      labels: ["quantum-breakthrough", "game-event"]
+    });
+  }
+}
+
+// Classi di supporto
+
+class Universe {
+  constructor() {
+    this.dimensions = [];
+    this.physicsConstants = {
+      quantumCoherence: 0.87,
+      entanglementFactor: 1.21,
+      superpositionLimit: 12
+    };
+    this.mode = "EXPLORER";
+    this.energyNodes = [];
+    this.quests = [];
+  }
+  
+  generate(repositoryData) {
+    // Genera l'universo basato sui dati del repository
+    const complexity = this.calculateComplexity(repositoryData);
+    const harmony = this.calculateHarmony(repositoryData);
+    const evolution = this.calculateEvolution(repositoryData);
+    
+    this.dimensions = this.generateDimensions(complexity, harmony, evolution);
+    console.log(`Universo generato con ${this.dimensions.length} dimensioni.`);
+  }
+  
+  calculateComplexity(repoData) {
+    // Calcola la complessità dell'universo in base al repository
+    return repoData.codebase.size * 0.01 + 
+           repoData.languages.length * 0.5 + 
+           Math.log(repoData.commits.length + 1) * 2;
+  }
+  
+  calculateHarmony(repoData) {
+    // Calcola l'armonia dell'universo in base al repository
+    const linesAdded = repoData.commits.reduce((sum, commit) => sum + commit.additions, 0);
+    const linesRemoved = repoData.commits.reduce((sum, commit) => sum + commit.deletions, 0);
+    
+    return (linesAdded - linesRemoved) / (linesAdded + linesRemoved + 1) + 1;
+  }
+  
+  calculateEvolution(repoData) {
+    // Calcola l'evoluzione dell'universo in base al repository
+    const firstCommitDate = new Date(repoData.commits[0].date);
+    const lastCommitDate = new Date(repoData.commits[repoData.commits.length - 1].date);
+    
+    const ageInDays = (lastCommitDate - firstCommitDate) / (1000 * 60 * 60 * 24);
+    const commitFrequency = repoData.commits.length / (ageInDays + 1);
+    
+    return commitFrequency * Math.log(ageInDays + 1);
+  }
+  
+  generateDimensions(complexity, harmony, evolution) {
+    // Genera le dimensioni dell'universo di gioco
+    const dimensionCount = Math.floor(3 + complexity * 0.5);
+    const dimensions = [];
+    
+    for (let i = 0; i < dimensionCount; i++) {
+      dimensions.push({
+        id: `dim-${i}`,
+        type: this.getDimensionType(i, harmony),
+        stability: 0.5 + Math.sin(i * harmony) * 0.4,
+        evolutionRate: evolution * (0.8 + Math.random() * 0.4),
+        entities: []
+      });
+    }
+    
+    return dimensions;
+  }
+  
+  getDimensionType(index, harmony) {
+    const types = [
+      "LOGICAL", "ABSTRACT", "QUANTUM", "PARADOXICAL", 
+      "RECURSIVE", "PARALLEL", "FRACTAL", "VOID"
+    ];
+    
+    const typeIndex = Math.floor((index * harmony) % types.length);
+    return types[typeIndex];
+  }
+  
+  setMode(mode) {
+    this.mode = mode;
+    
+    // Adatta l'universo alla modalità di gioco
+    if (mode === "CREATOR") {
+      this.physicsConstants.quantumCoherence *= 1.2;
+    } else if (mode === "ARCHITECT") {
+      this.physicsConstants.entanglementFactor *= 1.3;
+    } else if (mode === "DIPLOMAT") {
+      this.physicsConstants.superpositionLimit *= 1.5;
+    }
+  }
+  
+  spawnEnergyNode(commitData) {
+    // Crea un nodo di energia basato su un commit
+    const energyValue = commitData.additions * 0.5 - commitData.deletions * 0.3;
+    
+    if (energyValue > 0) {
+      const node = {
+        id: `energy-${Date.now()}`,
+        position: this.calculateNodePosition(commitData),
+        energy: energyValue,
+        stability: Math.min(1.0, commitData.files.length / 10),
+        color: this.getColorFromCommitType(commitData)
+      };
+      
+      this.energyNodes.push(node);
+      console.log(`Nodo di energia generato: ${node.energy.toFixed(2)} unità`);
+    }
+  }
+  
+  calculateNodePosition(commitData) {
+    // Calcola una posizione nello spazio 3D basata sui dati del commit
+    const hashSum = commitData.hash.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    
+    return {
+      x: (hashSum % 1000) / 1000 * 200 - 100,
+      y: (commitData.additions - commitData.deletions) / 10,
+      z: (hashSum % 500) / 500 * 200 - 100
+    };
+  }
+  
+  getColorFromCommitType(commitData) {
+    // Determina il colore del nodo in base al tipo di commit
+    const message = commitData.message.toLowerCase();
+    
+    if (message.includes("fix") || message.includes("bug")) {
+      return [0, 0.7, 1]; // Azzurro
+    } else if (message.includes("feat") || message.includes("add")) {
+      return [0, 1, 0.4]; // Verde
+    } else if (message.includes("refactor")) {
+      return [1, 0.6, 0]; // Arancione
+    } else if (message.includes("docs")) {
+      return [0.6, 0.3, 1]; // Viola
+    } else {
+      return [1, 1, 1]; // Bianco
+    }
+  }
+  
+  createQuest(issueData) {
+    // Crea una missione basata su un'issue
+    const quest = {
+      id: `quest-${issueData.id}`,
+      title: issueData.title,
+      description: issueData.body,
+      difficulty: this.calculateQuestDifficulty(issueData),
+      rewards: this.calculateQuestRewards(issueData),
+      dimension: this.selectQuestDimension(issueData),
+      completed: false
+    };
+    
+    this.quests.push(quest);
+    console.log(`Nuova missione creata: ${quest.title}`);
+  }
+  
+  calculateQuestDifficulty(issueData) {
+    // Calcola la difficoltà della missione
+    let difficulty = 1;
+    
+    // Analisi del corpo dell'issue
+    if (issueData.body) {
+      const wordCount = issueData.body.split(/\s+/).length;
+      difficulty += wordCount / 50;
+    }
+    
+    // Analisi delle etichette
+    if (issueData.labels.includes("bug")) {
+      difficulty *= 1.5;
+    }
+    if (issueData.labels.includes("enhancement")) {
+      difficulty *= 1.2;
+    }
+    if (issueData.labels.includes("documentation")) {
+      difficulty *= 0.8;
+    }
+    
+    return Math.min(10, Math.max(1, difficulty));
+  }
+  
+  calculateQuestRewards(issueData) {
+    // Calcola le ricompense della missione
+    const baseDifficulty = this.calculateQuestDifficulty(issueData);
+    
+    return {
+      experience: Math.floor(baseDifficulty * 50),
+      quantumEnergy: Math.floor(baseDifficulty * 25),
+      abilityPoints: Math.floor(baseDifficulty / 2)
+    };
+  }
+  
+  selectQuestDimension(issueData) {
+    // Seleziona la dimensione più adatta per la missione
+    let bestDimension = this.dimensions[0];
+    let bestMatch = -1;
+    
+    for (const dimension of this.dimensions) {
+      let match = 0;
+      
+      // Analisi del titolo e del corpo dell'issue
+      const text = `${issueData.title} ${issueData.body}`.toLowerCase();
+      
+      if (dimension.type === "LOGICAL" && text.match(/bug|error|fix|issue|problem/)) {
+        match += 2;
+      }
+      
+      if (dimension.type === "ABSTRACT" && text.match(/design|architecture|pattern|structure/)) {
+        match += 2;
+      }
+      
+      if (dimension.type === "QUANTUM" && text.match(/optimization|performance|speed|efficiency/)) {
+        match += 2;
+      }
+      
+      if (dimension.type === "PARADOXICAL" && text.match(/contradiction|inconsistent|unexpected/)) {
+        match += 2;
+      }
+      
+      if (match > bestMatch) {
+        bestMatch = match;
+        bestDimension = dimension;
+      }
+    }
+    
+    return bestDimension.id;
+  }
+  
+  openDimensionalPortal(pullRequestData) {
+    // Apre un portale dimensionale basato su una pull request
+    const sourceDimension = this.getDimensionFromBranch(pullRequestData.head);
+    const targetDimension = this.getDimensionFromBranch(pullRequestData.base);
+    
+    if (sourceDimension && targetDimension) {
+      const portal = {
+        id: `portal-${pullRequestData.id}`,
+        source: sourceDimension.id,
+        target: targetDimension.id,
+        stability: pullRequestData.changedFiles < 10 ? 0.8 : 0.5,
+        energy: pullRequestData.additions * 0.1 + pullRequestData.deletions * 0.05,
+        state: "OPEN"
+      };
+      
+      console.log(`Portale dimensionale aperto tra ${sourceDimension.type} e ${targetDimension.type}`);
+      return portal;
+    }
+    
+    return null;
+  }
+  
+  getDimensionFromBranch(branchName) {
+    // Mappa un branch name a una dimensione
+    // Strategia semplice: usa il modulo del hash del nome
+    const hash = branchName.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    const index = hash % this.dimensions.length;
+    
+    return this.dimensions[index];
+  }
+  
+  mergeDimensions(affectedDimensions) {
+    console.log(`Fusione di ${affectedDimensions.length} dimensioni in corso...`);
+    
+    // Logica di fusione delle dimensioni
+    // Qui si potrebbero unire gli elementi di più dimensioni
+  }
+}
+
+class Player {
+  constructor() {
+    this.stats = {
+      codeAffinity: 1,
+      quantumUnderstanding: 1,
+      dimensionalResonance: 1,
+      timelineAwareness: 1
+    };
+    
+    this.inventory = [];
+    this.abilities = [];
+    this.progress = {
+      level: 1,
+      experience: 0,
+      questsCompleted: 0
+    };
+  }
+  
+  setQuantumAbilities(abilities) {
+    this.abilities = abilities;
+    console.log(`Inizializzate ${abilities.length} abilità quantistiche`);
+  }
+  
+  unlockAbility(abilityName) {
+    const ability = this.abilities.find(a => a.name === abilityName);
+    if (ability) {
+      ability.unlocked = true;
+      console.log(`Abilità sbloccata: ${abilityName}`);
+    }
+  }
+  
+  increasePower(amount) {
+    // Aumenta il potere del giocatore
+    this.stats.codeAffinity += amount * 0.1;
+    this.stats.quantumUnderstanding += amount * 0.15;
+    this.stats.dimensionalResonance += amount * 0.08;
+    this.stats.timelineAwareness += amount * 0.12;
+    
+    console.log(`Potere aumentato di ${amount.toFixed(2)} unità`);
+  }
+  
+  notifyTimelineSplit() {
+    this.progress.experience += 50;
+    console.log("Il giocatore ha acquisito esperienza da una divisione temporale");
+  }
+}
+
+class Timeline {
+  constructor() {
+    this.currentTime = 0;
+    this.branches = [{
+      id: "main",
+      startPoint: 0,
+      events: []
+    }];
+    this.activeBranch = "main";
+  }
+  
+  advance(deltaTime) {
+    this.currentTime += deltaTime;
+    
+    // Gestione degli eventi temporali
+    const branch = this.branches.find(b => b.id === this.activeBranch);
+    
+    if (branch) {
+      // Attiva gli eventi programmati
+      const pendingEvents = branch.events.filter(e => !e.triggered && e.time <= this.currentTime);
+      
+      for (const event of pendingEvents) {
+        console.log(`Evento temporale attivato: ${event.description}`);
+        event.triggered = true;
+        
+        if (event.callback) {
+          event.callback();
         }
-    </script>
-</head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-4">Scegli Il Tuo Font Preferito</h1>
-        <p class="mb-4">Prova tutti i seguenti font e poi dimmi qual è il tuo preferito (è necessario che sia uno solo)</p>
-        <select id="fontSelector" class="w-full p-2 border border-gray-300 rounded-lg mb-4" onchange="changeFont()">
-            <option value="Abril Fatface">Abril Fatface</option>
-            <option value="Alex Brush">Alex Brush</option>
-            <option value="Allura">Allura</option>
-            <option value="Amatic SC">Amatic SC</option>
-            <option value="Architects Daughter">Architects Daughter</option>
-            <option value="Apple Chancery">Apple Chancery</option>
-            <option value="Arial">Arial</option>
-            <option value="Bilbo Swash Caps">Bilbo Swash Caps</option>
-            <option value="Brush Script MT">Brush Script MT</option>
-            <option value="Comic Sans MS">Comic Sans MS</option>
-            <option value="Courier New">Courier New</option>
-            <option value="Dancing Script">Dancing Script</option>
-            <option value="Euphoria Script">Euphoria Script</option>
-            <option value="Fondamento">Fondamento</option>
-            <option value="Fredericka the Great">Fredericka the Great</option>
-            <option value="Gabriela">Gabriela</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Great Vibes">Great Vibes</option>
-            <option value="Herr Von Muellerhoff">Herr Von Muellerhoff</option>
-            <option value="Indie Flower">Indie Flower</option>
-            <option value="Italianno">Italianno</option>
-            <option value="Italiana">Italiana</option>
-            <option value="Just Another Hand">Just Another Hand</option>
-            <option value="Kaushan Script">Kaushan Script</option>
-            <option value="Lobster">Lobster</option>
-            <option value="Lobster Two">Lobster Two</option>
-            <option value="Meddon">Meddon</option>
-            <option value="Merienda">Merienda</option>
-            <option value="Montez">Montez</option>
-            <option value="Monsieur La Doulaise">Monsieur La Doulaise</option>
-            <option value="Niconne">Niconne</option>
-            <option value="Norican">Norican</option>
-            <option value="Oleo Script">Oleo Script</option>
-            <option value="Over the Rainbow">Over the Rainbow</option>
-            <option value="Pacifico">Pacifico</option>
-            <option value="Papyrus">Papyrus</option>
-            <option value="Parisienne">Parisienne</option>
-            <option value="Pangolin">Pangolin</option>
-            <option value="Permanent Marker">Permanent Marker</option>
-            <option value="Pinyon Script">Pinyon Script</option>
-            <option value="Poiret One">Poiret One</option>
-            <option value="Raleway">Raleway</option>
-            <option value="Satisfy">Satisfy</option>
-            <option value="Shadows Into Light">Shadows Into Light</option>
-            <option value="Snell Roundhand">Snell Roundhand</option>
-            <option value="Special Elite">Special Elite</option>
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Trebuchet MS">Trebuchet MS</option>
-            <option value="Verdana">Verdana</option>
-            <option value="Zeyada">Zeyada</option>
-        </select>
-    </div>
-</body>
-</html>
+      }
+    }
+  }
+  
+  split(sourcePoint) {
+    const newBranchId = `timeline-${Date.now()}`;
+    
+    // Crea un nuovo ramo temporale
+    this.branches.push({
+      id: newBranchId,
+      startPoint: sourcePoint,
+      events: []
+    });
+    
+    console.log(`Nuova linea temporale creata: ${newBranchId}`);
+    return newBranchId;
+  }
+  
+  scheduleEvent(branchId, time, description, callback) {
+    const branch = this.branches.find(b => b.id === branchId);
+    
+    if (branch) {
+      branch.events.push({
+        time,
+        description,
+        callback,
+        triggered: false
+      });
+      
+      console.log(`Evento programmato su ${branchId}: ${description} al tempo ${time}`);
+      return true;
+    }
+    
+    return false;
+  }
+}
+
+class NeuroInterface {
+  constructor() {
+    this.connectionStrength = 0.5;
+    this.cognitiveLinkActive = false;
+    this.neuralImprints = [];
+  }
+  
+  update(player) {
+    // Simulazione dell'interfaccia neurale
+    this.connectionStrength = Math.min(1.0, this.connectionStrength + 0.001);
+    
+    if (this.connectionStrength > 0.8 && !this.cognitiveLinkActive) {
+      this.activateCognitiveLink();
+    }
+  }
+  
+  activateCognitiveLink() {
+    this.cognitiveLinkActive = true;
+    console.log("Collegamento cognitivo attivato! Nuove abilità disponibili.");
+  }
+  
+  createNeuralImprint(codeFragment) {
+    // Crea un'impronta neurale dal codice del giocatore
+    const imprint = {
+      id: `imprint-${Date.now()}`,
+      codeSignature: this.generateCodeSignature(codeFragment),
+      resonanceFrequency: Math.random() * 0.5 + 0.5,
+      neuralPathways: this.generateNeuralPathways()
+    };
+    
+    this.neuralImprints.push(imprint);
+    console.log(`Nuova impronta neurale creata: ${imprint.id}`);
+    return imprint;
+  }
+  
+  generateCodeSignature(codeFragment) {
+    // Genera una firma univoca dal codice
+    return codeFragment.split('')
+      .reduce((acc, char, idx) => acc + char.charCodeAt(0) * (idx + 1), 0) % 1000000;
+  }
+  
+  generateNeuralPathways() {
+    // Genera percorsi neurali casuali
+    const pathwayCount = Math.floor(Math.random() * 5) + 3;
+    const pathways = [];
+    
+    for (let i = 0; i < pathwayCount; i++) {
+      pathways.push({
+        source: Math.floor(Math.random() * 100),
+        target: Math.floor(Math.random() * 100),
+        strength: Math.random() * 0.7 + 0.3
+      });
+    }
+    
+    return pathways;
+  }
+}
+
+class QuantumAbility {
+  constructor(name, description) {
+    this.name = name;
+    this.description = description;
+    this.level = 1;
+    this.unlocked = false;
+    this.cooldown = 0;
+    this.energy = 100;
+  }
+  
+  use() {
+    if (!this.unlocked) {
+      console.log(`L'abilità ${this.name} non è ancora sbloccata!`);
+      return false;
+    }
+    
+    if (this.cooldown > 0) {
+      console.log(`L'abilità ${this.name} è in raffreddamento per altri ${this.cooldown.toFixed(1)} secondi`);
+      return false;
+    }
+    
+    if (this.energy < 20) {
+      console.log(`Energia insufficiente per usare ${this.name}`);
+      return false;
+    }
+    
+    console.log(`Utilizzo dell'abilità ${this.name}`);
+    this.energy -= 20;
+    this.cooldown = 30 / this.level;
+    
+    return true;
+  }
+  
+  upgrade() {
+    if (this.level < 10) {
+      this.level++;
+      console.log(`${this.name} potenziata al livello ${this.level}`);
+      return true;
+    }
+    
+    return false;
+  }
+}
+
+// Classi di integrazione
+
+class GitHubIntegration {
+  constructor(config) {
+    this.config = config;
+    this.repositoryData = null;
+    this.eventHandlers = {
+      commit: [],
+      issue: [],
+      pull_request: []
+    };
+  }
+  
+  async loadPlayerHistory() {
+    // Simulazione del caricamento della cronologia da GitHub
+    console.log("Caricamento della cronologia GitHub del giocatore...");
+    
+    // In un'implementazione reale, qui si utilizzerebbero le API di GitHub
+    this.repositoryData = {
+      name: "quantum-nexus-player",
+      codebase: { size: 12500 },
+      languages: ["JavaScript", "Python", "HTML", "CSS"],
+      commits: [
+        { hash: "a1b2c3", message: "Initial commit", additions: 500, deletions: 0, date: "2023-01-01", files: 5 },
+        { hash: "d4e5f6", message: "Add quantum mechanics", additions: 300, deletions: 50, date: "2023-01-15", files: 3 },
+        { hash: "g7h8i9", message: "Fix time paradox bug", additions: 20, deletions: 15, date: "2023-02-01", files: 1 }
+        // Altri commit sarebbero caricati qui
+      ]
+    };
+    
+    console.log("Cronologia caricata con successo!");
+  }
+  
+  getRepositoryData() {
+    return this.repositoryData;
+  }
+  
+  analyzeCodingStyle() {
+    // Analizza lo stile di coding del giocatore
+    const commits = this.repositoryData.commits;
+    
+    let creativeScore = 0;
+    let analyticalScore = 0;
+    let collaborativeScore = 0;
+    
+    for (const commit of commits) {
+      const message = commit.message.toLowerCase();
+      
+      // Valutazione creativa
+      if (message.includes("add") || message.includes("create") || message.includes("implement")) {
+        creativeScore += 1;
+      }
+      
+      // Valutazione analitica
+      if (message.includes("fix") || message.includes("optimize") || message.includes("refactor")) {
+        analyticalScore += 1;
+      }
+      
+      // Valutazione collaborativa
+      if (message.includes("merge") || message.includes("integrate") || message.includes("collaboration")) {
+        collaborativeScore += 1;
+      }
+    }
+    
+    // Normalizza i punteggi
+    const total = Math.max(1, creativeScore + analyticalScore + collaborativeScore);
+    creativeScore /= total;
+    analyticalScore /= total;
+    collaborativeScore /= total;
+    
+    return {
+      isCreative: creativeScore > 0.4,
+      isAnalytical: analyticalScore > 0.4,
+      isCollaborative: collaborativeScore > 0.4
+    };
+  }
+  
+  subscribeToEvents(eventType, callback) {
+    if (this.eventHandlers[eventType]) {
+      this.eventHandlers[eventType].push(callback);
+      console.log(`Sottoscrizione agli eventi di tipo ${eventType}`);
+    }
+  }
+  
+  createBranch(branchName) {
+    console.log(`Creazione del branch ${branchName} su GitHub`);
+    // In un'implementazione reale, qui si creerebbe un branch su GitHub
+  }
+  
+  mergeBranches(branchNames) {
+    console.log(`Merge dei branch ${branchNames.join(", ")} su GitHub`);
+    // In un'implementazione reale, qui si farebbe il merge dei branch su GitHub
+  }
+  
+  createIssue(issueData) {
+    console.log(`Creazione dell'issue "${issueData.title}" su GitHub`);
+    // In un'implementazione reale, qui si creerebbe un'issue su GitHub
+  }
+}
+
+class HolographicRenderer {
+  constructor() {
+    this.effectsEnabled = true;
+    this.qualityLevel = "HIGH";
+    this.lastFrameTime = Date.now();
+  }
+  
+  render(gameState) {
+    const currentTime = Date.now();
+    const deltaTime = (currentTime - this.lastFrameTime) / 1000;
+    this.lastFrameTime = currentTime;
+    
+    // Simulazione del rendering
+    console.log(`Rendering del frame. Delta: ${deltaTime.toFixed(3)}s`);
+    
+    // In un'implementazione reale, qui si renderizzerebbero gli elementi del gioco
+  }
+}
+
+class QuantumPhysicsEngine {
+  constructor() {
+    this.simulationAccuracy = 0.95;
+    this.quantumFluctuations = [];
+  }
+  
+  update(gameState, deltaTime) {
+    // Simulazione della fisica quantistica
+    this.updateQuantumFluctuations(deltaTime);
+    this.updateEntanglement(gameState);
+    this.updateSuperposition(gameState);
+  }
+  
+  updateQuantumFluctuations(deltaTime) {
+    // Aggiornamento delle fluttuazioni quantistiche
+    // Qui si simulerebbero le fluttuazioni casuali nell'universo quantistico
+  }
+  
+  updateEntanglement(gameState) {
+    // Aggiornamento dell'entanglement quantistico
+    // Qui si simulerebbero le connessioni entangled tra entità quantistiche
+  }
+  
+  updateSuperposition(gameState) {
+    // Aggiornamento della superposizione
+    // Qui si simulerebbero gli stati di superposizione delle entità
+  }
+  
+  detectQuantumAnomalies(gameState) {
+    // Rileva anomalie quantistiche nella simulazione
+    const anomalies = [];
+    
+    // Genera casualmente anomalie per scopi dimostrativi
+    if (Math.random() < 0.01) {
+      anomalies.push({
+        type: "TIMELINE_SPLIT",
+        sourcePoint: gameState.timeline.currentTime,
+        intensity: Math

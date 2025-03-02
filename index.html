@@ -3,908 +3,868 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Nexus - Gioco GitHub Futuristico</title>
+    <title>Quantum Nexus - Un Gioco GitHub Futuristico</title>
     <style>
         :root {
-            --primary-color: #00c8ff;
-            --secondary-color: #9d00ff;
-            --accent-color: #6aff00;
-            --dark-color: #0d1117;
-            --darker-color: #090c10;
-            --light-color: #c9d1d9;
-            --code-color: #0d3c61;
+            --primary: #00f2ff;
+            --secondary: #9000ff;
+            --tertiary: #ff00c8;
+            --background: #0a0b1a;
+            --bg-transparent: rgba(10, 11, 26, 0.8);
+            --text: #e0e0ff;
+            --dark-panel: #12133a;
+            --panel-border: #2a2b7c;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            font-family: 'Rajdhani', sans-serif;
         }
         
         body {
-            background-color: var(--darker-color);
-            color: var(--light-color);
+            background-color: var(--background);
+            color: var(--text);
             overflow: hidden;
-            user-select: none;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 242, 255, 0.1), transparent 30%),
+                radial-gradient(circle at 85% 30%, rgba(144, 0, 255, 0.1), transparent 30%);
         }
         
-        #game-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background);
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1s ease-in-out;
         }
         
-        #webgl-container {
+        .loading-logo {
+            width: 250px;
+            height: 250px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo-inner {
             position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-top-color: var(--primary);
+            animation: spin 1.5s linear infinite;
+        }
+        
+        .logo-inner:nth-child(2) {
+            border-top-color: transparent;
+            border-right-color: var(--secondary);
+            animation-duration: 2s;
+        }
+        
+        .logo-inner:nth-child(3) {
+            border-top-color: transparent;
+            border-bottom-color: var(--tertiary);
+            animation-duration: 2.5s;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 24px;
+            letter-spacing: 8px;
+            margin-top: 20px;
+            text-transform: uppercase;
+            position: relative;
+        }
+        
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--tertiary));
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .game-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .universe-view {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
         }
         
-        .overlay {
-            position: relative;
-            z-index: 2;
-            pointer-events: none;
-        }
-        
-        #hud {
-            display: flex;
-            flex-direction: column;
+        .hud {
+            position: absolute;
             width: 100%;
             height: 100%;
+            z-index: 10;
             pointer-events: none;
         }
         
-        .header {
-            padding: 20px;
+        .top-bar, .bottom-bar {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            height: 80px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
+            padding: 0 20px;
+            backdrop-filter: blur(5px);
+            background-color: var(--bg-transparent);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+            pointer-events: auto;
         }
         
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+        .top-bar {
+            top: 20px;
         }
         
-        .stats {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .stat {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .stat-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            opacity: 0.7;
+        .bottom-bar {
+            bottom: 20px;
         }
         
         .player-info {
             display: flex;
             align-items: center;
-            gap: 10px;
         }
         
-        .avatar {
-            width: 40px;
-            height: 40px;
+        .player-avatar {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: 2px solid var(--primary);
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: var(--darker-color);
+            background-color: var(--dark-panel);
+            margin-right: 15px;
         }
         
-        .level {
-            background-color: var(--dark-color);
-            border: 1px solid var(--primary-color);
-            border-radius: 4px;
-            padding: 2px 6px;
-            font-size: 12px;
-            color: var(--primary-color);
+        .player-avatar img {
+            width: 40px;
+            height: 40px;
         }
         
-        .main-content {
-            flex: 1;
+        .player-stats {
             display: flex;
-            padding: 0 20px;
+            flex-direction: column;
         }
         
-        .left-panel {
-            width: 300px;
-            padding: 20px;
-            pointer-events: all;
-        }
-        
-        .panel {
-            background-color: rgba(13, 17, 23, 0.8);
-            border: 1px solid rgba(0, 200, 255, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 15px rgba(0, 200, 255, 0.1);
-        }
-        
-        .panel-title {
-            margin-bottom: 15px;
+        .player-name {
             font-size: 18px;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .icon {
-            font-size: 16px;
-        }
-        
-        .dimension-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .dimension {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .dimension:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        
-        .dimension.active {
-            background-color: rgba(0, 200, 255, 0.1);
-            border-left: 3px solid var(--primary-color);
-        }
-        
-        .dimension-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .dimension-type {
-            font-size: 12px;
-            opacity: 0.7;
-        }
-        
-        .stability {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-        }
-        
-        .stability-value {
-            color: var(--accent-color);
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            margin-top: 8px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            width: 35%;
-            border-radius: 3px;
-            box-shadow: 0 0 8px var(--primary-color);
-        }
-        
-        .quest-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .quest {
-            padding: 10px;
-            border-radius: 6px;
-            background-color: rgba(255, 255, 255, 0.03);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .quest:hover {
-            background-color: rgba(255, 255, 255, 0.07);
-            transform: translateY(-2px);
-        }
-        
-        .quest-header {
-            display: flex;
-            justify-content: space-between;
+            font-weight: bold;
             margin-bottom: 5px;
         }
         
-        .quest-title {
+        .player-level {
+            font-size: 14px;
+            color: var(--primary);
+        }
+        
+        .energy-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .energy-label {
+            margin-right: 10px;
+        }
+        
+        .energy-bar {
+            width: 200px;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .energy-fill {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .dimension-info {
+            padding: 10px 15px;
+            background-color: var(--dark-panel);
+            border-radius: 6px;
+            border: 1px solid var(--panel-border);
+            font-size: 14px;
+        }
+        
+        .timeline-controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .timeline-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--dark-panel);
+            border: 1px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .timeline-btn:hover {
+            background-color: var(--panel-border);
+            box-shadow: 0 0 10px var(--primary);
+        }
+        
+        .timeline-btn i {
+            font-size: 20px;
+        }
+        
+        .side-panel {
+            position: absolute;
+            top: 120px;
+            right: 20px;
+            width: 300px;
+            height: calc(100vh - 240px);
+            background-color: var(--bg-transparent);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--panel-border);
+        }
+        
+        .panel-title {
+            font-size: 18px;
             font-weight: bold;
         }
         
-        .quest-difficulty {
-            font-size: 12px;
-            color: var(--accent-color);
+        .tab-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .tab-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            background-color: var(--dark-panel);
+            border: 1px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: var(--background);
+        }
+        
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .panel-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .panel-content::-webkit-scrollbar-track {
+            background: var(--dark-panel);
+        }
+        
+        .panel-content::-webkit-scrollbar-thumb {
+            background: var(--panel-border);
+            border-radius: 2px;
+        }
+        
+        .quest-item {
+            background-color: var(--dark-panel);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .quest-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
         
         .quest-desc {
             font-size: 14px;
-            opacity: 0.8;
+            color: rgba(224, 224, 255, 0.8);
             margin-bottom: 8px;
         }
         
-        .quest-rewards {
+        .quest-details {
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
             font-size: 12px;
+        }
+        
+        .quest-difficulty {
+            color: var(--tertiary);
         }
         
         .quest-reward {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            color: var(--primary-color);
+            color: var(--primary);
         }
         
-        .bottom-panel {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(0deg, rgba(9, 12, 16, 0.9) 0%, rgba(9, 12, 16, 0) 100%);
+        .ability-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
         
-        .abilities {
-            display: flex;
-            gap: 15px;
-            pointer-events: all;
-        }
-        
-        .ability {
-            width: 50px;
-            height: 50px;
+        .ability-card {
+            background-color: var(--dark-panel);
             border-radius: 8px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--primary-color);
+            padding: 10px;
+            border: 1px solid var(--panel-border);
+            display: flex;
+            flex-direction: column;
+            height: 120px;
+        }
+        
+        .ability-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
-            cursor: pointer;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-        
-        .ability:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
-        }
-        
-        .ability::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--primary-color);
-            box-shadow: 0 0 10px var(--primary-color);
+            margin-bottom: 5px;
         }
         
         .ability-icon {
-            font-size: 22px;
-            color: var(--primary-color);
-        }
-        
-        .cooldown {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background-color: rgba(0, 0, 0, 0.5);
-            transition: height 0.5s;
-        }
-        
-        .neurallink {
-            position: relative;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-right: 8px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 8px 15px;
-            border-radius: 20px;
-            background: linear-gradient(90deg, var(--darker-color), var(--code-color));
-            border: 1px solid var(--primary-color);
-            pointer-events: all;
-            cursor: pointer;
+            justify-content: center;
         }
         
-        .neurallink-pulse {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 200, 255, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 200, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 200, 255, 0); }
-        }
-        
-        .right-sidebar {
-            position: fixed;
-            right: 0;
-            top: 0;
-            height: 100vh;
-            width: 350px;
-            background-color: rgba(13, 17, 23, 0.9);
-            border-left: 1px solid rgba(0, 200, 255, 0.3);
-            padding: 20px;
-            transform: translateX(350px);
-            transition: transform 0.3s;
-            pointer-events: all;
-            z-index: 10;
-            overflow-y: auto;
-        }
-        
-        .right-sidebar.active {
-            transform: translateX(0);
-        }
-        
-        .sidebar-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            cursor: pointer;
-            font-size: 20px;
-            color: var(--light-color);
-        }
-        
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-            opacity: 0.6;
-        }
-        
-        .tab.active {
-            opacity: 1;
-            border-bottom: 2px solid var(--primary-color);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .commit-history {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .commit {
-            padding: 12px;
-            border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.03);
-            border-left: 3px solid var(--primary-color);
-        }
-        
-        .commit-message {
+        .ability-name {
+            font-size: 14px;
             font-weight: bold;
-            margin-bottom: 5px;
         }
         
-        .commit-details {
-            display: flex;
-            justify-content: space-between;
+        .ability-desc {
             font-size: 12px;
-            opacity: 0.7;
-        }
-        
-        .energy-node {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.03);
-            margin-bottom: 10px;
-            border-left: 3px solid var(--accent-color);
-        }
-        
-        .node-color {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-        }
-        
-        .node-details {
+            color: rgba(224, 224, 255, 0.8);
+            margin-bottom: 8px;
             flex: 1;
         }
         
-        .node-energy {
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-        
-        .notification-center {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 300px;
+        .ability-level {
+            font-size: 12px;
+            color: var(--primary);
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-            z-index: 100;
+            align-items: center;
         }
         
-        .notification {
-            background-color: rgba(13, 17, 23, 0.9);
-            border-left: 3px solid var(--primary-color);
-            padding: 12px;
-            border-radius: 6px;
-            animation: slideIn 0.3s forwards, fadeOut 0.3s forwards 4.7s;
-            pointer-events: all;
+        .level-dots {
+            display: flex;
+            margin-left: 5px;
+            gap: 3px;
         }
         
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
         }
         
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-        
-        .notification-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--primary-color);
+        .dot.active {
+            background-color: var(--primary);
         }
         
         .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 100;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        
-        .modal.active {
-            opacity: 1;
-            pointer-events: all;
+            backdrop-filter: blur(3px);
         }
         
         .modal-content {
-            background-color: var(--dark-color);
-            border: 1px solid var(--primary-color);
+            background-color: var(--dark-panel);
+            border: 1px solid var(--panel-border);
             border-radius: 10px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
+            width: 500px;
+            max-width: 90%;
+            padding: 20px;
             position: relative;
-            box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
         }
         
         .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .modal-close {
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--light-color);
-        }
-        
-        .modal-body {
-            padding: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--panel-border);
         }
         
         .modal-title {
             font-size: 20px;
-            color: var(--primary-color);
-        }
-        
-        .property-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .property {
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .property-name {
             font-weight: bold;
         }
         
-        .property-value {
-            color: var(--primary-color);
-        }
-        
-        .ability-detail {
-            display: flex;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .ability-detail:last-child {
-            border-bottom: none;
-        }
-        
-        .ability-detail-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--primary-color);
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         
-        .ability-info {
-            flex: 1;
+        .modal-body {
+            margin-bottom: 20px;
         }
         
-        .ability-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--primary-color);
+        .quantum-event {
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.2), rgba(144, 0, 255, 0.2));
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 15px;
         }
         
-        .ability-description {
+        .event-title {
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .event-desc {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .event-effects {
             font-size: 14px;
-            opacity: 0.8;
-            margin-bottom: 8px;
+            color: var(--tertiary);
         }
         
-        .button {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border: none;
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .action-btn {
+            padding: 8px 20px;
             border-radius: 6px;
-            padding: 10px 20px;
-            color: var(--darker-color);
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border: none;
+            color: var(--background);
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
         
-        .button:hover {
+        .action-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 200, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 242, 255, 0.4);
         }
         
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .left-panel {
-                width: 250px;
-            }
-            
-            .right-sidebar {
-                width: 280px;
-            }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
+        
+        .notification {
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-transparent);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: auto;
+        }
+        
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .notification-text {
+            font-size: 16px;
+        }
+        
+        /* Link al font Rajdhani */
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        
+        /* Icons */
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <div id="webgl-container"></div>
+    <!-- Schermata di Caricamento -->
+    <div class="loading-screen">
+        <div class="loading-logo">
+            <div class="logo-inner"></div>
+            <div class="logo-inner"></div>
+            <div class="logo-inner"></div>
+        </div>
+        <div class="loading-text">QUANTUM NEXUS</div>
+        <div class="loading-progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div id="loading-status" style="margin-top: 10px; font-size: 14px;">Inizializzazione universo quantico...</div>
+    </div>
+    
+    <!-- Contenitore del Gioco -->
+    <div class="game-container">
+        <!-- Vista dell'Universo -->
+        <div class="universe-view" id="universe-container"></div>
         
-        <div class="overlay">
-            <div id="hud">
-                <div class="header">
-                    <div class="logo">QUANTUM NEXUS</div>
-                    <div class="player-info">
-                        <div class="avatar">QN</div>
-                        <span class="player-name">DevExplorer</span>
-                        <div class="level">Lvl 5</div>
+        <!-- HUD e Interfaccia -->
+        <div class="hud">
+            <!-- Barra Superiore -->
+            <div class="top-bar">
+                <div class="player-info">
+                    <div class="player-avatar">
+                        <img src="/api/placeholder/60/60" alt="Avatar">
+                    </div>
+                    <div class="player-stats">
+                        <div class="player-name">Quantum Developer</div>
+                        <div class="player-level">Livello 1 • Explorer</div>
                     </div>
                 </div>
                 
-                <div class="main-content">
-                    <div class="left-panel">
-                        <div class="panel">
-                            <div class="panel-title">
-                                <span class="icon">⚛️</span> Statistiche Quantistiche
-                            </div>
-                            <div class="stats">
-                                <div class="stat">
-                                    <div class="stat-value">42</div>
-                                    <div class="stat-label">Affinità Codice</div>
-                                </div>
-                                <div class="stat">
-                                    <div class="stat-value">37</div>
-                                    <div class="stat-label">Risonanza</div>
-                                </div>
-                                <div class="stat">
-                                    <div class="stat-value">25</div>
-                                    <div class="stat-label">Consapevolezza</div>
-                                </div>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="panel">
-                            <div class="panel-title">
-                                <span class="icon">🌌</span> Dimensioni
-                            </div>
-                            <div class="dimension-list">
-                                <div class="dimension active">
-                                    <div class="dimension-name">
-                                        <span>Logica</span>
-                                        <span class="dimension-type">LOGICAL</span>
-                                    </div>
-                                    <div class="stability">
-                                        <span class="stability-value">87%</span>
-                                    </div>
-                                </div>
-                                <div class="dimension">
-                                    <div class="dimension-name">
-                                        <span>Astratta</span>
-                                        <span class="dimension-type">ABSTRACT</span>
-                                    </div>
-                                    <div class="stability">
-                                        <span class="stability-value">63%</span>
-                                    </div>
-                                </div>
-                                <div class="dimension">
-                                    <div class="dimension-name">
-                                        <span>Quantica</span>
-                                        <span class="dimension-type">QUANTUM</span>
-                                    </div>
-                                    <div class="stability">
-                                        <span class="stability-value">42%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="panel">
-                            <div class="panel-title">
-                                <span class="icon">🎯</span> Missioni Attive
-                            </div>
-                            <div class="quest-list">
-                                <div class="quest">
-                                    <div class="quest-header">
-                                        <div class="quest-title">Bug nella Matrice Temporale</div>
-                                        <div class="quest-difficulty">⭐⭐⭐</div>
-                                    </div>
-                                    <div class="quest-desc">Risolvi il paradosso nel codice dell'algoritmo temporale</div>
-                                    <div class="quest-rewards">
-                                        <div class="quest-reward">150 XP</div>
-                                        <div class="quest-reward">75 QE</div>
-                                    </div>
-                                </div>
-                                <div class="quest">
-                                    <div class="quest-header">
-                                        <div class="quest-title">Ottimizzazione del Flusso Quantico</div>
-                                        <div class="quest-difficulty">⭐⭐</div>
-                                    </div>
-                                    <div class="quest-desc">Migliora l'efficienza del nodo di energia primario</div>
-                                    <div class="quest-rewards">
-                                        <div class="quest-reward">100 XP</div>
-                                        <div class="quest-reward">50 QE</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="energy-container">
+                    <div class="energy-label">Energia Quantica</div>
+                    <div class="energy-bar">
+                        <div class="energy-fill" id="energy-fill"></div>
                     </div>
                 </div>
                 
-                <div class="bottom-panel">
-                    <div class="abilities">
-                        <div class="ability" title="TimeRefactor">
-                            <div class="ability-icon">⏱️</div>
-                            <div class="cooldown" style="height: 20%"></div>
+                <div class="dimension-info">
+                    Dimensione: LOGICAL #03
+                </div>
+            </div>
+            
+            <!-- Pannello Laterale -->
+            <div class="side-panel">
+                <div class="panel-header">
+                    <div class="panel-title">Quantum Nexus</div>
+                    <div class="tab-controls">
+                        <div class="tab-btn active" data-tab="quests">Q</div>
+                        <div class="tab-btn" data-tab="abilities">A</div>
+                        <div class="tab-btn" data-tab="stats">S</div>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <!-- Tab Missioni -->
+                    <div class="tab-content" id="quests-tab">
+                        <div class="quest-item">
+                            <div class="quest-title">Risolvi il Paradosso Temporale</div>
+                            <div class="quest-desc">Un bug nel codice sta causando una distorsione nelle linee temporali. Trova e risolvi il bug prima che il codice collassi.</div>
+                            <div class="quest-details">
+                                <div class="quest-difficulty">Difficoltà: ★★★☆☆</div>
+                                <div class="quest-reward">+150 XP</div>
+                            </div>
                         </div>
-                        <div class="ability" title="CodeEntanglement">
-                            <div class="ability-icon">🔄</div>
-                            <div class="cooldown" style="height: 0%"></div>
+                        
+                        <div class="quest-item">
+                            <div class="quest-title">Stabilizza la Dimensione Logica</div>
+                            <div class="quest-desc">L'instabilità quantica sta disturbando la dimensione logica. Implementa un algoritmo di stabilizzazione.</div>
+                            <div class="quest-details">
+                                <div class="quest-difficulty">Difficoltà: ★★★★☆</div>
+                                <div class="quest-reward">+200 XP</div>
+                            </div>
                         </div>
-                        <div class="ability" title="BugCollapse">
-                            <div class="ability-icon">🐛</div>
-                            <div class="cooldown" style="height: 50%"></div>
-                        </div>
-                        <div class="ability" title="AlgorithmicSuperposition" style="opacity: 0.5">
-                            <div class="ability-icon">📊</div>
-                            <div class="cooldown" style="height: 100%"></div>
+                        
+                        <div class="quest-item">
+                            <div class="quest-title">Ottimizza il Nodo di Energia</div>
+                            <div class="quest-desc">Il nodo di energia principale sta operando a bassa efficienza. Refactorizzare il codice per migliorare le prestazioni.</div>
+                            <div class="quest-details">
+                                <div class="quest-difficulty">Difficoltà: ★★☆☆☆</div>
+                                <div class="quest-reward">+100 XP</div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="neurallink">
-                        <div class="neurallink-pulse"></div>
-                        <span>Collegamento Neurale: 78%</span>
+                    <!-- Tab Abilità -->
+                    <div class="tab-content" id="abilities-tab" style="display: none;">
+                        <div class="ability-grid">
+                            <div class="ability-card">
+                                <div class="ability-header">
+                                    <div class="ability-icon">
+                                        <i class="fas fa-clock" style="color: #00f2ff;"></i>
+                                    </div>
+                                    <div class="ability-name">TimeRefactor</div>
+                                </div>
+                                <div class="ability-desc">
+                                    Modifica il codice attraverso le linee temporali per trovare soluzioni ottimali.
+                                </div>
+                                <div class="ability-level">
+                                    Livello 2
+                                    <div class="level-dots">
+                                        <div class="dot active"></div>
+                                        <div class="dot active"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="ability-card">
+                                <div class="ability-header">
+                                    <div class="ability-icon">
+                                        <i class="fas fa-link" style="color: #9000ff;"></i>
+                                    </div>
+                                    <div class="ability-name">CodeEntanglement</div>
+                                </div>
+                                <div class="ability-desc">
+                                    Crea connessioni quantistiche tra frammenti di codice per effetti sinergici.
+                                </div>
+                                <div class="ability-level">
+                                    Livello 1
+                                    <div class="level-dots">
+                                        <div class="dot active"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="ability-card">
+                                <div class="ability-header">
+                                    <div class="ability-icon">
+                                        <i class="fas fa-bug-slash" style="color: #ff00c8;"></i>
+                                    </div>
+                                    <div class="ability-name">BugCollapse</div>
+                                </div>
+                                <div class="ability-desc">
+                                    Risolvi bug attraverso il collasso della funzione d'onda quantistica.
+                                </div>
+                                <div class="ability-level">
+                                    Bloccata
+                                    <div class="level-dots">
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="ability-card">
+                                <div class="ability-header">
+                                    <div class="ability-icon">
+                                        <i class="fas fa-code-branch" style="color: #00f2ff;"></i>
+                                    </div>
+                                    <div class="ability-name">AlgorithmicSuperposition</div>
+                                </div>
+                                <div class="ability-desc">
+                                    Mantieni algoritmi in superposizione per efficienze multiple simultanee.
+                                </div>
+                                <div class="ability-level">
+                                    Bloccata
+                                    <div class="level-dots">
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Statistiche -->
+                    <div class="tab-content" id="stats-tab" style="display: none;">
+                        <div style="padding: 10px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>Affinità del Codice:</div>
+                                <div style="color: var(--primary);">1.2</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>Comprensione Quantica:</div>
+                                <div style="color: var(--primary);">1.0</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>Risonanza Dimensionale:</div>
+                                <div style="color: var(--primary);">1.1</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>Consapevolezza Temporale:</div>
+                                <div style="color: var(--primary);">1.3</div>
+                            </div>
+                            
+                            <div style="height: 1px; background-color: var(--panel-border); margin: 20px 0;"></div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>Missioni Completate:</div>
+                                <div style="color: var(--tertiary);">0</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>Nodi di Energia Raccolti:</div>
+                                <div style="color: var(--tertiary);">3</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>Anomalie Risolte:</div>
+                                <div style="color: var(--tertiary);">0</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>Linee Temporali Esplorate:</div>
+                                <div style="color: var(--tertiary);">1</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <div class="right-sidebar">
-            <div class="sidebar-close">×</div>
-            <div class="tabs">
-                <div class="tab active" data-tab="commits">Commit</div>
-                <div class="tab" data-tab="energy">Energia</div>
-                <div class="tab" data-tab="abilities">Abilità</div>
             </div>
             
-            <div class="tab-content active" data-tab-content="commits">
-                <div class="commit-history">
-                    <div class="commit">
-                        <div class="commit-message">Fix time paradox bug</div>
-                        <div class="commit-details">
-                            <span>g7h8i9</span>
-                            <span>1 Febbraio 2023</span>
-                        </div>
+            <!-- Barra Inferiore -->
+            <div class="bottom-bar">
+                <div class="timeline-info">
+                    Timeline: Principale
+                </div>
+                
+                <div class="timeline-controls">
+                    <div class="timeline-btn" title="Crea Punto Temporale">
+                        <i class="fas fa-bookmark"></i>
                     </div>
-                    <div class="commit">
-                        <div class="commit-message">Add quantum mechanics</div>
-                        <div class="commit-details">
-                            <span>d4e5f6</span>
-                            <span>15 Gennaio 2023</span>
-                        </div>
+                    <div class="timeline-btn" title="Dividi Timeline">
+                        <i class="fas fa-code-branch"></i>
                     </div>
-                    <div class="commit">
-                        <div class="commit-message">Initial commit</div>
-                        <div class="commit-details">
-                            <span>a1b2c3</span>
-                            <span>1 Gennaio 2023</span>
-                        </div>
+                    <div class="timeline-btn" title="Esplora Dimensioni">
+                        <i class="fas fa-cube"></i>
                     </div>
+                    <div class="timeline-btn" title="Attiva Entanglement">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                </div>
+                
+                <div style="font-size: 14px;">
+                    <i class="fas fa-signal" style="color: var(--primary); margin-right: 5px;"></i>
+                    Connesso a GitHub
                 </div>
             </div>
             
-            <div class="tab-content" data-tab-content="energy">
-                <div class="energy-nodes">
-                    <div class="energy-node">
-                        <div class="node-color" style="background-color: #00c8ff;"></div>
-                        <div class="node-details">
-                            <div>Nodo di Rifacimento Temporale</div>
-                            <div class="node-energy">84.2 QE</div>
-                        </div>
-                    </div>
-                    <div class="energy-node">
-                        <div class="node-color" style="background-color: #6aff00;"></div>
-                        <div class="node-details">
-                            <div>Nodo di Innovazione Algoritmica</div>
-                            <div class="node-energy">125.7 QE</div>
-                        </div>
-                    </div>
-                    <div class="energy-node">
-                        <div class="node-color" style="background-color: #ff9d00;"></div>
-                        <div class="node-details">
-                            <div>Nodo di Refactoring Quantico</div>
-                            <div class="node-energy">67.3 QE</div>
-                        </div>
-                    </div>
+            <!-- Notifica -->
+            <div class="notification" id="notification">
+                <div class="notification-icon">
+                    <i class="fas fa-exclamation"></i>
                 </div>
-            </div>
-            
-            <div class="tab-content" data-tab-content="abilities">
-                <div class="ability-details">
-                    <div class="ability-detail">
-                        <div class="ability-detail-icon">⏱️</div>
-                        <div class="ability-info">
-                            <div class="ability-name">TimeRefactor</div>
-                            <div class="ability-description">Modifica il codice attraverso le linee temporali, permettendoti di correggere errori passati senza causare paradossi.</div>
-                            <div>Livello: 3</div>
-                        </div>
-                    </div>
-                    <div class="ability-detail">
-                        <div class="ability-detail-icon">🔄</div>
-                        <div class="ability-info">
-                            <div class="ability-name">CodeEntanglement</div>
-                            <div class="ability-description">Crea connessioni quantistiche tra frammenti di codice, permettendo cambiamenti simultanei in più file.</div>
-                            <div>Livello: 2</div>
-                        </div>
-                    </div>
-                    <div class="ability-detail">
-                        <div class="ability-detail-icon">🐛</div>
-                        <div class="ability-info">
-                            <div class="ability-name">BugCollapse</div>
-                            <div class="ability-description">Risolvi bug attraverso il collasso della funzione d'onda, visualizzando tutti i possibili stati del codice.</div>
-                            <div>Livello: 1</div>
-                        </div>
-                    </div>
-                    <div class="ability-detail" style="opacity: 0.5">
-                        <div class="ability-detail-icon">📊</div>
-                        <div class="ability-info">
-                            <div class="ability-name">AlgorithmicSuperposition</div>
-                            <div class="ability-description">Mantieni algoritmi in superposizione per eseguire calcoli multipli simultaneamente.</div>
-                            <div>Livello: 0 (Bloccato)</div>
-                        </div>
-                    </div>
-                </div>
+                <div class="notification-text">Anomalia quantica rilevata nella dimensione corrente!</div>
             </div>
         </div>
-        
-        <div class="notification-center">
-            <!-- Le notifiche verranno aggiunte dinamicamente -->
-        </div>
-        
-        <div class="modal" id="dimension-modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">Dimensione Logica</div>
-                    <div class="modal-close">×</div>
+    </div>
+    
+    <!-- Modali -->
+    <div class="modal" id="quantum-event-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Evento Quantistico</div>
+                <button class="close-btn">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="quantum-event">
+                    <div class="event-title">Divisione della Timeline!</div>
+                    <div class="event-desc">Una fluttuazione quantica ha causato una divisione nella linea temporale principale.</div>
+                    <div class="event-effects">La tua Consapevolezza Temporale è aumentata (+0.1)</div>
                 </div>
-                <div class="modal-body">
-                    <div class="property-list">
-                        <div class="property">
-                            <div class="property-name">Tipo:</div>
-                            <div class="property-value">LOGICAL</div>
-                        </div>
-                        <div class="property">
-                            <div class="property-name">Stabilità:</div>
-                            <div class="property-value">87%</div>
-                        </div>
-                        <div class="property">
-                            <div class="property-name">Tasso di Evoluzione:</div>
-                            <div class="property-value">1.24</div>
-                        </div>
+                <p>
+                    Hai scoperto un percorso alternativo nella storia del tuo codice. Questo evento ha creato una nuova linea temporale che puoi esplorare e manipolare.
+                </p>
+                <p style="margin-top: 10px;">
+                    Un nuovo branch è stato creato nel tuo repository GitHub: <strong>quantum-timeline-1394552</strong>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn">Esplora Nuova Timeline</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulazione del caricamento
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBar = document.getElementById('progress

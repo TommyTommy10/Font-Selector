@@ -5,18 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ricordi Speciali</title>
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&family=Caveat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Cinzel:wght@700&family=Cormorant+Garamond:wght@600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-color: #3A506B;
-            --secondary-color: #5BC0EB;
-            --background-color: #F7F7F7;
-            --text-color: #1C2541;
-            --accent-color: #FF6B6B;
-            --gradient-start: #5BC0EB;
-            --gradient-end: #9656A1;
+            --color-background: #0F1020;
+            --color-text: #E6E6FA;
+            --color-accent-primary: #FF4365;
+            --color-accent-secondary: #1AD5FD;
+            --color-depth-1: rgba(26,213,253,0.1);
+            --color-depth-2: rgba(255,67,101,0.2);
         }
 
         * {
@@ -25,107 +23,141 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            color: var(--text-color);
+        body, html {
+            height: 100%;
+            overflow-x: hidden;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: 'Montserrat', sans-serif;
             line-height: 1.6;
-            min-height: 100vh;
+            perspective: 10px;
+        }
+
+        .memory-universe {
+            position: relative;
+            width: 100%;
+            height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1000px;
-        }
-
-        .memory-book {
-            width: 90vw;
-            max-width: 1000px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
             overflow: hidden;
+            background: radial-gradient(
+                ellipse at bottom, 
+                var(--color-background) 0%, 
+                #090a1a 100%
+            );
+        }
+
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .memory-container {
+            width: 90%;
+            max-width: 1400px;
+            margin: auto;
+            position: relative;
+            z-index: 10;
             display: grid;
-            grid-template-columns: 1fr 350px;
-            transform-style: preserve-3d;
-            transition: all 0.5s ease;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+            background: rgba(15,16,32,0.7);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 
+                0 0 50px var(--color-depth-1), 
+                0 0 100px var(--color-depth-2);
+            backdrop-filter: blur(10px);
         }
 
-        .memory-book:hover {
-            transform: rotateY(-10deg);
+        .memory-journal {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
 
-        .memories-content {
-            padding: 40px;
-            background: rgba(255,255,255,0.9);
-            overflow-y: auto;
+        .memory-entry {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .memory-entry::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg, 
+                var(--color-accent-primary),
+                var(--color-accent-secondary)
+            );
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: -1;
+        }
+
+        .memory-entry:hover::before {
+            opacity: 0.1;
+        }
+
+        .memory-entry h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--color-accent-primary);
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            letter-spacing: 1px;
+        }
+
+        .memory-entry .date {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--color-accent-secondary);
+            margin-bottom: 10px;
+            font-style: italic;
         }
 
         .sidebar {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 30px;
             display: flex;
             flex-direction: column;
-        }
-
-        .diary-entry {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
-
-        .diary-entry:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .diary-entry h2 {
-            font-family: 'Playfair Display', serif;
-            color: var(--accent-color);
-            margin-bottom: 10px;
-        }
-
-        .diary-entry .date {
-            font-family: 'Caveat', cursive;
-            color: var(--secondary-color);
-            margin-bottom: 10px;
+            gap: 30px;
         }
 
         .music-player {
-            margin-top: 20px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .playlist-grid {
+        .playlist {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
             gap: 15px;
-            margin-top: 20px;
         }
 
-        .playlist-item {
+        .playlist-track {
             display: flex;
             align-items: center;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
             border-radius: 10px;
             padding: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.3s;
         }
 
-        .playlist-item:hover {
-            background: rgba(255,255,255,0.4);
+        .playlist-track:hover {
             transform: scale(1.05);
         }
 
-        .playlist-item img {
+        .playlist-track img {
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -133,109 +165,99 @@
             object-fit: cover;
         }
 
-        .settings-controls {
-            margin-top: auto;
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-        }
-
-        .theme-toggle {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-
-        .theme-button {
-            width: 40px;
-            height: 40px;
+        /* Starry Background Effect */
+        .star {
+            position: absolute;
+            background-color: white;
             border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .theme-button:hover {
-            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
-    <div class="memory-book">
-        <div class="memories-content">
-            <h1 style="font-family: 'Playfair Display', serif; text-align: center; color: var(--accent-color); margin-bottom: 30px;">Ricordi Speciali</h1>
-            
-            <div class="diary-entry">
-                <h2>Un Momento Magico</h2>
-                <div class="date">15 Maggio 2023</div>
-                <p>Oggi il tempo sembrava essersi fermato. Ho riscoperto un vecchio album fotografico, ogni pagina un racconto di emozioni dimenticate.</p>
-            </div>
-
-            <div class="diary-entry">
-                <h2>Riflessioni al Tramonto</h2>
-                <div class="date">22 Giugno 2023</div>
-                <p>La vita è un viaggio di scoperte. Ogni momento, ogni incontro, ogni sorriso - sono frammenti di un mosaico più grande che solo col tempo prende forma.</p>
-            </div>
-        </div>
-
-        <div class="sidebar">
-            <div class="music-player">
-                <h3>La Mia Playlist</h3>
-                <div class="playlist-grid">
-                    <div class="playlist-item" data-song="canzone1.mp3">
-                        <img src="/api/placeholder/60/60" alt="Copertina">
-                        <div>
-                            <div>Melodia di Ricordi</div>
-                            <small>Elena Rossi</small>
-                        </div>
-                    </div>
-                    <div class="playlist-item" data-song="canzone2.mp3">
-                        <img src="/api/placeholder/60/60" alt="Copertina">
-                        <div>
-                            <div>Sussurri del Tempo</div>
-                            <small>Marco Bianchi</small>
-                        </div>
-                    </div>
+    <div class="memory-universe" id="memoryUniverse">
+        <div class="memory-container">
+            <div class="memory-journal">
+                <div class="memory-entry">
+                    <h2>Frammenti di Luce</h2>
+                    <div class="date">15 Maggio 2023</div>
+                    <p>Ogni ricordo è un universo. Oggi ho riscoperto un cassetto dimenticato, pieno di fotografie che raccontano storie che pensavo fossero svanite.</p>
                 </div>
-                <audio id="music-player" controls style="width: 100%; margin-top: 15px;">
-                    <source src="" type="audio/mpeg">
-                    Il tuo browser non supporta l'elemento audio.
-                </audio>
+                <div class="memory-entry">
+                    <h2>Onde del Tempo</h2>
+                    <div class="date">22 Giugno 2023</div>
+                    <p>Il tempo non è una linea retta, ma un oceano di emozioni interconnesse. Ogni momento è un punto di connessione, un respiro nell'infinito racconto della vita.</p>
+                </div>
             </div>
-
-            <div class="settings-controls">
-                <h3>Personalizza</h3>
-                <div class="theme-toggle">
-                    <button class="theme-button" style="background-color: #3A506B;"></button>
-                    <button class="theme-button" style="background-color: #FF6B6B;"></button>
-                    <button class="theme-button" style="background-color: #4ECDC4;"></button>
-                    <button class="theme-button" style="background-color: #A8DADC;"></button>
+            <div class="sidebar">
+                <div class="music-player">
+                    <h3>Soundtrack della Memoria</h3>
+                    <div class="playlist">
+                        <div class="playlist-track">
+                            <img src="/api/placeholder/60/60" alt="Track Cover">
+                            <div>
+                                <div>Melodie Sospese</div>
+                                <small>Elena Rossi</small>
+                            </div>
+                        </div>
+                        <div class="playlist-track">
+                            <img src="/api/placeholder/60/60" alt="Track Cover">
+                            <div>
+                                <div>Onde Nostalgiche</div>
+                                <small>Marco Bianchi</small>
+                            </div>
+                        </div>
+                    </div>
+                    <audio id="musicPlayer" style="width: 100%; margin-top: 15px;">
+                        <source src="" type="audio/mpeg">
+                        Il tuo browser non supporta l'elemento audio.
+                    </audio>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const musicPlayer = document.getElementById('music-player');
-        const playlistItems = document.querySelectorAll('.playlist-item');
-        const themeButtons = document.querySelectorAll('.theme-button');
+        // Starry Background
+        function createStars() {
+            const universe = document.getElementById('memoryUniverse');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 2}px`;
+                star.style.height = star.style.width;
+                star.style.opacity = Math.random();
+                universe.appendChild(star);
+            }
+        }
 
-        // Music Player Logic
-        playlistItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const songSrc = item.dataset.song;
-                musicPlayer.src = songSrc;
+        // Parallax Effect
+        function parallaxEffect() {
+            const scrollPosition = window.pageYOffset;
+            document.querySelectorAll('.parallax-layer').forEach(layer => {
+                const speed = layer.dataset.speed || 1;
+                layer.style.transform = `translateY(${scrollPosition * speed}px)`;
+            });
+        }
+
+        // Music Player
+        const tracks = document.querySelectorAll('.playlist-track');
+        const musicPlayer = document.getElementById('musicPlayer');
+
+        tracks.forEach(track => {
+            track.addEventListener('click', () => {
+                const songTitle = track.querySelector('div div').textContent;
+                const artist = track.querySelector('small').textContent;
+                
+                musicPlayer.src = `tracks/${songTitle}.mp3`;
                 musicPlayer.play();
             });
         });
 
-        // Theme Customization
-        themeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const selectedColor = button.style.backgroundColor;
-                document.documentElement.style.setProperty('--primary-color', selectedColor);
-            });
-        });
+        // Initialize
+        createStars();
+        window.addEventListener('scroll', parallaxEffect);
     </script>
 </body>
 </html>

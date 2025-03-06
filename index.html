@@ -3,1521 +3,623 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Nexus - GitHub Game</title>
+    <title>Quantum Maze</title>
     <style>
-        :root {
-            --primary: #6e22ce;
-            --secondary: #22cebd;
-            --dark: #121212;
-            --light: #f0f0f0;
-            --energy: #ffd700;
-        }
-        
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: var(--dark);
-            color: var(--light);
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
-        }
-        
-        #game-container {
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            padding: 1rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            z-index: 10;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .logo h1 {
-            margin: 0;
-            font-size: 2rem;
-            background: linear-gradient(90deg, #fff, #a0f0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(160, 240, 255, 0.5);
-        }
-        
-        .main-content {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-        
-        .sidebar {
-            width: 250px;
-            background-color: rgba(30, 30, 40, 0.9);
-            padding: 1rem;
-            overflow-y: auto;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-        }
-        
-        .universe-view {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        #universe-canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-        
-        .player-stats {
-            margin-bottom: 1.5rem;
-        }
-        
-        .player-stats h2 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: var(--secondary);
-        }
-        
-        .stat-bar {
-            height: 8px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
-        
-        .stat-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 0.5s ease;
-        }
-        
-        .quantum-abilities {
-            margin-bottom: 1.5rem;
-        }
-        
-        .ability-card {
-            background-color: rgba(40, 40, 60, 0.8);
-            border-radius: 8px;
-            padding: 0.8rem;
-            margin-bottom: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(110, 34, 206, 0.3);
-        }
-        
-        .ability-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(110, 34, 206, 0.4);
-        }
-        
-        .ability-card.locked {
-            opacity: 0.5;
-            filter: grayscale(0.8);
-        }
-        
-        .ability-card h3 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1rem;
-            color: var(--secondary);
-        }
-        
-        .ability-card p {
-            margin: 0;
-            font-size: 0.8rem;
-            line-height: 1.4;
-        }
-        
-        .quests-list {
-            margin-bottom: 1.5rem;
-        }
-        
-        .quest-item {
-            background-color: rgba(40, 40, 60, 0.8);
-            border-radius: 8px;
-            padding: 0.8rem;
-            margin-bottom: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 3px solid var(--energy);
-        }
-        
-        .quest-item:hover {
-            background-color: rgba(50, 50, 70, 0.8);
-        }
-        
-        .quest-item h3 {
-            margin: 0 0 0.3rem 0;
-            font-size: 0.9rem;
-        }
-        
-        .quest-item p {
-            margin: 0;
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        .difficulty {
-            display: flex;
-            margin-top: 0.5rem;
-        }
-        
-        .difficulty-star {
-            width: 12px;
-            height: 12px;
-            background-color: var(--energy);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            margin-right: 2px;
-            opacity: 0.3;
-        }
-        
-        .difficulty-star.filled {
-            opacity: 1;
-        }
-        
-        .console-output {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: #000;
+            font-family: 'Courier New', monospace;
             color: #0f0;
-            font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
-            height: 150px;
-            overflow-y: auto;
-            padding: 0.5rem;
-            border-top: 1px solid var(--primary);
-            transform: translateY(150px);
-            transition: transform 0.3s ease;
+            overflow: hidden;
         }
-        
-        .console-visible .console-output {
-            transform: translateY(0);
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 20px #0f0;
+            overflow: hidden;
         }
-        
-        .console-toggle {
-            position: absolute;
-            bottom: 0;
-            right: 10px;
-            background-color: var(--primary);
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            border-radius: 5px 5px 0 0;
-            cursor: pointer;
-            z-index: 5;
-        }
-        
-        .energy-node {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 70%);
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            animation: pulse 2s infinite ease-in-out;
-        }
-        
-        @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
-            50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
-        }
-        
-        .portal {
-            position: absolute;
-            border-radius: 50%;
-            border: 2px solid var(--secondary);
-            box-shadow: 0 0 15px var(--secondary), inset 0 0 10px var(--secondary);
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            animation: rotate 8s infinite linear;
-            background: radial-gradient(circle, rgba(34, 206, 189, 0.1) 0%, rgba(110, 34, 206, 0.2) 100%);
-        }
-        
-        @keyframes rotate {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        
-        .timeline-control {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(30, 30, 40, 0.8);
-            padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            z-index: 4;
-        }
-        
-        .timeline-control button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            margin: 0 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.2s ease;
-        }
-        
-        .timeline-control button:hover {
-            background-color: var(--secondary);
-        }
-        
-        .timeline-display {
-            font-family: 'Courier New', monospace;
-            color: var(--secondary);
-            margin: 0 10px;
-            font-size: 0.9rem;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+
+        #maze {
+            position: relative;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 20;
-            justify-content: center;
-            align-items: center;
+            background-color: #000;
         }
-        
-        .modal-content {
-            background-color: rgba(30, 30, 40, 0.95);
-            border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 2rem;
-            box-shadow: 0 0 20px rgba(110, 34, 206, 0.5);
-            border: 1px solid var(--primary);
-            position: relative;
+
+        .wall {
+            position: absolute;
+            background-color: #0f0;
+            transition: all 0.3s ease;
         }
-        
-        .close-modal {
+
+        #player {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #fff;
+            border-radius: 50%;
+            z-index: 10;
+            transition: all 0.1s ease;
+            box-shadow: 0 0 10px #fff;
+        }
+
+        .exit {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #f00;
+            border-radius: 5px;
+            z-index: 5;
+            animation: pulse 1.5s infinite;
+        }
+
+        .quantum-particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #00f;
+            border-radius: 50%;
+            z-index: 4;
+            opacity: 0.7;
+        }
+
+        .quantum-zone {
+            position: absolute;
+            border: 1px dashed rgba(128, 0, 128, 0.5);
+            z-index: 3;
+            background-color: rgba(128, 0, 128, 0.1);
+        }
+
+        #hud {
             position: absolute;
             top: 10px;
-            right: 10px;
-            background: transparent;
-            border: none;
-            color: var(--light);
-            font-size: 1.5rem;
-            cursor: pointer;
+            left: 10px;
+            z-index: 20;
         }
-        
-        .loading-screen {
-            position: fixed;
+
+        #phase-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 1px solid #0f0;
+            margin-bottom: 10px;
+        }
+
+        #level-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 1px solid #0f0;
+        }
+
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border: 1px solid #0f0;
+            z-index: 30;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px #f00; }
+            50% { box-shadow: 0 0 20px #f00; }
+            100% { box-shadow: 0 0 5px #f00; }
+        }
+
+        #start-screen {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--dark);
+            background-color: #000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
         }
-        
-        .loading-title {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        h1 {
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0;
+            font-size: 48px;
+            margin-bottom: 30px;
         }
-        
-        .loading-bar-container {
-            width: 60%;
-            max-width: 400px;
-            height: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .loading-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 0.5s ease;
-        }
-        
-        .loading-status {
-            margin-top: 1rem;
+
+        button {
+            background-color: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
             font-family: 'Courier New', monospace;
-            color: var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0f0;
+            color: #000;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        .instructions {
+            color: #0f0;
+            max-width: 500px;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
-    <div class="loading-screen" id="loading-screen">
-        <h1 class="loading-title">QUANTUM NEXUS</h1>
-        <div class="loading-bar-container">
-            <div class="loading-bar" id="loading-bar"></div>
-        </div>
-        <div class="loading-status" id="loading-status">Inizializzazione multiverso...</div>
-    </div>
-
     <div id="game-container">
-        <header>
-            <div class="logo">
-                <h1>QUANTUM NEXUS</h1>
+        <div id="start-screen">
+            <h1>QUANTUM MAZE</h1>
+            <div class="instructions">
+                <p>Ti sei perso nel Labirinto Quantico, dove le regole della fisica cambiano mentre ti muovi.</p>
+                <p>Usa i tasti freccia o WASD per muoverti.</p>
+                <p>Ogni livello ha 3 fasi quantiche: NORMALE, INVERSO e SUPERPOSIZIONE</p>
+                <p>NORMALE: Movimento standard<br>
+                   INVERSO: I controlli sono invertiti<br>
+                   SUPERPOSIZIONE: Ti muovi in due direzioni contemporaneamente</p>
+                <p>Raggiungi l'uscita rossa per avanzare!</p>
             </div>
-        </header>
-        
-        <div class="main-content">
-            <div class="sidebar">
-                <div class="player-stats">
-                    <h2>Statistiche Giocatore</h2>
-                    <div>Affinità Codice</div>
-                    <div class="stat-bar">
-                        <div class="stat-fill" style="width: 45%;"></div>
-                    </div>
-                    <div>Comprensione Quantistica</div>
-                    <div class="stat-bar">
-                        <div class="stat-fill" style="width: 30%;"></div>
-                    </div>
-                    <div>Risonanza Dimensionale</div>
-                    <div class="stat-bar">
-                        <div class="stat-fill" style="width: 60%;"></div>
-                    </div>
-                    <div>Consapevolezza Temporale</div>
-                    <div class="stat-bar">
-                        <div class="stat-fill" style="width: 25%;"></div>
-                    </div>
-                </div>
-                
-                <div class="quantum-abilities">
-                    <h2>Abilità Quantistiche</h2>
-                    <div class="ability-card" data-ability="timerefactor">
-                        <h3>TimeRefactor</h3>
-                        <p>Modifica il codice attraverso le linee temporali</p>
-                    </div>
-                    <div class="ability-card locked" data-ability="codeentanglement">
-                        <h3>CodeEntanglement</h3>
-                        <p>Crea connessioni quantistiche tra frammenti di codice</p>
-                    </div>
-                    <div class="ability-card locked" data-ability="bugcollapse">
-                        <h3>BugCollapse</h3>
-                        <p>Risolvi bug attraverso il collasso della funzione d'onda</p>
-                    </div>
-                    <div class="ability-card locked" data-ability="algorithmicsuperposition">
-                        <h3>AlgorithmicSuperposition</h3>
-                        <p>Mantieni algoritmi in superposizione per efficienze multiple</p>
-                    </div>
-                </div>
-                
-                <div class="quests-list">
-                    <h2>Missioni</h2>
-                    <div class="quest-item" data-quest="1">
-                        <h3>Correzione Paradosso Temporale</h3>
-                        <p>Risolvi l'anomalia nel flusso del codice</p>
-                        <div class="difficulty">
-                            <div class="difficulty-star filled"></div>
-                            <div class="difficulty-star filled"></div>
-                            <div class="difficulty-star"></div>
-                            <div class="difficulty-star"></div>
-                            <div class="difficulty-star"></div>
-                        </div>
-                    </div>
-                    <div class="quest-item" data-quest="2">
-                        <h3>Sincronizzazione Quantistica</h3>
-                        <p>Stabilizza il collegamento tra dimensioni</p>
-                        <div class="difficulty">
-                            <div class="difficulty-star filled"></div>
-                            <div class="difficulty-star filled"></div>
-                            <div class="difficulty-star filled"></div>
-                            <div class="difficulty-star"></div>
-                            <div class="difficulty-star"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="universe-view">
-                <canvas id="universe-canvas"></canvas>
-                
-                <button class="console-toggle" id="console-toggle">Console</button>
-                <div class="console-output" id="console-output"></div>
-                
-                <div class="timeline-control">
-                    <button id="timeline-split">Dividi Timeline</button>
-                    <div class="timeline-display">T-MAIN:12.45</div>
-                    <button id="timeline-jump">Salta</button>
-                </div>
-            </div>
+            <button id="start-button">INIZIA</button>
         </div>
-    </div>
-    
-    <div class="modal" id="quest-modal">
-        <div class="modal-content">
-            <button class="close-modal" id="close-quest-modal">×</button>
-            <h2 id="quest-title">Titolo Missione</h2>
-            <p id="quest-description">Descrizione della missione...</p>
-            <div id="quest-details">
-                <h3>Obiettivi:</h3>
-                <ul id="quest-objectives"></ul>
-                <h3>Ricompense:</h3>
-                <ul id="quest-rewards"></ul>
-            </div>
-            <button id="start-quest" style="background-color: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">Inizia Missione</button>
+        <div id="maze"></div>
+        <div id="player"></div>
+        <div id="hud">
+            <div id="phase-indicator">FASE: NORMALE</div><br>
+            <div id="level-indicator">LIVELLO: 1</div>
         </div>
-    </div>
-    
-    <div class="modal" id="ability-modal">
-        <div class="modal-content">
-            <button class="close-modal" id="close-ability-modal">×</button>
-            <h2 id="ability-title">Nome Abilità</h2>
-            <p id="ability-description">Descrizione dell'abilità...</p>
-            <div id="ability-stats">
-                <div>Livello: <span id="ability-level">1</span></div>
-                <div>Energia: <span id="ability-energy">100</span></div>
-                <div>Tempo di ricarica: <span id="ability-cooldown">30</span>s</div>
-            </div>
-            <button id="use-ability" style="background-color: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">Usa Abilità</button>
-        </div>
+        <div id="message"></div>
     </div>
 
     <script>
-        // Simulazione del sistema di gioco
-        class QuantumNexusGame {
-            constructor() {
-                this.initialized = false;
-                this.player = {
-                    stats: {
-                        codeAffinity: 45,
-                        quantumUnderstanding: 30,
-                        dimensionalResonance: 60,
-                        timelineAwareness: 25
-                    },
-                    abilities: {
-                        timerefactor: { unlocked: true, level: 1, energy: 100, cooldown: 0 },
-                        codeentanglement: { unlocked: false, level: 1, energy: 100, cooldown: 0 },
-                        bugcollapse: { unlocked: false, level: 1, energy: 100, cooldown: 0 },
-                        algorithmicsuperposition: { unlocked: false, level: 1, energy: 100, cooldown: 0 }
-                    }
-                };
-                
-                this.universe = {
-                    energyNodes: [],
-                    portals: [],
-                    dimensions: [
-                        { id: "logic", type: "LOGICAL", stability: 0.8 },
-                        { id: "abstract", type: "ABSTRACT", stability: 0.6 },
-                        { id: "quantum", type: "QUANTUM", stability: 0.4 },
-                        { id: "paradox", type: "PARADOXICAL", stability: 0.3 }
-                    ],
-                    quests: [
-                        {
-                            id: 1,
-                            title: "Correzione Paradosso Temporale",
-                            description: "Un'anomalia è stata rilevata nel flusso del codice. Stabilizza la linea temporale principale prima che causi una frammentazione dimensionale.",
-                            difficulty: 2,
-                            objectives: [
-                                "Analizza il paradosso nel nodo energetico principale",
-                                "Isola la causa dell'anomalia",
-                                "Applica una correzione quantistica al codice instabile"
-                            ],
-                            rewards: [
-                                "+50 Punti Esperienza",
-                                "+25 Energia Quantistica",
-                                "+15% Consapevolezza Temporale"
-                            ]
-                        },
-                        {
-                            id: 2,
-                            title: "Sincronizzazione Quantistica",
-                            description: "Le dimensioni logica e quantistica stanno perdendo sincronizzazione. Ripristina la stabilità dimensionale prima che le entità quantistiche vadano fuori controllo.",
-                            difficulty: 3,
-                            objectives: [
-                                "Crea un portale stabile tra le dimensioni",
-                                "Sincronizza i flussi energetici",
-                                "Stabilizza la sovrapposizione dimensionale"
-                            ],
-                            rewards: [
-                                "+75 Punti Esperienza",
-                                "Sblocco parziale dell'abilità CodeEntanglement",
-                                "+20% Risonanza Dimensionale"
-                            ]
-                        }
-                    ]
-                };
-                
-                this.timeline = {
-                    current: "MAIN",
-                    time: 12.45,
-                    branches: ["MAIN"]
-                };
-                
-                this.canvas = document.getElementById('universe-canvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.consoleOutput = document.getElementById('console-output');
-                this.gameContainer = document.getElementById('game-container');
-                
-                this.setupEventListeners();
-                this.resizeCanvas();
-                this.startLoadingSequence();
-            }
-            
-            log(message) {
-                const timestamp = new Date().toLocaleTimeString();
-                const logEntry = document.createElement('div');
-                logEntry.innerHTML = `<span style="color: #aaa;">[${timestamp}]</span> ${message}`;
-                this.consoleOutput.appendChild(logEntry);
-                this.consoleOutput.scrollTop = this.consoleOutput.scrollHeight;
-            }
-            
-            startLoadingSequence() {
-                const loadingBar = document.getElementById('loading-bar');
-                const loadingStatus = document.getElementById('loading-status');
-                const loadingScreen = document.getElementById('loading-screen');
-                
-                const steps = [
-                    { message: "Inizializzazione multiverso...", percentage: 10 },
-                    { message: "Caricamento dimensioni...", percentage: 25 },
-                    { message: "Calibrazione fisica quantistica...", percentage: 40 },
-                    { message: "Sincronizzazione linee temporali...", percentage: 60 },
-                    { message: "Generazione nodi energetici...", percentage: 75 },
-                    { message: "Attivazione interfaccia neurale...", percentage: 90 },
-                    { message: "Connessione completata!", percentage: 100 }
-                ];
-                
-                let currentStep = 0;
-                
-                const loadingInterval = setInterval(() => {
-                    if (currentStep >= steps.length) {
-                        clearInterval(loadingInterval);
-                        setTimeout(() => {
-                            loadingScreen.style.opacity = 0;
-                            loadingScreen.style.transition = 'opacity 1s ease';
-                            setTimeout(() => {
-                                loadingScreen.style.display = 'none';
-                                this.initialize();
-                            }, 1000);
-                        }, 500);
-                        return;
-                    }
-                    
-                    const step = steps[currentStep];
-                    loadingStatus.textContent = step.message;
-                    loadingBar.style.width = `${step.percentage}%`;
-                    currentStep++;
-                }, 700);
-            }
-            
-            initialize() {
-                this.log("Inizializzazione di Quantum Nexus in corso...");
-                
-                // Aggiungiamo alcuni nodi energetici e portali iniziali
-                this.spawnEnergyNode(100, 100, 30, [255, 215, 0]);
-                this.spawnEnergyNode(300, 200, 40, [0, 255, 200]);
-                this.spawnEnergyNode(500, 150, 25, [255, 100, 200]);
-                
-                this.createPortal(400, 300, 70);
-                
-                this.initialized = true;
-                this.log("Quantum Nexus inizializzato con successo!");
-                this.log("Benvenuto nel multiverso del codice. Scegli una missione per iniziare.");
-                
-                // Inizia il loop di rendering
-                this.lastTime = performance.now();
-                requestAnimationFrame(this.gameLoop.bind(this));
-            }
-            
-            gameLoop(timestamp) {
-                const deltaTime = (timestamp - this.lastTime) / 1000;
-                this.lastTime = timestamp;
-                
-                this.update(deltaTime);
-                this.render();
-                
-                requestAnimationFrame(this.gameLoop.bind(this));
-            }
-            
-            update(deltaTime) {
-                if (!this.initialized) return;
-                
-                // Aggiorna il tempo della timeline
-                this.timeline.time += deltaTime * 0.5;
-                document.querySelector('.timeline-display').textContent = `T-${this.timeline.current}:${this.timeline.time.toFixed(2)}`;
-                
-                // Aggiorna portali e nodi
-                this.updateEntities(deltaTime);
-                
-                // 2% di possibilità di generare un nuovo nodo di energia ogni secondo
-                if (Math.random() < 0.02 * deltaTime) {
-                    const x = Math.random() * this.canvas.width;
-                    const y = Math.random() * this.canvas.height;
-                    const size = 15 + Math.random() * 30;
-                    const color = [
-                        Math.floor(Math.random() * 255),
-                        Math.floor(Math.random() * 255),
-                        Math.floor(Math.random() * 255)
-                    ];
-                    this.spawnEnergyNode(x, y, size, color);
-                }
-            }
-            
-            updateEntities(deltaTime) {
-                // Aggiorna i nodi di energia
-                for (let i = 0; i < this.universe.energyNodes.length; i++) {
-                    const node = this.universe.energyNodes[i];
-                    
-                    // Movimento casuale
-                    node.x += (Math.random() - 0.5) * 2 * deltaTime;
-                    node.y += (Math.random() - 0.5) * 2 * deltaTime;
-                    
-                    // Pulsazione
-                    node.pulsePhase = (node.pulsePhase || 0) + deltaTime;
-                    node.currentSize = node.size * (0.9 + Math.sin(node.pulsePhase * 2) * 0.1);
-                }
-                
-                // Aggiorna i portali
-                for (let i = 0; i < this.universe.portals.length; i++) {
-                    const portal = this.universe.portals[i];
-                    
-                    // Rotazione
-                    portal.rotation = (portal.rotation || 0) + deltaTime * 0.5;
-                    
-                    // Fluttuazione dimensionale
-                    portal.fluxPhase = (portal.fluxPhase || 0) + deltaTime;
-                    portal.currentSize = portal.size * (0.95 + Math.sin(portal.fluxPhase * 1.5) * 0.05);
-                }
-            }
-            
-            render() {
-                if (!this.initialized) return;
-                
-                // Pulisci il canvas
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                // Sfondo spazio
-                this.renderBackground();
-                
-                // Disegna le entità
-                this.renderEntities();
-            }
-            
-            renderBackground() {
-                // Crea un gradiente di sfondo
-                const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-                gradient.addColorStop(0, '#0d1117');
-                gradient.addColorStop(1, '#1a1a2e');
-                this.ctx.fillStyle = gradient;
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                // Disegna alcune stelle
-                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                for (let i = 0; i < 100; i++) {
-                    const x = Math.random() * this.canvas.width;
-                    const y = Math.random() * this.canvas.height;
-                    const size = Math.random() * 1.5;
-                    this.ctx.beginPath();
-                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
-                    this.ctx.fill();
-                }
-            }
-            
-            renderEntities() {
-                // Disegna i portali
-                for (const portal of this.universe.portals) {
-                    this.ctx.save();
-                    this.ctx.translate(portal.x, portal.y);
-                    this.ctx.rotate(portal.rotation || 0);
-                    
-                    // Effetto glow
-                    const gradient = this.ctx.createRadialGradient(0, 0, portal.currentSize * 0.3, 0, 0, portal.currentSize);
-                    gradient.addColorStop(0, 'rgba(34, 206, 189, 0.2)');
-                    gradient.addColorStop(0.7, 'rgba(110, 34, 206, 0.1)');
-                    gradient.addColorStop(1, 'rgba(110, 34, 206, 0)');
-                    
-                    this.ctx.fillStyle = gradient;
-                    this.ctx.beginPath();
-                    this.ctx.arc(0, 0, portal.currentSize, 0, Math.PI * 2);
-                    this.ctx.fill();
-                    
-                    // Bordo del portale
-                    this.ctx.strokeStyle = '#22cebd';
-                    this.ctx.lineWidth = 2;
-                    this.ctx.beginPath();
-                    this.ctx.arc(0, 0, portal.currentSize, 0, Math.PI * 2);
-                    this.ctx.stroke();
-class QuantumNexusGame {
-    constructor() {
-        this.initialized = false;
-        this.player = {
-            stats: {
-                codeAffinity: 45,
-                quantumUnderstanding: 30,
-                dimensionalResonance: 60,
-                timelineAwareness: 25
-            },
-            abilities: {
-                timerefactor: { unlocked: true, level: 1, energy: 100, cooldown: 0 },
-                codeentanglement: { unlocked: false, level: 1, energy: 100, cooldown: 0 },
-                bugcollapse: { unlocked: false, level: 1, energy: 100, cooldown: 0 },
-                algorithmicsuperposition: { unlocked: false, level: 1, energy: 100, cooldown: 0 }
-            }
-        };
+        const gameContainer = document.getElementById('game-container');
+        const maze = document.getElementById('maze');
+        const player = document.getElementById('player');
+        const phaseIndicator = document.getElementById('phase-indicator');
+        const levelIndicator = document.getElementById('level-indicator');
+        const messageElement = document.getElementById('message');
+        const startScreen = document.getElementById('start-screen');
+        const startButton = document.getElementById('start-button');
+
+        // Costanti di gioco
+        const CELL_SIZE = 40;
+        const PLAYER_SIZE = 20;
+        const QUANTUM_PHASES = ['NORMALE', 'INVERSO', 'SUPERPOSIZIONE'];
         
-        this.universe = {
-            energyNodes: [],
-            portals: [],
-            dimensions: [
-                { id: "logic", type: "LOGICAL", stability: 0.8 },
-                { id: "abstract", type: "ABSTRACT", stability: 0.6 },
-                { id: "quantum", type: "QUANTUM", stability: 0.4 },
-                { id: "paradox", type: "PARADOXICAL", stability: 0.3 }
-            ],
-            quests: [
-                {
-                    id: 1,
-                    title: "Correzione Paradosso Temporale",
-                    description: "Un'anomalia è stata rilevata nel flusso del codice. Stabilizza la linea temporale principale prima che causi una frammentazione dimensionale.",
-                    difficulty: 2,
-                    objectives: [
-                        "Analizza il paradosso nel nodo energetico principale",
-                        "Isola la causa dell'anomalia",
-                        "Applica una correzione quantistica al codice instabile"
-                    ],
-                    rewards: [
-                        "+50 Punti Esperienza",
-                        "+25 Energia Quantistica",
-                        "+15% Consapevolezza Temporale"
-                    ]
-                },
-                {
-                    id: 2,
-                    title: "Sincronizzazione Quantistica",
-                    description: "Le dimensioni logica e quantistica stanno perdendo sincronizzazione. Ripristina la stabilità dimensionale prima che le entità quantistiche vadano fuori controllo.",
-                    difficulty: 3,
-                    objectives: [
-                        "Crea un portale stabile tra le dimensioni",
-                        "Sincronizza i flussi energetici",
-                        "Stabilizza la sovrapposizione dimensionale"
-                    ],
-                    rewards: [
-                        "+75 Punti Esperienza",
-                        "Sblocco parziale dell'abilità CodeEntanglement",
-                        "+20% Risonanza Dimensionale"
-                    ]
-                }
-            ]
-        };
+        // Stato di gioco
+        let currentLevel = 1;
+        let currentPhase = 0;
+        let playerX = 0;
+        let playerY = 0;
+        let playerGhost = { x: 0, y: 0 };
+        let walls = [];
+        let quantumZones = [];
+        let quantumParticles = [];
+        let exit = null;
+        let keys = {};
+        let gameActive = false;
+        let phaseChangeTimeout = null;
+        let lastMove = Date.now();
         
-        this.timeline = {
-            current: "MAIN",
-            time: 12.45,
-            branches: ["MAIN"]
-        };
-        
-        this.canvas = document.getElementById('universe-canvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.consoleOutput = document.getElementById('console-output');
-        this.gameContainer = document.getElementById('game-container');
-        
-        this.setupEventListeners();
-        this.resizeCanvas();
-        this.startLoadingSequence();
-    }
-    
-    setupEventListeners() {
-        // Console toggle
-        const consoleToggle = document.getElementById('console-toggle');
-        consoleToggle.addEventListener('click', () => {
-            this.gameContainer.classList.toggle('console-visible');
-        });
-
-        // Timeline controls
-        const timelineSplit = document.getElementById('timeline-split');
-        const timelineJump = document.getElementById('timeline-jump');
-        
-        timelineSplit.addEventListener('click', () => {
-            this.splitTimeline();
-        });
-        
-        timelineJump.addEventListener('click', () => {
-            this.jumpTimeline();
-        });
-
-        // Ability cards
-        const abilityCards = document.querySelectorAll('.ability-card');
-        abilityCards.forEach(card => {
-            card.addEventListener('click', () => this.showAbilityModal(card.dataset.ability));
-        });
-
-        // Quest items
-        const questItems = document.querySelectorAll('.quest-item');
-        questItems.forEach(quest => {
-            quest.addEventListener('click', () => this.showQuestModal(quest.dataset.quest));
-        });
-
-        // Modal close buttons
-        const closeQuestModal = document.getElementById('close-quest-modal');
-        const closeAbilityModal = document.getElementById('close-ability-modal');
-        const startQuestButton = document.getElementById('start-quest');
-        const useAbilityButton = document.getElementById('use-ability');
-
-        closeQuestModal.addEventListener('click', () => this.closeModal('quest-modal'));
-        closeAbilityModal.addEventListener('click', () => this.closeModal('ability-modal'));
-        startQuestButton.addEventListener('click', () => this.startQuest());
-        useAbilityButton.addEventListener('click', () => this.useAbility());
-
-        // Window resize
-        window.addEventListener('resize', () => this.resizeCanvas());
-    }
-
-    resizeCanvas() {
-        const container = document.querySelector('.universe-view');
-        this.canvas.width = container.clientWidth;
-        this.canvas.height = container.clientHeight;
-    }
-
-    renderEntities() {
-        // Disegna i portali
-        for (const portal of this.universe.portals) {
-            this.ctx.save();
-            this.ctx.translate(portal.x, portal.y);
-            this.ctx.rotate(portal.rotation || 0);
-            
-            // Effetto glow
-            const gradient = this.ctx.createRadialGradient(0, 0, portal.currentSize * 0.3, 0, 0, portal.currentSize);
-            gradient.addColorStop(0, 'rgba(34, 206, 189, 0.2)');
-            gradient.addColorStop(0.7, 'rgba(110, 34, 206, 0.1)');
-            gradient.addColorStop(1, 'rgba(110, 34, 206, 0)');
-            
-            this.ctx.fillStyle = gradient;
-            this.ctx.beginPath();
-            this.ctx.arc(0, 0, portal.currentSize, 0, Math.PI * 2);
-            this.ctx.fill();
-            
-            // Bordo del portale
-            this.ctx.strokeStyle = '#22cebd';
-            this.ctx.lineWidth = 2;
-            this.ctx.beginPath();
-            this.ctx.arc(0, 0, portal.currentSize, 0, Math.PI * 2);
-            this.ctx.stroke();
-            
-            this.ctx.restore();
+        // Inizializzazione
+        function init() {
+            startScreen.style.display = 'none';
+            resetGame();
+            gameActive = true;
+            window.addEventListener('keydown', handleKeyDown);
+            window.addEventListener('keyup', handleKeyUp);
+            requestAnimationFrame(gameLoop);
         }
 
-        // Disegna i nodi energetici
-        for (const node of this.universe.energyNodes) {
-            this.ctx.save();
-            this.ctx.translate(node.x, node.y);
-            
-            // Crea gradiente radiale per il nodo energetico
-            const gradient = this.ctx.createRadialGradient(
-                0, 0, node.currentSize * 0.2, 
-                0, 0, node.currentSize
-            );
-            gradient.addColorStop(0, `rgba(${node.color[0]}, ${node.color[1]}, ${node.color[2]}, 0.8)`);
-            gradient.addColorStop(0.7, `rgba(${node.color[0]}, ${node.color[1]}, ${node.color[2]}, 0.4)`);
-            gradient.addColorStop(1, `rgba(${node.color[0]}, ${node.color[1]}, ${node.color[2]}, 0)`);
-            
-            this.ctx.fillStyle = gradient;
-            this.ctx.beginPath();
-            this.ctx.arc(0, 0, node.currentSize, 0, Math.PI * 2);
-            this.ctx.fill();
-            
-            this.ctx.restore();
+        function resetGame() {
+            currentLevel = 1;
+            currentPhase = 0;
+            clearMaze();
+            generateLevel(currentLevel);
+            updateHUD();
         }
-    }
 
-    spawnEnergyNode(x, y, size, color) {
-        const node = {
-            x: x,
-            y: y,
-            size: size,
-            currentSize: size,
-            color: color,
-            pulsePhase: 0
-        };
-        this.universe.energyNodes.push(node);
-        return node;
-    }
-
-    createPortal(x, y, size) {
-        const portal = {
-            x: x,
-            y: y,
-            size: size,
-            currentSize: size,
-            rotation: 0,
-            fluxPhase: 0
-        };
-        this.universe.portals.push(portal);
-        return portal;
-    }
-
-    splitTimeline() {
-        const newBranch = `T-${this.timeline.branches.length + 1}`;
-        this.timeline.branches.push(newBranch);
-        this.timeline.current = newBranch;
-        this.timeline.time = 0;
-        this.log(`Nuova timeline creata: ${newBranch}`);
-    }
-
-    jumpTimeline() {
-        if (this.timeline.branches.length > 1) {
-            const currentIndex = this.timeline.branches.indexOf(this.timeline.current);
-            const nextIndex = (currentIndex + 1) % this.timeline.branches.length;
-            this.timeline.current = this.timeline.branches[nextIndex];
-            this.timeline.time = 0;
-            this.log(`Saltato a timeline: ${this.timeline.current}`);
+        function clearMaze() {
+            while (maze.firstChild) {
+                maze.removeChild(maze.firstChild);
+            }
+            walls = [];
+            quantumZones = [];
+            quantumParticles = [];
+            exit = null;
         }
-    }
 
-    showAbilityModal(abilityKey) {
-        const ability = this.player.abilities[abilityKey];
-        if (!ability) return;
+        function generateLevel(level) {
+            const width = Math.min(15, 8 + level);
+            const height = Math.min(12, 6 + level);
+            
+            // Posiziona il giocatore
+            playerX = CELL_SIZE + PLAYER_SIZE/2;
+            playerY = CELL_SIZE + PLAYER_SIZE/2;
+            playerGhost.x = playerX;
+            playerGhost.y = playerY;
+            player.style.left = `${playerX - PLAYER_SIZE/2}px`;
+            player.style.top = `${playerY - PLAYER_SIZE/2}px`;
+            
+            // Genera labirinto (algoritmo di base - può essere migliorato)
+            generateMaze(width, height, level);
+            
+            // Posiziona l'uscita
+            createExit(width, height);
+            
+            // Crea zone quantiche
+            createQuantumZones(level);
+            
+            // Resetta il tempo della fase
+            startPhaseChangeTimer();
+        }
 
-        const modal = document.getElementById('ability-modal');
-        document.getElementById('ability-title').textContent = this.getAbilityName(abilityKey);
-        document.getElementById('ability-description').textContent = this.getAbilityDescription(abilityKey);
-        document.getElementById('ability-level').textContent = ability.level;
-        document.getElementById('ability-energy').textContent = ability.energy;
-        document.getElementById('ability-cooldown').textContent = ability.cooldown;
-
-        modal.style.display = 'flex';
-    }
-
-    showQuestModal(questId) {
-        const quest = this.universe.quests.find(q => q.id == questId);
-        if (!quest) return;
-
-        const modal = document.getElementById('quest-modal');
-        document.getElementById('quest-title').textContent = quest.title;
-        document.getElementById('quest-description').textContent = quest.description;
-
-        const objectivesList = document.getElementById('quest-objectives');
-        const rewardsList = document.getElementById('quest-rewards');
-        
-        objectivesList.innerHTML = quest.objectives.map(obj => `<li>${obj}</li>`).join('');
-        rewardsList.innerHTML = quest.rewards.map(reward => `<li>${reward}</li>`).join('');
-
-        modal.style.display = 'flex';
-    }
-
-    closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
-
-    startQuest() {
-        this.log("Missione avviata!");
-        this.closeModal('quest-modal');
-    }
-
-    useAbility() {
-        this.log("Abilità quantistica utilizzata!");
-        this.closeModal('ability-modal');
-    }
-
-    getAbilityName(abilityKey) {
-        const abilityNames = {
-            timerefactor: "TimeRefactor",
-            codeentanglement: "CodeEntanglement",
-            bugcollapse: "BugCollapse",
-            algorithmicsuperposition: "AlgorithmicSuperposition"
-        };
-        return abilityNames[abilityKey] || abilityKey;
-    }
-
-    getAbilityDescription(abilityKey) {
-        const descriptions = {
-            timerefactor: "Modifica il codice attraverso le linee temporali",
-            codeentanglement: "Crea connessioni quantistiche tra frammenti di codice",
-            bugcollapse: "Risolvi bug attraverso il collasso della funzione d'onda",
-            algorithmicsuperposition: "Mantieni algoritmi in superposizione per efficienze multiple"
-        };
-        return descriptions[abilityKey] || "Abilità quantistica non descritta";
-    }
-    
-    // (previous methods like log(), startLoadingSequence(), initialize(), gameLoop(), update(), renderBackground() remain the same as in the original code)
-}
-
-// Initialize the game when the window loads
-window.addEventListener('load', () => {
-    const game = new QuantumNexusGame();
-});
-</div>
-    </div>
-
-    <div class="modal" id="quest-modal">
-        <div class="modal-content">
-            <button class="close-modal" id="close-quest-modal">×</button>
-            <h2 id="quest-title">Titolo Missione</h2>
-            <p id="quest-description">Descrizione della missione...</p>
-            <div id="quest-details">
-                <h3>Obiettivi:</h3>
-                <ul id="quest-objectives"></ul>
-                <h3>Ricompense:</h3>
-                <ul id="quest-rewards"></ul>
-            </div>
-            <button id="start-quest" style="background-color: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">Inizia Missione</button>
-        </div>
-    </div>
-    
-    <div class="modal" id="ability-modal">
-        <div class="modal-content">
-            <button class="close-modal" id="close-ability-modal">×</button>
-            <h2 id="ability-title">Nome Abilità</h2>
-            <p id="ability-description">Descrizione dell'abilità...</p>
-            <div id="ability-stats">
-                <div>Livello: <span id="ability-level">1</span></div>
-                <div>Energia: <span id="ability-energy">100</span></div>
-                <div>Tempo di ricarica: <span id="ability-cooldown">30</span>s</div>
-            </div>
-            <button id="use-ability" style="background-color: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">Usa Abilità</button>
-        </div>
-    </div>
-
-    <script>
-        class QuantumNexusGame {
-            constructor() {
-                this.initialized = false;
-                this.player = {
-                    stats: {
-                        codeAffinity: 45,
-                        quantumUnderstanding: 30,
-                        dimensionalResonance: 60,
-                        timelineAwareness: 25
-                    },
-                    abilities: {
-                        timerefactor: { unlocked: true, level: 1, energy: 100, cooldown: 0 },
-                        codeentanglement: { unlocked: false, level: 1, energy: 100, cooldown: 0 },
-                        bugcollapse: { unlocked: false, level: 1, energy: 100, cooldown: 0 },
-                        algorithmicsuperposition: { unlocked: false, level: 1, energy: 100, cooldown: 0 }
+        function generateMaze(width, height, complexity) {
+            // Crea bordi
+            createWall(0, 0, width * CELL_SIZE, CELL_SIZE); // Superiore
+            createWall(0, (height-1) * CELL_SIZE, width * CELL_SIZE, CELL_SIZE); // Inferiore
+            createWall(0, 0, CELL_SIZE, height * CELL_SIZE); // Sinistra
+            createWall((width-1) * CELL_SIZE, 0, CELL_SIZE, height * CELL_SIZE); // Destra
+            
+            // Genera muri interni - algoritmo semplificato
+            const numWalls = 10 + complexity * 5;
+            for (let i = 0; i < numWalls; i++) {
+                const isHorizontal = Math.random() > 0.5;
+                let x, y, wallWidth, wallHeight;
+                
+                if (isHorizontal) {
+                    x = Math.floor(Math.random() * (width-3)) * CELL_SIZE + CELL_SIZE;
+                    y = Math.floor(Math.random() * (height-2)) * CELL_SIZE + CELL_SIZE;
+                    wallWidth = Math.floor(Math.random() * (width/2)) * CELL_SIZE + CELL_SIZE;
+                    wallHeight = CELL_SIZE;
+                    // Assicura che il muro non blocchi completamente
+                    if (x + wallWidth > (width-1) * CELL_SIZE) {
+                        wallWidth = (width-1) * CELL_SIZE - x;
                     }
-                };
-                
-                this.universe = {
-                    energyNodes: [],
-                    portals: [],
-                    dimensions: [
-                        { id: "logic", type: "LOGICAL", stability: 0.8 },
-                        { id: "abstract", type: "ABSTRACT", stability: 0.6 },
-                        { id: "quantum", type: "QUANTUM", stability: 0.4 },
-                        { id: "paradox", type: "PARADOXICAL", stability: 0.3 }
-                    ],
-                    quests: [
-                        {
-                            id: 1,
-                            title: "Correzione Paradosso Temporale",
-                            description: "Un'anomalia è stata rilevata nel flusso del codice. Stabilizza la linea temporale principale prima che causi una frammentazione dimensionale.",
-                            difficulty: 2,
-                            objectives: [
-                                "Analizza il paradosso nel nodo energetico principale",
-                                "Isola la causa dell'anomalia",
-                                "Applica una correzione quantistica al codice instabile"
-                            ],
-                            rewards: [
-                                "+50 Punti Esperienza",
-                                "+25 Energia Quantistica",
-                                "+15% Consapevolezza Temporale"
-                            ]
-                        },
-                        {
-                            id: 2,
-                            title: "Sincronizzazione Quantistica",
-                            description: "Le dimensioni logica e quantistica stanno perdendo sincronizzazione. Ripristina la stabilità dimensionale prima che le entità quantistiche vadano fuori controllo.",
-                            difficulty: 3,
-                            objectives: [
-                                "Crea un portale stabile tra le dimensioni",
-                                "Sincronizza i flussi energetici",
-                                "Stabilizza la sovrapposizione dimensionale"
-                            ],
-                            rewards: [
-                                "+75 Punti Esperienza",
-                                "Sblocco parziale dell'abilità CodeEntanglement",
-                                "+20% Risonanza Dimensionale"
-                            ]
-                        }
-                    ]
-                };
-                
-                this.timeline = {
-                    current: "MAIN",
-                    time: 12.45,
-                    branches: ["MAIN"]
-                };
-                
-                this.canvas = document.getElementById('universe-canvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.consoleOutput = document.getElementById('console-output');
-                this.gameContainer = document.getElementById('game-container');
-                
-                this.setupEventListeners();
-                this.resizeCanvas();
-                this.startLoadingSequence();
-            }
-            
-            setupEventListeners() {
-                const consoleToggle = document.getElementById('console-toggle');
-                consoleToggle.addEventListener('click', () => {
-                    this.gameContainer.classList.toggle('console-visible');
-                });
-
-                const timelineSplit = document.getElementById('timeline-split');
-                const timelineJump = document.getElementById('timeline-jump');
-                
-                timelineSplit.addEventListener('click', () => {
-                    this.splitTimeline();
-                });
-                
-                timelineJump.addEventListener('click', () => {
-                    this.jumpTimeline();
-                });
-
-                const abilityCards = document.querySelectorAll('.ability-card');
-                abilityCards.forEach(card => {
-                    card.addEventListener('click', () => this.showAbilityModal(card.dataset.ability));
-                });
-
-                const questItems = document.querySelectorAll('.quest-item');
-                questItems.forEach(quest => {
-                    quest.addEventListener('click', () => this.showQuestModal(quest.dataset.quest));
-                });
-
-                const closeQuestModal = document.getElementById('close-quest-modal');
-                const closeAbilityModal = document.getElementById('close-ability-modal');
-                const startQuestButton = document.getElementById('start-quest');
-                const useAbilityButton = document.getElementById('use-ability');
-
-                closeQuestModal.addEventListener('click', () => this.closeModal('quest-modal'));
-                closeAbilityModal.addEventListener('click', () => this.closeModal('ability-modal'));
-                startQuestButton.addEventListener('click', () => this.startQuest());
-                useAbilityButton.addEventListener('click', () => this.useAbility());
-
-                window.addEventListener('resize', () => this.resizeCanvas());
-            }
-
-            resizeCanvas() {
-                const container = document.querySelector('.universe-view');
-                this.canvas.width = container.clientWidth;
-                this.canvas.height = container.clientHeight;
-            }
-
-            log(message) {
-                const timestamp = new Date().toLocaleTimeString();
-                const logEntry = document.createElement('div');
-                logEntry.innerHTML = `<span style="color: #aaa;">[${timestamp}]</span> ${message}`;
-                this.consoleOutput.appendChild(logEntry);
-                this.consoleOutput.scrollTop = this.consoleOutput.scrollHeight;
-            }
-            
-            startLoadingSequence() {
-                const loadingBar = document.getElementById('loading-bar');
-                const loadingStatus = document.getElementById('loading-status');
-                const loadingScreen = document.getElementById('loading-screen');
-                
-                const steps = [
-                    { message: "Inizializzazione multiverso...", percentage: 10 },
-                    { message: "Caricamento dimensioni...", percentage: 25 },
-                    { message: "Calibrazione fisica quantistica...", percentage: 40 },
-                    { message: "Sincronizzazione linee temporali...", percentage: 60 },
-                    { message: "Generazione nodi energetici...", percentage: 75 },
-                    { message: "Attivazione interfaccia neurale...", percentage: 90 },
-                    { message: "Connessione completata!", percentage: 100 }
-                ];
-                
-                let currentStep = 0;
-                
-                const loadingInterval = setInterval(() => {
-                    if (currentStep >= steps.length) {
-                        clearInterval(loadingInterval);
-                        setTimeout(() => {
-                            loadingScreen.style.opacity = 0;
-                            loadingScreen.style.transition = 'opacity 1s ease';
-                            setTimeout(() => {
-                                loadingScreen.style.display = 'none';
-                                this.initialize();
-                            }, 1000);
-                        }, 500);
-                        return;
+                } else {
+                    x = Math.floor(Math.random() * (width-2)) * CELL_SIZE + CELL_SIZE;
+                    y = Math.floor(Math.random() * (height-3)) * CELL_SIZE + CELL_SIZE;
+                    wallWidth = CELL_SIZE;
+                    wallHeight = Math.floor(Math.random() * (height/2)) * CELL_SIZE + CELL_SIZE;
+                    // Assicura che il muro non blocchi completamente
+                    if (y + wallHeight > (height-1) * CELL_SIZE) {
+                        wallHeight = (height-1) * CELL_SIZE - y;
                     }
-                    
-                    const step = steps[currentStep];
-                    loadingStatus.textContent = step.message;
-                    loadingBar.style.width = `${step.percentage}%`;
-                    currentStep++;
-                }, 700);
-            }
-            
-            initialize() {
-                this.log("Inizializzazione di Quantum Nexus in corso...");
-                
-                this.spawnEnergyNode(100, 100, 30, [255, 215, 0]);
-                this.spawnEnergyNode(300, 200, 40, [0, 255, 200]);
-                this.spawnEnergyNode(500, 150, 25, [255, 100, 200]);
-                
-                this.createPortal(400, 300, 70);
-                
-                this.initialized = true;
-                this.log("Quantum Nexus inizializzato con successo!");
-                this.log("Benvenuto nel multiverso del codice. Scegli una missione per iniziare.");
-                
-                this.lastTime = performance.now();
-                requestAnimationFrame(this.gameLoop.bind(this));
-            }
-            
-            gameLoop(timestamp) {
-                const deltaTime = (timestamp - this.lastTime) / 1000;
-                this.lastTime = timestamp;
-                
-                this.update(deltaTime);
-                this.render();
-                
-                requestAnimationFrame(this.gameLoop.bind(this));
-            }
-            
-            update(deltaTime) {
-                if (!this.initialized) return;
-                
-                this.timeline.time += deltaTime * 0.5;
-                document.querySelector('.timeline-display').textContent = `T-${this.timeline.current}:${this.timeline.time.toFixed(2)}`;
-                
-                this.updateEntities(deltaTime);
-                
-                if (Math.random() < 0.02 * deltaTime) {
-                    const x = Math.random() * this.canvas.width;
-                    const y = Math.random() * this.canvas.height;
-                    const size = 15 + Math.random() * 30;
-                    const color = [
-                        Math.floor(Math.random() * 255),
-                        Math.floor(Math.random() * 255),
-                        Math.floor(Math.random() * 255)
-                    ];
-                    this.spawnEnergyNode(x, y, size, color);
-                }
-            }
-            
-            updateEntities(deltaTime) {
-                for (let i = 0; i < this.universe.energyNodes.length; i++) {
-                    const node = this.universe.energyNodes[i];
-                    
-                    node.x += (Math.random() - 0.5) * 2 * deltaTime;
-                    node.y += (Math.random() - 0.5) * 2 * deltaTime;
-                    
-                    node.pulsePhase = (node.pulsePhase || 0) + deltaTime;
-                    node.currentSize = node.size * (0.9 + Math.sin(node.pulsePhase * 2) * 0.1);
                 }
                 
-                for (let i = 0; i < this.universe.portals.length; i++) {
-                    const portal = this.universe.portals[i];
-                    
-                    portal.rotation = (portal.rotation || 0) + deltaTime * 0.5;
-                    
-                    portal.fluxPhase = (portal.fluxPhase || 0) + deltaTime;
-                    portal.currentSize = portal.size * (0.95 + Math.sin(portal.fluxPhase * 1.5) * 0.05);
-                }
+                createWall(x, y, wallWidth, wallHeight);
             }
-            
-            render() {
-                if (!this.initialized) return;
-                
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                this.renderBackground();
-                this.renderEntities();
-            }
-            
-            renderBackground() {
-                const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-                gradient.addColorStop(0, '#0d1117');
-                gradient.addColorStop(1, '#1a1a2e');
-                this.ctx.fillStyle = gradient;
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                for (let i = 0; i < 100; i++) {
-                    const x = Math.random() * this.canvas.width;
-                    const y = Math.random() * this.canvas.height;
-                    const size = Math.random() * 1.5;
-                    this.ctx.beginPath();
-                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
-                    this.ctx.fill();
-                }
-            }
-            
-            renderEntities() {
-                for (const portal of this.universe.portals) {
-                    this.ctx.save();
-                    this.ctx.translate(portal.x, portal.y);
-                    this.ctx.rotate(portal.rotation || 0);
-                    
-                    const gradient = this.ctx.createRadialGradient(0, 0, portal.currentSize * 0.3, 0, 0, portal.currentSize);
-                    gradient.addColorStop(0, 'rgba(34, 206, 189, 0.2)');
-                    gradient.addColorStop(0.7, 'rgba(110, 34, 206, 0.1)');
-                    gradient.addColorStop(1, 'rgba(110, 34, 206, 0)');
-                    
-                    this.ctx.fillStyle = gradient;
-                    this.ctx.beginPath();
-                    this.ctx.arc(0, 0, portal.currentSize, 0, Math.PI * 2);
-                    this.ctx.fill();
-                    
-                    this.ctx.strokeStyle = '#22cebd';
-                    this.ctx.lineWidth = 2;
-                    this.ctx.beginPath();
-                    this.ctx.arc(0, 0, portal.currentSize, 0, Math.PI * 2);
-                    this.ctx.stroke();
-                    
-                    this.ctx.restore();
-                }
+        }
 
-                for (const node of this.universe.energyNodes) {
-                    this.ctx.save();
-                    this.ctx.translate(node.x, node.y);
+        function createWall(x, y, width, height) {
+            const wall = document.createElement('div');
+            wall.className = 'wall';
+            wall.style.left = `${x}px`;
+            wall.style.top = `${y}px`;
+            wall.style.width = `${width}px`;
+            wall.style.height = `${height}px`;
+            maze.appendChild(wall);
+            
+            walls.push({
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+                element: wall
+            });
+        }
+
+        function createExit(width, height) {
+            const exitElement = document.createElement('div');
+            exitElement.className = 'exit';
+            
+            // Posiziona l'uscita lontano dal giocatore
+            const exitX = (width-2) * CELL_SIZE + CELL_SIZE/2;
+            const exitY = (height-2) * CELL_SIZE + CELL_SIZE/2;
+            
+            exitElement.style.left = `${exitX - 15}px`;
+            exitElement.style.top = `${exitY - 15}px`;
+            maze.appendChild(exitElement);
+            
+            exit = {
+                x: exitX,
+                y: exitY,
+                width: 30,
+                height: 30,
+                element: exitElement
+            };
+        }
+
+        function createQuantumZones(level) {
+            const numZones = 2 + Math.min(level, 5);
+            const mazeWidth = gameContainer.clientWidth;
+            const mazeHeight = gameContainer.clientHeight;
+            
+            for (let i = 0; i < numZones; i++) {
+                const zoneWidth = 100 + Math.random() * 100;
+                const zoneHeight = 100 + Math.random() * 100;
+                const zoneX = Math.random() * (mazeWidth - zoneWidth);
+                const zoneY = Math.random() * (mazeHeight - zoneHeight);
+                
+                const zoneElement = document.createElement('div');
+                zoneElement.className = 'quantum-zone';
+                zoneElement.style.left = `${zoneX}px`;
+                zoneElement.style.top = `${zoneY}px`;
+                zoneElement.style.width = `${zoneWidth}px`;
+                zoneElement.style.height = `${zoneHeight}px`;
+                maze.appendChild(zoneElement);
+                
+                quantumZones.push({
+                    x: zoneX,
+                    y: zoneY,
+                    width: zoneWidth,
+                    height: zoneHeight,
+                    element: zoneElement
+                });
+            }
+        }
+
+        function createQuantumParticle(x, y) {
+            if (quantumParticles.length > 100) return; // Limita le particelle
+            
+            const particleElement = document.createElement('div');
+            particleElement.className = 'quantum-particle';
+            particleElement.style.left = `${x}px`;
+            particleElement.style.top = `${y}px`;
+            maze.appendChild(particleElement);
+            
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 1 + Math.random() * 2;
+            
+            quantumParticles.push({
+                x: x,
+                y: y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 100 + Math.random() * 100,
+                element: particleElement
+            });
+        }
+
+        function updateParticles() {
+            for (let i = quantumParticles.length - 1; i >= 0; i--) {
+                const particle = quantumParticles[i];
+                
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.life--;
+                
+                if (particle.life <= 0 || 
+                    particle.x < 0 || particle.x > gameContainer.clientWidth ||
+                    particle.y < 0 || particle.y > gameContainer.clientHeight) {
+                    maze.removeChild(particle.element);
+                    quantumParticles.splice(i, 1);
+                } else {
+                    particle.element.style.left = `${particle.x}px`;
+                    particle.element.style.top = `${particle.y}px`;
                     
-                    const gradient = this.ctx.createRadialGradient(
-                        0, 0, node.currentSize * 0.2, 
-                        0, 0, node.currentSize
+                    // Effetto di dissolvenza
+                    particle.element.style.opacity = (particle.life / 200).toFixed(2);
+                }
+            }
+        }
+
+        function isInQuantumZone(x, y) {
+            for (const zone of quantumZones) {
+                if (x >= zone.x && x <= zone.x + zone.width &&
+                    y >= zone.y && y <= zone.y + zone.height) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function startPhaseChangeTimer() {
+            if (phaseChangeTimeout) {
+                clearTimeout(phaseChangeTimeout);
+            }
+            
+            // Cambia fase dopo un tempo casuale
+            const phaseTime = 10000 + Math.random() * 10000; // 10-20 secondi
+            phaseChangeTimeout = setTimeout(changePhase, phaseTime);
+        }
+
+        function changePhase() {
+            currentPhase = (currentPhase + 1) % QUANTUM_PHASES.length;
+            updateHUD();
+            startPhaseChangeTimer();
+            
+            // Effetto visivo
+            const originalColor = player.style.backgroundColor;
+            player.style.backgroundColor = '#f0f';
+            player.style.boxShadow = '0 0 20px #f0f';
+            
+            setTimeout(() => {
+                player.style.backgroundColor = originalColor;
+                player.style.boxShadow = '0 0 10px #fff';
+            }, 500);
+            
+            // Messaggio
+            showMessage(`Cambio di fase quantica: ${QUANTUM_PHASES[currentPhase]}`, 2000);
+        }
+
+        function showMessage(text, duration = 3000) {
+            messageElement.textContent = text;
+            messageElement.style.display = 'block';
+            
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, duration);
+        }
+
+        function updateHUD() {
+            phaseIndicator.textContent = `FASE: ${QUANTUM_PHASES[currentPhase]}`;
+            levelIndicator.textContent = `LIVELLO: ${currentLevel}`;
+        }
+
+        function handleKeyDown(e) {
+            keys[e.key] = true;
+        }
+
+        function handleKeyUp(e) {
+            keys[e.key] = false;
+        }
+
+        function movePlayer() {
+            if (!gameActive) return;
+            
+            // Limita la frequenza dei movimenti
+            const now = Date.now();
+            if (now - lastMove < 16) return; // ~60fps
+            lastMove = now;
+            
+            let dx = 0;
+            let dy = 0;
+            
+            // Determina direzione in base agli input
+            if (keys['ArrowUp'] || keys['w'] || keys['W']) dy -= 3;
+            if (keys['ArrowDown'] || keys['s'] || keys['S']) dy += 3;
+            if (keys['ArrowLeft'] || keys['a'] || keys['A']) dx -= 3;
+            if (keys['ArrowRight'] || keys['d'] || keys['D']) dx += 3;
+            
+            // Applica effetti in base alla fase quantica
+            switch (QUANTUM_PHASES[currentPhase]) {
+                case 'INVERSO':
+                    dx = -dx;
+                    dy = -dy;
+                    break;
+                    
+                case 'SUPERPOSIZIONE':
+                    // Aggiorna la posizione del "fantasma"
+                    const ghostDx = dy; // Rotazione 90°
+                    const ghostDy = -dx;
+                    
+                    movePlayerTo(playerGhost.x + ghostDx, playerGhost.y + ghostDy, true);
+                    break;
+            }
+            
+            if (dx !== 0 || dy !== 0) {
+                movePlayerTo(playerX + dx, playerY + dy, false);
+                
+                // Crea particelle se in movimento
+                if (Math.random() < 0.2) {
+                    createQuantumParticle(
+                        playerX - PLAYER_SIZE/2 + Math.random() * PLAYER_SIZE,
+                        playerY - PLAYER_SIZE/2 + Math.random() * PLAYER_SIZE
                     );
-                    gradient.addColorStop(0, `rgba(${node.color[0]}, ${node.color[1]}, ${node.color[2]}, 0.8)`);
-                    gradient.addColorStop(0.7, `rgba(${node.color[0]}, ${node.color[1]}, ${node.color[2]}, 0.4)`);
-                    gradient.addColorStop(1, `rgba(${node.color[0]}, ${node.color[1]}, ${node.color[2]}, 0)`);
-                    
-                    this.ctx.fillStyle = gradient;
-                    this.ctx.beginPath();
-                    this.ctx.arc(0, 0, node.currentSize, 0, Math.PI * 2);
-                    this.ctx.fill();
-                    
-                    this.ctx.restore();
                 }
-            }
-            
-            splitTimeline() {
-                const newBranch = `T-${this.timeline.branches.length + 1}`;
-                this.timeline.branches.push(newBranch);
-                this.timeline.current = newBranch;
-                this.timeline.time = 0;
-                this.log(`Nuova timeline creata: ${newBranch}`);
-            }
-
-            jumpTimeline() {
-                if (this.timeline.branches.length > 1) {
-                    const currentIndex = this.timeline.branches.indexOf(this.timeline.current);
-                    const nextIndex = (currentIndex + 1) % this.timeline.branches.length;
-                    this.timeline.current = this.timeline.branches[nextIndex];
-                    this.timeline.time = 0;
-                    this.log(`Saltato a timeline: ${this.timeline.current}`);
-                }
-            }
-
-            spawnEnergyNode(x, y, size, color) {
-                const node = {
-                    x: x,
-                    y: y,
-                    size: size,
-                    currentSize: size,
-                    color: color,
-                    pulsePhase: 0
-                };
-                this.universe.energyNodes.push(node);
-                return node;
-            }
-
-            createPortal(x, y, size) {
-                const portal = {
-                    x: x,
-                    y: y,
-                    size: size,
-                    currentSize: size,
-                    rotation: 0,
-                    fluxPhase: 0
-                };
-                this.universe.portals.push(portal);
-                return portal;
-            }
-
-            showAbilityModal(abilityKey) {
-                const ability = this.player.abilities[abilityKey];
-                if (!ability) return;
-
-                const modal = document.getElementById('ability-modal');
-                document.getElementById('ability-title').textContent = this.getAbilityName(abilityKey);
-                document.getElementById('ability-description').textContent = this.getAbilityDescription(abilityKey);
-                document.getElementById('ability-level').textContent = ability.level;
-                document.getElementById('ability-energy').textContent = ability.energy;
-                document.getElementById('ability-cooldown').textContent = ability.cooldown;
-
-                modal.style.display = 'flex';
-            }
-
-            showQuestModal(questId) {
-                const quest = this.universe.quests.find(q => q.id == questId);
-                if (!quest) return;
-
-                const modal = document.getElementById('quest-modal');
-                document.getElementById('quest-title').textContent = quest.title;
-                document.getElementById('quest-description').textContent = quest.description;
-
-                const objectivesList = document.getElementById('quest-objectives');
-                const rewardsList = document.getElementById('quest-rewards');
-                
-                objectivesList.innerHTML = quest.objectives.map(obj => `<li>${obj}</li>`).join('');
-                rewardsList.innerHTML = quest.rewards.map(reward => `<li>${reward}</li>`).join('');
-
-                modal.style.display = 'flex';
-            }
-
-            closeModal(modalId) {
-                document.getElementById(modalId).style.display = 'none';
-            }
-
-            startQuest() {
-                this.log("Missione avviata!");
-                this.closeModal('quest-modal');
-            }
-
-            useAbility() {
-                this.log("Abilità quantistica utilizzata!");
-                this.closeModal('ability-modal');
-            }
-
-            getAbilityName(abilityKey) {
-                const abilityNames = {
-                    timerefactor: "TimeRefactor",
-                    codeentanglement: "CodeEntanglement",
-                    bugcollapse: "BugCollapse",
-                    algorithmicsuperposition: "AlgorithmicSuperposition"
-                };
-                return abilityNames[abilityKey] || abilityKey;
-            }
-
-            getAbilityDescription(abilityKey) {
-                const descriptions = {
-                    timerefactor: "Modifica il codice attraverso le linee temporali",
-                    codeentanglement: "Crea connessioni quantistiche tra frammenti di codice",
-                    bugcollapse: "Risolvi bug attraverso il collasso della funzione d'onda",
-                    algorithmicsuperposition: "Mantieni algoritmi in superposizione per efficienze multiple"
-                };
-                return descriptions[abilityKey] || "Abilità quantistica non descritta";
             }
         }
 
-        window.addEventListener('load', () => {
-            const game = new QuantumNexusGame();
-        });
+        function movePlayerTo(x, y, isGhost) {
+            // Controlla collisioni con i muri
+            for (const wall of walls) {
+                if (checkCollision(
+                    x - PLAYER_SIZE/2, y - PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE,
+                    wall.x, wall.y, wall.width, wall.height
+                )) {
+                    return false; // Collisione rilevata
+                }
+            }
+            
+            // Controlla i limiti del labirinto
+            if (x - PLAYER_SIZE/2 < 0 || 
+                x + PLAYER_SIZE/2 > gameContainer.clientWidth ||
+                y - PLAYER_SIZE/2 < 0 || 
+                y + PLAYER_SIZE/2 > gameContainer.clientHeight) {
+                return false;
+            }
+            
+            if (isGhost) {
+                playerGhost.x = x;
+                playerGhost.y = y;
+                return true;
+            }
+            
+            // Aggiorna posizione
+            playerX = x;
+            playerY = y;
+            player.style.left = `${x - PLAYER_SIZE/2}px`;
+            player.style.top = `${y - PLAYER_SIZE/2}px`;
+            
+            // Controllo zona quantica
+            if (isInQuantumZone(x, y)) {
+                player.style.opacity = "0.7";
+                if (Math.random() < 0.05) {
+                    // Effetto di teletrasporto casuale nella stessa zona
+                    const teleportDistance = 30;
+                    const teleportAngle = Math.random() * Math.PI * 2;
+                    setTimeout(() => {
+                        movePlayerTo(
+                            x + Math.cos(teleportAngle) * teleportDistance,
+                            y + Math.sin(teleportAngle) * teleportDistance,
+                            false
+                        );
+                    }, 100);
+                }
+            } else {
+                player.style.opacity = "1";
+            }
+            
+            // Controlla se il giocatore ha raggiunto l'uscita
+            if (exit && checkCollision(
+                x - PLAYER_SIZE/2, y - PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE,
+                exit.x - 15, exit.y - 15, 30, 30
+            )) {
+                levelCompleted();
+            }
+            
+            return true;
+        }
+
+        function checkCollision(x1, y1, w1, h1, x2, y2, w2, h2) {
+            return x1 < x2 + w2 &&
+                   x1 + w1 > x2 &&
+                   y1 < y2 + h2 &&
+                   y1 + h1 > y2;
+        }
+
+        function levelCompleted() {
+            gameActive = false;
+            showMessage(`LIVELLO ${currentLevel} COMPLETATO!`, 2000);
+            
+            setTimeout(() => {
+                currentLevel++;
+                clearMaze();
+                generateLevel(currentLevel);
+                gameActive = true;
+                updateHUD();
+            }, 2000);
+        }
+
+        function gameLoop() {
+            if (gameActive) {
+                movePlayer();
+                updateParticles();
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Event listeners
+        startButton.addEventListener('click', init);
     </script>
 </body>
 </html>

@@ -3,623 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Maze</title>
+    <title>Snake Game</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #000;
-            font-family: 'Courier New', monospace;
-            color: #0f0;
-            overflow: hidden;
-        }
-
-        #game-container {
-            position: relative;
-            width: 800px;
-            height: 600px;
-            border: 2px solid #0f0;
-            box-shadow: 0 0 20px #0f0;
-            overflow: hidden;
-        }
-
-        #maze {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-        }
-
-        .wall {
-            position: absolute;
-            background-color: #0f0;
-            transition: all 0.3s ease;
-        }
-
-        #player {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: #fff;
-            border-radius: 50%;
-            z-index: 10;
-            transition: all 0.1s ease;
-            box-shadow: 0 0 10px #fff;
-        }
-
-        .exit {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: #f00;
-            border-radius: 5px;
-            z-index: 5;
-            animation: pulse 1.5s infinite;
-        }
-
-        .quantum-particle {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: #00f;
-            border-radius: 50%;
-            z-index: 4;
-            opacity: 0.7;
-        }
-
-        .quantum-zone {
-            position: absolute;
-            border: 1px dashed rgba(128, 0, 128, 0.5);
-            z-index: 3;
-            background-color: rgba(128, 0, 128, 0.1);
-        }
-
-        #hud {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 20;
-        }
-
-        #phase-indicator {
-            display: inline-block;
-            padding: 5px 10px;
-            border: 1px solid #0f0;
-            margin-bottom: 10px;
-        }
-
-        #level-indicator {
-            display: inline-block;
-            padding: 5px 10px;
-            border: 1px solid #0f0;
-        }
-
-        #message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border: 1px solid #0f0;
-            z-index: 30;
-            text-align: center;
-            display: none;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 5px #f00; }
-            50% { box-shadow: 0 0 20px #f00; }
-            100% { box-shadow: 0 0 5px #f00; }
-        }
-
-        #start-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            z-index: 100;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
         }
-
-        h1 {
-            color: #0f0;
-            text-shadow: 0 0 10px #0f0;
-            font-size: 48px;
-            margin-bottom: 30px;
+        canvas {
+            border: 2px solid #333;
+            background-color: #222;
         }
-
-        button {
-            background-color: #000;
-            color: #0f0;
-            border: 1px solid #0f0;
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
+        .game-info {
             margin-top: 20px;
-            font-family: 'Courier New', monospace;
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #0f0;
-            color: #000;
-            box-shadow: 0 0 10px #0f0;
-        }
-
-        .instructions {
-            color: #0f0;
-            max-width: 500px;
             text-align: center;
-            margin-bottom: 20px;
-            line-height: 1.5;
+        }
+        button {
+            padding: 8px 16px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <div id="start-screen">
-            <h1>QUANTUM MAZE</h1>
-            <div class="instructions">
-                <p>Ti sei perso nel Labirinto Quantico, dove le regole della fisica cambiano mentre ti muovi.</p>
-                <p>Usa i tasti freccia o WASD per muoverti.</p>
-                <p>Ogni livello ha 3 fasi quantiche: NORMALE, INVERSO e SUPERPOSIZIONE</p>
-                <p>NORMALE: Movimento standard<br>
-                   INVERSO: I controlli sono invertiti<br>
-                   SUPERPOSIZIONE: Ti muovi in due direzioni contemporaneamente</p>
-                <p>Raggiungi l'uscita rossa per avanzare!</p>
-            </div>
-            <button id="start-button">INIZIA</button>
-        </div>
-        <div id="maze"></div>
-        <div id="player"></div>
-        <div id="hud">
-            <div id="phase-indicator">FASE: NORMALE</div><br>
-            <div id="level-indicator">LIVELLO: 1</div>
-        </div>
-        <div id="message"></div>
+    <h1>Snake Game</h1>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="game-info">
+        <p>Punteggio: <span id="score">0</span></p>
+        <p>Record: <span id="highScore">0</span></p>
+        <button id="startButton">Inizia Gioco</button>
     </div>
 
     <script>
-        const gameContainer = document.getElementById('game-container');
-        const maze = document.getElementById('maze');
-        const player = document.getElementById('player');
-        const phaseIndicator = document.getElementById('phase-indicator');
-        const levelIndicator = document.getElementById('level-indicator');
-        const messageElement = document.getElementById('message');
-        const startScreen = document.getElementById('start-screen');
-        const startButton = document.getElementById('start-button');
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreElement = document.getElementById('score');
+            const highScoreElement = document.getElementById('highScore');
+            const startButton = document.getElementById('startButton');
 
-        // Costanti di gioco
-        const CELL_SIZE = 40;
-        const PLAYER_SIZE = 20;
-        const QUANTUM_PHASES = ['NORMALE', 'INVERSO', 'SUPERPOSIZIONE'];
-        
-        // Stato di gioco
-        let currentLevel = 1;
-        let currentPhase = 0;
-        let playerX = 0;
-        let playerY = 0;
-        let playerGhost = { x: 0, y: 0 };
-        let walls = [];
-        let quantumZones = [];
-        let quantumParticles = [];
-        let exit = null;
-        let keys = {};
-        let gameActive = false;
-        let phaseChangeTimeout = null;
-        let lastMove = Date.now();
-        
-        // Inizializzazione
-        function init() {
-            startScreen.style.display = 'none';
-            resetGame();
-            gameActive = true;
-            window.addEventListener('keydown', handleKeyDown);
-            window.addEventListener('keyup', handleKeyUp);
-            requestAnimationFrame(gameLoop);
-        }
+            // Dimensioni della griglia
+            const gridSize = 20;
+            const tileCount = canvas.width / gridSize;
+            
+            // Inizializzazione del serpente
+            let snake = [];
+            let velocityX = 0;
+            let velocityY = 0;
+            let food = {};
+            let score = 0;
+            let highScore = localStorage.getItem('snakeHighScore') || 0;
+            let gameOver = true;
+            let gameLoop;
 
-        function resetGame() {
-            currentLevel = 1;
-            currentPhase = 0;
-            clearMaze();
-            generateLevel(currentLevel);
-            updateHUD();
-        }
+            highScoreElement.textContent = highScore;
 
-        function clearMaze() {
-            while (maze.firstChild) {
-                maze.removeChild(maze.firstChild);
+            // Inizializza il gioco
+            function init() {
+                snake = [{x: 10, y: 10}];
+                velocityX = 0;
+                velocityY = 0;
+                score = 0;
+                scoreElement.textContent = score;
+                placeFood();
+                gameOver = false;
             }
-            walls = [];
-            quantumZones = [];
-            quantumParticles = [];
-            exit = null;
-        }
 
-        function generateLevel(level) {
-            const width = Math.min(15, 8 + level);
-            const height = Math.min(12, 6 + level);
-            
-            // Posiziona il giocatore
-            playerX = CELL_SIZE + PLAYER_SIZE/2;
-            playerY = CELL_SIZE + PLAYER_SIZE/2;
-            playerGhost.x = playerX;
-            playerGhost.y = playerY;
-            player.style.left = `${playerX - PLAYER_SIZE/2}px`;
-            player.style.top = `${playerY - PLAYER_SIZE/2}px`;
-            
-            // Genera labirinto (algoritmo di base - può essere migliorato)
-            generateMaze(width, height, level);
-            
-            // Posiziona l'uscita
-            createExit(width, height);
-            
-            // Crea zone quantiche
-            createQuantumZones(level);
-            
-            // Resetta il tempo della fase
-            startPhaseChangeTimer();
-        }
-
-        function generateMaze(width, height, complexity) {
-            // Crea bordi
-            createWall(0, 0, width * CELL_SIZE, CELL_SIZE); // Superiore
-            createWall(0, (height-1) * CELL_SIZE, width * CELL_SIZE, CELL_SIZE); // Inferiore
-            createWall(0, 0, CELL_SIZE, height * CELL_SIZE); // Sinistra
-            createWall((width-1) * CELL_SIZE, 0, CELL_SIZE, height * CELL_SIZE); // Destra
-            
-            // Genera muri interni - algoritmo semplificato
-            const numWalls = 10 + complexity * 5;
-            for (let i = 0; i < numWalls; i++) {
-                const isHorizontal = Math.random() > 0.5;
-                let x, y, wallWidth, wallHeight;
+            // Posiziona il cibo in una posizione casuale
+            function placeFood() {
+                food = {
+                    x: Math.floor(Math.random() * tileCount),
+                    y: Math.floor(Math.random() * tileCount)
+                };
                 
-                if (isHorizontal) {
-                    x = Math.floor(Math.random() * (width-3)) * CELL_SIZE + CELL_SIZE;
-                    y = Math.floor(Math.random() * (height-2)) * CELL_SIZE + CELL_SIZE;
-                    wallWidth = Math.floor(Math.random() * (width/2)) * CELL_SIZE + CELL_SIZE;
-                    wallHeight = CELL_SIZE;
-                    // Assicura che il muro non blocchi completamente
-                    if (x + wallWidth > (width-1) * CELL_SIZE) {
-                        wallWidth = (width-1) * CELL_SIZE - x;
-                    }
-                } else {
-                    x = Math.floor(Math.random() * (width-2)) * CELL_SIZE + CELL_SIZE;
-                    y = Math.floor(Math.random() * (height-3)) * CELL_SIZE + CELL_SIZE;
-                    wallWidth = CELL_SIZE;
-                    wallHeight = Math.floor(Math.random() * (height/2)) * CELL_SIZE + CELL_SIZE;
-                    // Assicura che il muro non blocchi completamente
-                    if (y + wallHeight > (height-1) * CELL_SIZE) {
-                        wallHeight = (height-1) * CELL_SIZE - y;
+                // Verifica che il cibo non sia posizionato sul serpente
+                for (let i = 0; i < snake.length; i++) {
+                    if (snake[i].x === food.x && snake[i].y === food.y) {
+                        placeFood();
+                        break;
                     }
                 }
-                
-                createWall(x, y, wallWidth, wallHeight);
             }
-        }
 
-        function createWall(x, y, width, height) {
-            const wall = document.createElement('div');
-            wall.className = 'wall';
-            wall.style.left = `${x}px`;
-            wall.style.top = `${y}px`;
-            wall.style.width = `${width}px`;
-            wall.style.height = `${height}px`;
-            maze.appendChild(wall);
-            
-            walls.push({
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                element: wall
-            });
-        }
+            // Aggiorna il gioco
+            function update() {
+                if (gameOver) return;
 
-        function createExit(width, height) {
-            const exitElement = document.createElement('div');
-            exitElement.className = 'exit';
-            
-            // Posiziona l'uscita lontano dal giocatore
-            const exitX = (width-2) * CELL_SIZE + CELL_SIZE/2;
-            const exitY = (height-2) * CELL_SIZE + CELL_SIZE/2;
-            
-            exitElement.style.left = `${exitX - 15}px`;
-            exitElement.style.top = `${exitY - 15}px`;
-            maze.appendChild(exitElement);
-            
-            exit = {
-                x: exitX,
-                y: exitY,
-                width: 30,
-                height: 30,
-                element: exitElement
-            };
-        }
+                // Muovi il serpente
+                const head = {
+                    x: snake[0].x + velocityX,
+                    y: snake[0].y + velocityY
+                };
 
-        function createQuantumZones(level) {
-            const numZones = 2 + Math.min(level, 5);
-            const mazeWidth = gameContainer.clientWidth;
-            const mazeHeight = gameContainer.clientHeight;
-            
-            for (let i = 0; i < numZones; i++) {
-                const zoneWidth = 100 + Math.random() * 100;
-                const zoneHeight = 100 + Math.random() * 100;
-                const zoneX = Math.random() * (mazeWidth - zoneWidth);
-                const zoneY = Math.random() * (mazeHeight - zoneHeight);
-                
-                const zoneElement = document.createElement('div');
-                zoneElement.className = 'quantum-zone';
-                zoneElement.style.left = `${zoneX}px`;
-                zoneElement.style.top = `${zoneY}px`;
-                zoneElement.style.width = `${zoneWidth}px`;
-                zoneElement.style.height = `${zoneHeight}px`;
-                maze.appendChild(zoneElement);
-                
-                quantumZones.push({
-                    x: zoneX,
-                    y: zoneY,
-                    width: zoneWidth,
-                    height: zoneHeight,
-                    element: zoneElement
-                });
-            }
-        }
+                // Controlla collisione con bordi
+                if (head.x < 0 || head.y < 0 || head.x >= tileCount || head.y >= tileCount) {
+                    endGame();
+                    return;
+                }
 
-        function createQuantumParticle(x, y) {
-            if (quantumParticles.length > 100) return; // Limita le particelle
-            
-            const particleElement = document.createElement('div');
-            particleElement.className = 'quantum-particle';
-            particleElement.style.left = `${x}px`;
-            particleElement.style.top = `${y}px`;
-            maze.appendChild(particleElement);
-            
-            const angle = Math.random() * Math.PI * 2;
-            const speed = 1 + Math.random() * 2;
-            
-            quantumParticles.push({
-                x: x,
-                y: y,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
-                life: 100 + Math.random() * 100,
-                element: particleElement
-            });
-        }
+                // Controlla collisione con se stesso
+                for (let i = 0; i < snake.length; i++) {
+                    if (snake[i].x === head.x && snake[i].y === head.y) {
+                        endGame();
+                        return;
+                    }
+                }
 
-        function updateParticles() {
-            for (let i = quantumParticles.length - 1; i >= 0; i--) {
-                const particle = quantumParticles[i];
-                
-                particle.x += particle.vx;
-                particle.y += particle.vy;
-                particle.life--;
-                
-                if (particle.life <= 0 || 
-                    particle.x < 0 || particle.x > gameContainer.clientWidth ||
-                    particle.y < 0 || particle.y > gameContainer.clientHeight) {
-                    maze.removeChild(particle.element);
-                    quantumParticles.splice(i, 1);
+                snake.unshift(head);
+
+                // Controlla se ha mangiato il cibo
+                if (head.x === food.x && head.y === food.y) {
+                    score++;
+                    scoreElement.textContent = score;
+                    if (score > highScore) {
+                        highScore = score;
+                        highScoreElement.textContent = highScore;
+                        localStorage.setItem('snakeHighScore', highScore);
+                    }
+                    placeFood();
                 } else {
-                    particle.element.style.left = `${particle.x}px`;
-                    particle.element.style.top = `${particle.y}px`;
-                    
-                    // Effetto di dissolvenza
-                    particle.element.style.opacity = (particle.life / 200).toFixed(2);
+                    snake.pop();
                 }
             }
-        }
 
-        function isInQuantumZone(x, y) {
-            for (const zone of quantumZones) {
-                if (x >= zone.x && x <= zone.x + zone.width &&
-                    y >= zone.y && y <= zone.y + zone.height) {
-                    return true;
-                }
-            }
-            return false;
-        }
+            // Disegna il gioco
+            function draw() {
+                // Pulisci il canvas
+                ctx.fillStyle = '#222';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        function startPhaseChangeTimer() {
-            if (phaseChangeTimeout) {
-                clearTimeout(phaseChangeTimeout);
-            }
-            
-            // Cambia fase dopo un tempo casuale
-            const phaseTime = 10000 + Math.random() * 10000; // 10-20 secondi
-            phaseChangeTimeout = setTimeout(changePhase, phaseTime);
-        }
-
-        function changePhase() {
-            currentPhase = (currentPhase + 1) % QUANTUM_PHASES.length;
-            updateHUD();
-            startPhaseChangeTimer();
-            
-            // Effetto visivo
-            const originalColor = player.style.backgroundColor;
-            player.style.backgroundColor = '#f0f';
-            player.style.boxShadow = '0 0 20px #f0f';
-            
-            setTimeout(() => {
-                player.style.backgroundColor = originalColor;
-                player.style.boxShadow = '0 0 10px #fff';
-            }, 500);
-            
-            // Messaggio
-            showMessage(`Cambio di fase quantica: ${QUANTUM_PHASES[currentPhase]}`, 2000);
-        }
-
-        function showMessage(text, duration = 3000) {
-            messageElement.textContent = text;
-            messageElement.style.display = 'block';
-            
-            setTimeout(() => {
-                messageElement.style.display = 'none';
-            }, duration);
-        }
-
-        function updateHUD() {
-            phaseIndicator.textContent = `FASE: ${QUANTUM_PHASES[currentPhase]}`;
-            levelIndicator.textContent = `LIVELLO: ${currentLevel}`;
-        }
-
-        function handleKeyDown(e) {
-            keys[e.key] = true;
-        }
-
-        function handleKeyUp(e) {
-            keys[e.key] = false;
-        }
-
-        function movePlayer() {
-            if (!gameActive) return;
-            
-            // Limita la frequenza dei movimenti
-            const now = Date.now();
-            if (now - lastMove < 16) return; // ~60fps
-            lastMove = now;
-            
-            let dx = 0;
-            let dy = 0;
-            
-            // Determina direzione in base agli input
-            if (keys['ArrowUp'] || keys['w'] || keys['W']) dy -= 3;
-            if (keys['ArrowDown'] || keys['s'] || keys['S']) dy += 3;
-            if (keys['ArrowLeft'] || keys['a'] || keys['A']) dx -= 3;
-            if (keys['ArrowRight'] || keys['d'] || keys['D']) dx += 3;
-            
-            // Applica effetti in base alla fase quantica
-            switch (QUANTUM_PHASES[currentPhase]) {
-                case 'INVERSO':
-                    dx = -dx;
-                    dy = -dy;
-                    break;
-                    
-                case 'SUPERPOSIZIONE':
-                    // Aggiorna la posizione del "fantasma"
-                    const ghostDx = dy; // Rotazione 90°
-                    const ghostDy = -dx;
-                    
-                    movePlayerTo(playerGhost.x + ghostDx, playerGhost.y + ghostDy, true);
-                    break;
-            }
-            
-            if (dx !== 0 || dy !== 0) {
-                movePlayerTo(playerX + dx, playerY + dy, false);
-                
-                // Crea particelle se in movimento
-                if (Math.random() < 0.2) {
-                    createQuantumParticle(
-                        playerX - PLAYER_SIZE/2 + Math.random() * PLAYER_SIZE,
-                        playerY - PLAYER_SIZE/2 + Math.random() * PLAYER_SIZE
+                // Disegna il serpente
+                ctx.fillStyle = '#4CAF50';
+                for (let i = 0; i < snake.length; i++) {
+                    ctx.fillRect(
+                        snake[i].x * gridSize, 
+                        snake[i].y * gridSize, 
+                        gridSize - 1, 
+                        gridSize - 1
                     );
                 }
-            }
-        }
 
-        function movePlayerTo(x, y, isGhost) {
-            // Controlla collisioni con i muri
-            for (const wall of walls) {
-                if (checkCollision(
-                    x - PLAYER_SIZE/2, y - PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE,
-                    wall.x, wall.y, wall.width, wall.height
-                )) {
-                    return false; // Collisione rilevata
+                // Disegna la testa in un colore diverso
+                if (snake.length > 0) {
+                    ctx.fillStyle = '#2E7D32';
+                    ctx.fillRect(
+                        snake[0].x * gridSize, 
+                        snake[0].y * gridSize, 
+                        gridSize - 1, 
+                        gridSize - 1
+                    );
+                }
+
+                // Disegna il cibo
+                ctx.fillStyle = '#FF5722';
+                ctx.fillRect(
+                    food.x * gridSize, 
+                    food.y * gridSize, 
+                    gridSize - 1, 
+                    gridSize - 1
+                );
+
+                // Disegna messaggio di game over
+                if (gameOver && snake.length > 0) {
+                    ctx.fillStyle = 'white';
+                    ctx.font = '30px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
+                    ctx.font = '20px Arial';
+                    ctx.fillText('Premi "Inizia Gioco" per ricominciare', canvas.width / 2, canvas.height / 2 + 30);
                 }
             }
-            
-            // Controlla i limiti del labirinto
-            if (x - PLAYER_SIZE/2 < 0 || 
-                x + PLAYER_SIZE/2 > gameContainer.clientWidth ||
-                y - PLAYER_SIZE/2 < 0 || 
-                y + PLAYER_SIZE/2 > gameContainer.clientHeight) {
-                return false;
+
+            // Loop principale del gioco
+            function gameStep() {
+                update();
+                draw();
             }
-            
-            if (isGhost) {
-                playerGhost.x = x;
-                playerGhost.y = y;
-                return true;
+
+            // Termina il gioco
+            function endGame() {
+                gameOver = true;
+                clearInterval(gameLoop);
             }
-            
-            // Aggiorna posizione
-            playerX = x;
-            playerY = y;
-            player.style.left = `${x - PLAYER_SIZE/2}px`;
-            player.style.top = `${y - PLAYER_SIZE/2}px`;
-            
-            // Controllo zona quantica
-            if (isInQuantumZone(x, y)) {
-                player.style.opacity = "0.7";
-                if (Math.random() < 0.05) {
-                    // Effetto di teletrasporto casuale nella stessa zona
-                    const teleportDistance = 30;
-                    const teleportAngle = Math.random() * Math.PI * 2;
-                    setTimeout(() => {
-                        movePlayerTo(
-                            x + Math.cos(teleportAngle) * teleportDistance,
-                            y + Math.sin(teleportAngle) * teleportDistance,
-                            false
-                        );
-                    }, 100);
+
+            // Eventi di input da tastiera
+            document.addEventListener('keydown', function(e) {
+                if (gameOver) return;
+                
+                switch(e.key) {
+                    case 'ArrowUp':
+                        if (velocityY !== 1) {
+                            velocityX = 0;
+                            velocityY = -1;
+                        }
+                        break;
+                    case 'ArrowDown':
+                        if (velocityY !== -1) {
+                            velocityX = 0;
+                            velocityY = 1;
+                        }
+                        break;
+                    case 'ArrowLeft':
+                        if (velocityX !== 1) {
+                            velocityX = -1;
+                            velocityY = 0;
+                        }
+                        break;
+                    case 'ArrowRight':
+                        if (velocityX !== -1) {
+                            velocityX = 1;
+                            velocityY = 0;
+                        }
+                        break;
                 }
-            } else {
-                player.style.opacity = "1";
-            }
-            
-            // Controlla se il giocatore ha raggiunto l'uscita
-            if (exit && checkCollision(
-                x - PLAYER_SIZE/2, y - PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE,
-                exit.x - 15, exit.y - 15, 30, 30
-            )) {
-                levelCompleted();
-            }
-            
-            return true;
-        }
+            });
 
-        function checkCollision(x1, y1, w1, h1, x2, y2, w2, h2) {
-            return x1 < x2 + w2 &&
-                   x1 + w1 > x2 &&
-                   y1 < y2 + h2 &&
-                   y1 + h1 > y2;
-        }
+            // Pulsante di inizio
+            startButton.addEventListener('click', function() {
+                if (gameOver) {
+                    init();
+                    clearInterval(gameLoop);
+                    gameLoop = setInterval(gameStep, 100);
+                }
+            });
 
-        function levelCompleted() {
-            gameActive = false;
-            showMessage(`LIVELLO ${currentLevel} COMPLETATO!`, 2000);
-            
-            setTimeout(() => {
-                currentLevel++;
-                clearMaze();
-                generateLevel(currentLevel);
-                gameActive = true;
-                updateHUD();
-            }, 2000);
-        }
-
-        function gameLoop() {
-            if (gameActive) {
-                movePlayer();
-                updateParticles();
-            }
-            requestAnimationFrame(gameLoop);
-        }
-
-        // Event listeners
-        startButton.addEventListener('click', init);
+            // Disegna lo schermo iniziale
+            draw();
+        });
     </script>
 </body>
 </html>

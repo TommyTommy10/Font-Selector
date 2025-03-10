@@ -947,3 +947,505 @@
                 }
                 
                 //
+// Continua dalla funzione updateEnvironment
+                // Controlla il meteo
+                if (weatherState === 'raining' && !isRaining) {
+                    startRain();
+                } else if (weatherState !== 'raining' && isRaining) {
+                    stopRain();
+                }
+            }
+            
+            // Funzioni per la pioggia
+            function startRain() {
+                isRaining = true;
+                weatherEffects.style.display = 'block';
+                
+                // Crea le gocce di pioggia
+                for (let i = 0; i < 100; i++) {
+                    createRaindrop();
+                }
+            }
+            
+            function stopRain() {
+                isRaining = false;
+                weatherEffects.style.display = 'none';
+                weatherEffects.innerHTML = '';
+            }
+            
+            function createRaindrop() {
+                const drop = document.createElement('div');
+                drop.className = 'rain';
+                drop.style.left = `${Math.random() * 100}%`;
+                drop.style.animationDuration = `${Math.random() * 0.5 + 0.5}s`;
+                drop.style.animationDelay = `${Math.random() * 0.5}s`;
+                
+                weatherEffects.appendChild(drop);
+                
+                // Rimuovi la goccia dopo l'animazione
+                setTimeout(() => {
+                    drop.remove();
+                    if (isRaining) {
+                        createRaindrop();
+                    }
+                }, (parseFloat(drop.style.animationDuration) + parseFloat(drop.style.animationDelay)) * 1000);
+            }
+            
+            // Funzioni per il meteo casuale
+            function randomizeWeather() {
+                const weatherChance = Math.random();
+                
+                if (weatherChance < 0.2) {
+                    weatherState = 'raining';
+                    showDialog('Ha iniziato a piovere!');
+                } else {
+                    weatherState = 'clear';
+                    if (isRaining) {
+                        showDialog('La pioggia si è fermata.');
+                    }
+                }
+            }
+            
+            // Controlla le collisioni
+            function checkCollisions() {
+                const charRect = character.getBoundingClientRect();
+                
+                // Collisione con la frutta
+                fruits.forEach(fruit => {
+                    const fruitRect = fruit.getBoundingClientRect();
+                    
+                    if (isColliding(charRect, fruitRect)) {
+                        if (selectedTool === 'hand') {
+                            collectFruit(fruit);
+                        }
+                    }
+                });
+                
+                // Collisione con gli alberi
+                trees.forEach(tree => {
+                    const treeRect = tree.getBoundingClientRect();
+                    
+                    if (isColliding(charRect, treeRect, 20)) {
+                        if (selectedTool === 'axe') {
+                            shakeTree(tree);
+                        }
+                    }
+                });
+            }
+            
+            // Controlla se due elementi stanno collidendo
+            function isColliding(rect1, rect2, margin = 0) {
+                return !(
+                    rect1.right < rect2.left + margin ||
+                    rect1.left > rect2.right - margin ||
+                    rect1.bottom < rect2.top + margin ||
+                    rect1.top > rect2.bottom - margin
+                );
+            }
+            
+            // Raccogli la frutta
+            function collectFruit(fruit) {
+                const fruitType = fruit.getAttribute('data-type');
+                const fruitId = fruit.getAttribute('data-id');
+                
+                // Verifica se c'è spazio nell'inventario
+                if (inventory.length < 5) {
+                    // Aggiungi la frutta all'inventario
+                    inventory.push({
+                        type: fruitType,
+                        id: fruitId
+                    });
+                    
+                    // Aggiorna l'inventario visuale
+                    updateInventory();
+                    
+                    // Rimuovi la frutta dalla scena
+                    fruit.style.display = 'none';
+                    
+                    // Mostra messaggio
+                    showDialog(`Hai raccolto una ${fruitType}!`);
+                } else {
+                    showDialog('Il tuo inventario è pieno!');
+                }
+            }
+            
+            // Scuoti l'albero
+            function shakeTree(tree) {
+                // Controlla se l'albero è già stato scosso
+                if (tree.classList.contains('shake-animation')) {
+                    return;
+                }
+                
+                // Aggiungi l'animazione di scuotimento
+                tree.classList.add('shake-animation');
+                
+                // Genera frutti casuali
+                const treeRect = tree.getBoundingClientRect();
+                const chance = Math.random();
+                
+                if (chance > 0.3) {
+                    // Crea un nuovo frutto
+                    const newFruit = document.createElement('div');
+                    newFruit.className = 'fruit';
+                    newFruit.setAttribute('data-type', 'mela');
+                    newFruit.setAttribute('data-id', `new-${Date.now()}`);
+                    
+                    // Posiziona il frutto vicino all'albero
+                    newFruit.style.position = 'absolute';
+                    newFruit.style.left = `${treeRect.left + Math.random() * 50 - 25}px`;
+                    newFruit.style.top = `${treeRect.bottom - 20}px`;
+                    
+                    // Aggiungi il frutto alla scena
+                    document.querySelector('.container').appendChild(newFruit);
+                    
+                    // Aggiorna la lista di frutti
+                    fruits.forEach(fruit => {
+                        fruit.addEventListener('click', function() {
+                            if (selectedTool === 'hand') {
+                                collectFruit(fruit);
+                            }
+                        });
+                    });
+                    
+                    // Mostra messaggio
+                    showDialog('Una mela è caduta dall\'albero!');
+                } else {
+                    showDialog('Niente è caduto dall\'albero.');
+                }
+                
+                // Rimuovi l'animazione dopo un po'
+                setTimeout(() => {
+                    tree.classList.remove('shake-animation');
+                }, 500);
+            }
+            
+            // Aggiorna l'inventario visuale
+            function updateInventory() {
+                // Resetta tutti gli slot
+                slots.forEach(slot => {
+                    slot.textContent = '';
+                });
+                
+                // Aggiorna gli slot con gli elementi dell'inventario
+                inventory.forEach((item, index) => {
+                    if (index < slots.length) {
+                        slots[index].textContent = item.type === 'mela' ? '🍎' : '?';
+                    }
+                });
+            }
+            
+            // Vendi gli oggetti dell'inventario
+            function sellInventory() {
+                let earning = 0;
+                
+                inventory.forEach(item => {
+                    if (item.type === 'mela') {
+                        earning += 10;
+                    }
+                });
+                
+                if (earning > 0) {
+                    money += earning;
+                    moneyDisplay.textContent = `🪙 ${money}`;
+                    inventory = [];
+                    updateInventory();
+                    showDialog(`Hai venduto i tuoi oggetti per ${earning} monete!`);
+                } else {
+                    showDialog('Non hai nulla da vendere!');
+                }
+            }
+            
+            // Mostra un messaggio di dialogo
+            function showDialog(text) {
+                dialogText.textContent = text;
+                dialog.style.display = 'block';
+            }
+            
+            // Nascondi il messaggio di dialogo
+            function hideDialog() {
+                dialog.style.display = 'none';
+            }
+            
+            // Pianta un albero
+            function plantTree(x, y) {
+                // Verifica se c'è già un albero nelle vicinanze
+                for (const tree of plantedTrees) {
+                    const distance = Math.sqrt(
+                        Math.pow(tree.x - x, 2) + 
+                        Math.pow(tree.y - y, 2)
+                    );
+                    
+                    if (distance < 50) {
+                        showDialog('Non puoi piantare qui, è troppo vicino a un altro albero!');
+                        return;
+                    }
+                }
+                
+                // Crea una macchia di terreno per piantare
+                const spot = document.createElement('div');
+                spot.className = 'planting-spot';
+                spot.style.left = `${x}px`;
+                spot.style.top = `${y}px`;
+                document.querySelector('.container').appendChild(spot);
+                
+                // Crea un nuovo albero
+                const newTree = document.createElement('div');
+                newTree.className = 'planted-tree tree';
+                newTree.style.left = `${x - 50}px`;
+                newTree.style.bottom = `${window.innerHeight - y - 50}px`;
+                
+                const trunk = document.createElement('div');
+                trunk.className = 'tree-trunk';
+                
+                const top = document.createElement('div');
+                top.className = 'tree-top';
+                
+                newTree.appendChild(trunk);
+                newTree.appendChild(top);
+                
+                document.querySelector('.container').appendChild(newTree);
+                
+                // Salva l'albero piantato
+                plantedTrees.push({
+                    x: x,
+                    y: y,
+                    element: newTree,
+                    spot: spot,
+                    growthStage: 0,
+                    growthTime: Date.now()
+                });
+                
+                showDialog('Hai piantato un albero! Crescerà col tempo.');
+                
+                // Rimuovi la macchia dopo che l'albero è cresciuto
+                setTimeout(() => {
+                    newTree.classList.add('grown');
+                    spot.style.display = 'none';
+                    
+                    // Aggiungi l'evento di shake per l'albero cresciuto
+                    newTree.addEventListener('click', function() {
+                        if (selectedTool === 'axe') {
+                            shakeTree(newTree);
+                        }
+                    });
+                }, 30000); // 30 secondi per crescere
+            }
+            
+            // Funzione eseguita ogni nuovo giorno
+            function onNewDay() {
+                // Fai crescere nuovi frutti
+                spawnNewFruits();
+                
+                // Cambia casualmente il meteo
+                randomizeWeather();
+                
+                // Mostra messaggio
+                showDialog('È un nuovo giorno! Nuovi frutti sono cresciuti sull\'isola.');
+            }
+            
+            // Genera nuovi frutti
+            function spawnNewFruits() {
+                // Rimuovi i frutti nascosti
+                fruits.forEach(fruit => {
+                    fruit.style.display = 'block';
+                });
+                
+                // Crea nuovi frutti in posizioni casuali
+                for (let i = 0; i < 3; i++) {
+                    const newFruit = document.createElement('div');
+                    newFruit.className = 'fruit';
+                    newFruit.setAttribute('data-type', 'mela');
+                    newFruit.setAttribute('data-id', `new-${Date.now()}-${i}`);
+                    
+                    // Posiziona il frutto casualmente sull'isola
+                    const islandRect = island.getBoundingClientRect();
+                    
+                    const fruitX = islandRect.left + islandRect.width * 0.3 + Math.random() * islandRect.width * 0.4;
+                    const fruitY = islandRect.top + islandRect.height * 0.3 + Math.random() * islandRect.height * 0.4;
+                    
+                    newFruit.style.position = 'absolute';
+                    newFruit.style.left = `${fruitX}px`;
+                    newFruit.style.top = `${fruitY}px`;
+                    
+                    // Aggiungi il frutto alla scena
+                    document.querySelector('.container').appendChild(newFruit);
+                    
+                    // Aggiungi evento al nuovo frutto
+                    newFruit.addEventListener('click', function() {
+                        if (selectedTool === 'hand') {
+                            collectFruit(newFruit);
+                        }
+                    });
+                }
+            }
+            
+            // Esegui l'azione in base allo strumento selezionato
+            function performAction() {
+                const charRect = character.getBoundingClientRect();
+                
+                switch(selectedTool) {
+                    case 'hand':
+                        // Verifica se è vicino alla casa
+                        const house = document.querySelector('.house');
+                        const houseRect = house.getBoundingClientRect();
+                        
+                        if (isColliding(charRect, houseRect, 20)) {
+                            sellInventory();
+                        }
+                        break;
+                        
+                    case 'shovel':
+                        // Pianta un albero nella posizione attuale
+                        plantTree(charRect.left + charRect.width / 2, charRect.top + charRect.height);
+                        break;
+                        
+                    case 'axe':
+                        // L'azione viene eseguita con la collisione
+                        break;
+                }
+            }
+            
+            // Imposta l'evento per il pulsante di dialogo
+            dialogBtn.addEventListener('click', function() {
+                hideDialog();
+            });
+            
+            // Imposta l'evento per il pulsante di inizio
+            startBtn.addEventListener('click', function() {
+                welcomeModal.style.display = 'none';
+                showDialog('Benvenuto nella tua isola! Esplora e raccogli frutti.');
+            });
+            
+            // Imposta gli eventi per gli strumenti
+            tools.forEach(tool => {
+                tool.addEventListener('click', function() {
+                    // Rimuovi la selezione dagli altri strumenti
+                    tools.forEach(t => t.classList.remove('selected'));
+                    
+                    // Seleziona lo strumento corrente
+                    tool.classList.add('selected');
+                    
+                    // Imposta lo strumento selezionato
+                    selectedTool = tool.getAttribute('data-tool');
+                    
+                    showDialog(`Hai selezionato: ${selectedTool}`);
+                });
+            });
+            
+            // Seleziona lo strumento predefinito
+            document.getElementById('tool-hand').classList.add('selected');
+            
+            // Imposta gli eventi per i controlli
+            document.getElementById('control-up').addEventListener('click', function() {
+                moveCharacter('up');
+            });
+            
+            document.getElementById('control-down').addEventListener('click', function() {
+                moveCharacter('down');
+            });
+            
+            document.getElementById('control-left').addEventListener('click', function() {
+                moveCharacter('left');
+            });
+            
+            document.getElementById('control-right').addEventListener('click', function() {
+                moveCharacter('right');
+            });
+            
+            document.getElementById('control-action').addEventListener('click', function() {
+                performAction();
+            });
+            
+            // Imposta gli eventi per i tasti
+            document.addEventListener('keydown', function(event) {
+                switch(event.key) {
+                    case 'ArrowUp':
+                        moveCharacter('up');
+                        break;
+                    case 'ArrowDown':
+                        moveCharacter('down');
+                        break;
+                    case 'ArrowLeft':
+                        moveCharacter('left');
+                        break;
+                    case 'ArrowRight':
+                        moveCharacter('right');
+                        break;
+                    case ' ':
+                    case 'Enter':
+                        performAction();
+                        break;
+                    case '1':
+                        document.getElementById('tool-hand').click();
+                        break;
+                    case '2':
+                        document.getElementById('tool-shovel').click();
+                        break;
+                    case '3':
+                        document.getElementById('tool-axe').click();
+                        break;
+                }
+            });
+            
+            // Imposta gli eventi per la frutta
+            fruits.forEach(fruit => {
+                fruit.addEventListener('click', function() {
+                    if (selectedTool === 'hand') {
+                        collectFruit(fruit);
+                    }
+                });
+            });
+            
+            // Imposta gli eventi per gli alberi
+            trees.forEach(tree => {
+                tree.addEventListener('click', function() {
+                    if (selectedTool === 'axe') {
+                        shakeTree(tree);
+                    }
+                });
+            });
+            
+            // Imposta l'evento per la casa
+            document.querySelector('.house').addEventListener('click', function() {
+                const charRect = character.getBoundingClientRect();
+                const houseRect = this.getBoundingClientRect();
+                
+                if (isColliding(charRect, houseRect, 50)) {
+                    sellInventory();
+                } else {
+                    showDialog('Avvicinati alla casa per vendere gli oggetti!');
+                }
+            });
+            
+            // Imposta l'evento per l'isola
+            island.addEventListener('click', function(event) {
+                if (selectedTool === 'shovel') {
+                    // Pianta un albero dove hai cliccato
+                    plantTree(event.clientX, event.clientY);
+                }
+            });
+            
+            // Inizializza il gioco
+            function initGame() {
+                // Imposta la posizione iniziale del personaggio
+                initCharacterPosition();
+                
+                // Imposta l'orologio
+                setInterval(updateClock, 1000);
+                
+                // Imposta il timer per la generazione di nuovi frutti
+                fruitSpawnTimer = setInterval(spawnNewFruits, 300000); // Ogni 5 minuti
+                
+                // Seleziona lo strumento predefinito
+                document.getElementById('tool-hand').classList.add('selected');
+                
+                // Randomizza il meteo iniziale
+                randomizeWeather();
+            }
+            
+            // Avvia il gioco
+            initGame();
+        });
+    </script>
+</body>
+</html>

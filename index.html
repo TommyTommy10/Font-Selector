@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
+    <title>Labirinto Procedurale</title>
     <style>
         body {
             display: flex;
@@ -12,235 +12,327 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+            background-color: #121212;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #f0f0f0;
         }
         canvas {
-            border: 2px solid #333;
-            background-color: #222;
+            border: 2px solid #444;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
-        .game-info {
+        .controls {
             margin-top: 20px;
             text-align: center;
         }
         button {
             padding: 8px 16px;
-            margin-top: 10px;
-            background-color: #4CAF50;
+            margin: 5px;
+            background-color: #4a4a9b;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #5a5aab;
+        }
+        .info {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            width: 400px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Snake Game</h1>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div class="game-info">
-        <p>Punteggio: <span id="score">0</span></p>
-        <p>Record: <span id="highScore">0</span></p>
-        <button id="startButton">Inizia Gioco</button>
+    <h1>Labirinto Procedurale</h1>
+    <div class="stats">
+        <div>Livello: <span id="level">1</span></div>
+        <div>Mosse: <span id="moves">0</span></div>
+        <div>Tempo: <span id="time">0</span>s</div>
     </div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="controls">
+        <button id="newGameBtn">Nuovo Labirinto</button>
+        <button id="solveBtn">Mostra Soluzione</button>
+    </div>
+    <div class="info">Usa le frecce o WASD per muoverti. Raggiungi l'uscita rossa!</div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('gameCanvas');
             const ctx = canvas.getContext('2d');
-            const scoreElement = document.getElementById('score');
-            const highScoreElement = document.getElementById('highScore');
-            const startButton = document.getElementById('startButton');
-
-            // Dimensioni della griglia
-            const gridSize = 20;
-            const tileCount = canvas.width / gridSize;
+            const levelElement = document.getElementById('level');
+            const movesElement = document.getElementById('moves');
+            const timeElement = document.getElementById('time');
+            const newGameBtn = document.getElementById('newGameBtn');
+            const solveBtn = document.getElementById('solveBtn');
             
-            // Inizializzazione del serpente
-            let snake = [];
-            let velocityX = 0;
-            let velocityY = 0;
-            let food = {};
-            let score = 0;
-            let highScore = localStorage.getItem('snakeHighScore') || 0;
-            let gameOver = true;
-            let gameLoop;
-
-            highScoreElement.textContent = highScore;
-
-            // Inizializza il gioco
+            // Configurazione del gioco
+            let cellSize = 20;
+            let cols, rows;
+            let maze = [];
+            let player = { x: 0, y: 0 };
+            let exit = { x: 0, y: 0 };
+            let moves = 0;
+            let startTime = 0;
+            let timer = null;
+            let currentLevel = 1;
+            let solution = [];
+            let showSolution = false;
+            
+            // Inizializzazione
             function init() {
-                snake = [{x: 10, y: 10}];
-                velocityX = 0;
-                velocityY = 0;
-                score = 0;
-                scoreElement.textContent = score;
-                placeFood();
-                gameOver = false;
-            }
-
-            // Posiziona il cibo in una posizione casuale
-            function placeFood() {
-                food = {
-                    x: Math.floor(Math.random() * tileCount),
-                    y: Math.floor(Math.random() * tileCount)
-                };
+                // Dimensione del labirinto aumenta con il livello
+                const size = Math.min(15, 5 + currentLevel);
+                cols = size;
+                rows = size;
+                cellSize = Math.floor(canvas.width / cols);
                 
-                // Verifica che il cibo non sia posizionato sul serpente
-                for (let i = 0; i < snake.length; i++) {
-                    if (snake[i].x === food.x && snake[i].y === food.y) {
-                        placeFood();
-                        break;
-                    }
-                }
-            }
-
-            // Aggiorna il gioco
-            function update() {
-                if (gameOver) return;
-
-                // Muovi il serpente
-                const head = {
-                    x: snake[0].x + velocityX,
-                    y: snake[0].y + velocityY
-                };
-
-                // Controlla collisione con bordi
-                if (head.x < 0 || head.y < 0 || head.x >= tileCount || head.y >= tileCount) {
-                    endGame();
-                    return;
-                }
-
-                // Controlla collisione con se stesso
-                for (let i = 0; i < snake.length; i++) {
-                    if (snake[i].x === head.x && snake[i].y === head.y) {
-                        endGame();
-                        return;
-                    }
-                }
-
-                snake.unshift(head);
-
-                // Controlla se ha mangiato il cibo
-                if (head.x === food.x && head.y === food.y) {
-                    score++;
-                    scoreElement.textContent = score;
-                    if (score > highScore) {
-                        highScore = score;
-                        highScoreElement.textContent = highScore;
-                        localStorage.setItem('snakeHighScore', highScore);
-                    }
-                    placeFood();
-                } else {
-                    snake.pop();
-                }
-            }
-
-            // Disegna il gioco
-            function draw() {
-                // Pulisci il canvas
-                ctx.fillStyle = '#222';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Disegna il serpente
-                ctx.fillStyle = '#4CAF50';
-                for (let i = 0; i < snake.length; i++) {
-                    ctx.fillRect(
-                        snake[i].x * gridSize, 
-                        snake[i].y * gridSize, 
-                        gridSize - 1, 
-                        gridSize - 1
-                    );
-                }
-
-                // Disegna la testa in un colore diverso
-                if (snake.length > 0) {
-                    ctx.fillStyle = '#2E7D32';
-                    ctx.fillRect(
-                        snake[0].x * gridSize, 
-                        snake[0].y * gridSize, 
-                        gridSize - 1, 
-                        gridSize - 1
-                    );
-                }
-
-                // Disegna il cibo
-                ctx.fillStyle = '#FF5722';
-                ctx.fillRect(
-                    food.x * gridSize, 
-                    food.y * gridSize, 
-                    gridSize - 1, 
-                    gridSize - 1
-                );
-
-                // Disegna messaggio di game over
-                if (gameOver && snake.length > 0) {
-                    ctx.fillStyle = 'white';
-                    ctx.font = '30px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
-                    ctx.font = '20px Arial';
-                    ctx.fillText('Premi "Inizia Gioco" per ricominciare', canvas.width / 2, canvas.height / 2 + 30);
-                }
-            }
-
-            // Loop principale del gioco
-            function gameStep() {
-                update();
+                // Resetta statistiche
+                moves = 0;
+                movesElement.textContent = moves;
+                startTime = Date.now();
+                if (timer) clearInterval(timer);
+                timer = setInterval(updateTime, 1000);
+                
+                // Genera labirinto
+                generateMaze();
+                
+                // Posiziona giocatore e uscita
+                player = { x: 0, y: 0 };
+                exit = { x: cols - 1, y: rows - 1 };
+                
+                // Trova soluzione
+                findSolution();
+                
+                // Aggiorna livello visualizzato
+                levelElement.textContent = currentLevel;
+                
+                // Nascondi soluzione
+                showSolution = false;
+                
+                // Disegna il labirinto
                 draw();
             }
-
-            // Termina il gioco
-            function endGame() {
-                gameOver = true;
-                clearInterval(gameLoop);
-            }
-
-            // Eventi di input da tastiera
-            document.addEventListener('keydown', function(e) {
-                if (gameOver) return;
+            
+            // Genera labirinto con Recursive Backtracking
+            function generateMaze() {
+                // Inizializza griglia
+                maze = Array(cols).fill().map(() => Array(rows).fill(1));
                 
-                switch(e.key) {
-                    case 'ArrowUp':
-                        if (velocityY !== 1) {
-                            velocityX = 0;
-                            velocityY = -1;
+                // Funzione ricorsiva per scavare percorsi
+                function carve(x, y) {
+                    const directions = [
+                        [0, -2], // Su
+                        [2, 0],  // Destra
+                        [0, 2],  // Giù
+                        [-2, 0]  // Sinistra
+                    ];
+                    
+                    // Mescola le direzioni casualmente
+                    directions.sort(() => Math.random() - 0.5);
+                    
+                    // Segna cella corrente come percorso
+                    maze[x][y] = 0;
+                    
+                    // Prova ogni direzione
+                    for (let [dx, dy] of directions) {
+                        const nx = x + dx;
+                        const ny = y + dy;
+                        
+                        // Controlla se può scavare in quella direzione
+                        if (nx >= 0 && nx < cols && ny >= 0 && ny < rows && maze[nx][ny] === 1) {
+                            // Abbatti il muro tra le celle
+                            maze[x + dx/2][y + dy/2] = 0;
+                            // Continua ricorsivamente
+                            carve(nx, ny);
                         }
-                        break;
-                    case 'ArrowDown':
-                        if (velocityY !== -1) {
-                            velocityX = 0;
-                            velocityY = 1;
+                    }
+                }
+                
+                // Inizia a scavare dal punto (0,0)
+                carve(0, 0);
+                
+                // Assicura che ci sia un percorso all'uscita
+                maze[cols-1][rows-1] = 0;
+                
+                // Aggiungi qualche percorso extra per rendere il labirinto meno lineare (più difficile)
+                const extraPaths = Math.floor(currentLevel / 2);
+                for (let i = 0; i < extraPaths; i++) {
+                    const x = Math.floor(Math.random() * (cols-2)) + 1;
+                    const y = Math.floor(Math.random() * (rows-2)) + 1;
+                    if (maze[x][y] === 1) {
+                        maze[x][y] = 0;
+                    }
+                }
+            }
+            
+            // Trova la soluzione usando BFS
+            function findSolution() {
+                const visited = Array(cols).fill().map(() => Array(rows).fill(false));
+                const queue = [{ x: 0, y: 0, path: [] }];
+                visited[0][0] = true;
+                
+                while (queue.length > 0) {
+                    const { x, y, path } = queue.shift();
+                    
+                    // Se abbiamo trovato l'uscita
+                    if (x === exit.x && y === exit.y) {
+                        solution = [...path, { x, y }];
+                        return;
+                    }
+                    
+                    // Controlla tutte le direzioni
+                    const directions = [
+                        { dx: 0, dy: -1 }, // Su
+                        { dx: 1, dy: 0 },  // Destra
+                        { dx: 0, dy: 1 },  // Giù
+                        { dx: -1, dy: 0 }  // Sinistra
+                    ];
+                    
+                    for (const { dx, dy } of directions) {
+                        const nx = x + dx;
+                        const ny = y + dy;
+                        
+                        // Controlla se è una mossa valida
+                        if (nx >= 0 && nx < cols && ny >= 0 && ny < rows && 
+                            maze[nx][ny] === 0 && !visited[nx][ny]) {
+                            visited[nx][ny] = true;
+                            queue.push({ x: nx, y: ny, path: [...path, { x, y }] });
                         }
-                        break;
-                    case 'ArrowLeft':
-                        if (velocityX !== 1) {
-                            velocityX = -1;
-                            velocityY = 0;
+                    }
+                }
+                
+                // Nessuna soluzione trovata
+                solution = [];
+            }
+            
+            // Disegna il labirinto
+            function draw() {
+                // Sfondo
+                ctx.fillStyle = '#121212';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Disegna labirinto
+                for (let x = 0; x < cols; x++) {
+                    for (let y = 0; y < rows; y++) {
+                        if (maze[x][y] === 1) {
+                            // Muro
+                            ctx.fillStyle = '#333';
+                            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                        } else {
+                            // Percorso
+                            ctx.fillStyle = '#111';
+                            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
                         }
-                        break;
-                    case 'ArrowRight':
-                        if (velocityX !== -1) {
-                            velocityX = 1;
-                            velocityY = 0;
+                    }
+                }
+                
+                // Disegna soluzione se richiesta
+                if (showSolution) {
+                    ctx.strokeStyle = 'rgba(0, 155, 255, 0.5)';
+                    ctx.lineWidth = cellSize / 3;
+                    ctx.beginPath();
+                    if (solution.length > 0) {
+                        ctx.moveTo(solution[0].x * cellSize + cellSize/2, solution[0].y * cellSize + cellSize/2);
+                        for (let i = 1; i < solution.length; i++) {
+                            ctx.lineTo(solution[i].x * cellSize + cellSize/2, solution[i].y * cellSize + cellSize/2);
                         }
-                        break;
+                        ctx.stroke();
+                    }
+                }
+                
+                // Disegna uscita
+                ctx.fillStyle = '#a00';
+                ctx.fillRect(exit.x * cellSize, exit.y * cellSize, cellSize, cellSize);
+                
+                // Disegna giocatore
+                ctx.fillStyle = '#5a5';
+                ctx.beginPath();
+                ctx.arc(player.x * cellSize + cellSize/2, player.y * cellSize + cellSize/2, 
+                        cellSize/3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Effetto luce intorno al giocatore
+                const gradient = ctx.createRadialGradient(
+                    player.x * cellSize + cellSize/2, player.y * cellSize + cellSize/2, cellSize/3,
+                    player.x * cellSize + cellSize/2, player.y * cellSize + cellSize/2, cellSize * 3
+                );
+                gradient.addColorStop(0, 'rgba(100, 255, 100, 0.2)');
+                gradient.addColorStop(1, 'rgba(100, 255, 100, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(player.x * cellSize + cellSize/2, player.y * cellSize + cellSize/2, 
+                         cellSize * 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Gestisci input da tastiera
+            document.addEventListener('keydown', (e) => {
+                let nx = player.x;
+                let ny = player.y;
+                
+                // Calcola nuova posizione basata sul tasto premuto
+                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') ny -= 1;
+                else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') nx += 1;
+                else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') ny += 1;
+                else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') nx -= 1;
+                else return; // Altri tasti non gestiti
+                
+                // Previeni lo scroll della pagina con le frecce
+                e.preventDefault();
+                
+                // Verifica se la mossa è valida
+                if (nx >= 0 && nx < cols && ny >= 0 && ny < rows && maze[nx][ny] === 0) {
+                    player.x = nx;
+                    player.y = ny;
+                    moves++;
+                    movesElement.textContent = moves;
+                    
+                    // Controlla se il giocatore ha raggiunto l'uscita
+                    if (player.x === exit.x && player.y === exit.y) {
+                        clearInterval(timer);
+                        const time = Math.floor((Date.now() - startTime) / 1000);
+                        setTimeout(() => {
+                            alert(`Livello ${currentLevel} completato!\nMovimenti: ${moves}\nTempo: ${time} secondi`);
+                            currentLevel++;
+                            init();
+                        }, 100);
+                    }
+                    
+                    // Ridisegna
+                    draw();
                 }
             });
-
-            // Pulsante di inizio
-            startButton.addEventListener('click', function() {
-                if (gameOver) {
-                    init();
-                    clearInterval(gameLoop);
-                    gameLoop = setInterval(gameStep, 100);
-                }
+            
+            // Aggiorna timer
+            function updateTime() {
+                const time = Math.floor((Date.now() - startTime) / 1000);
+                timeElement.textContent = time;
+            }
+            
+            // Evento nuovo gioco
+            newGameBtn.addEventListener('click', () => {
+                currentLevel = 1;
+                init();
             });
-
-            // Disegna lo schermo iniziale
-            draw();
+            
+            // Evento mostra/nascondi soluzione
+            solveBtn.addEventListener('click', () => {
+                showSolution = !showSolution;
+                draw();
+            });
+            
+            // Inizia il gioco
+            init();
         });
     </script>
 </body>

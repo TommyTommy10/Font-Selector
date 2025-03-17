@@ -3,1449 +3,842 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isola Virtuale Avanzata</title>
+    <title>MiniOS</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background-color: #88c9e8;
-            overflow: hidden;
+            background-image: url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
             height: 100vh;
-        }
-
-        .container {
-            position: relative;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        .island {
-            position: absolute;
-            width: 70%;
-            height: 70%;
-            background-color: #8cd862;
-            border-radius: 50%;
-            top: 20%;
-            left: 15%;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            z-index: 1;
             overflow: hidden;
-            cursor: pointer;
-        }
-
-        .water {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 20%;
-            background-color: #5bb5d9;
-            z-index: 3;
-        }
-
-        .sky {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(#77c0e8, #c6e6f7);
-            z-index: 0;
-            transition: background 2s ease;
-        }
-
-        .sun {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background-color: #ffde59;
-            border-radius: 50%;
-            top: 50px;
-            right: 100px;
-            box-shadow: 0 0 50px #ffde59;
-            z-index: 0;
-            transition: all 2s ease;
-        }
-
-        .cloud {
-            position: absolute;
-            background-color: white;
-            border-radius: 50px;
-            z-index: 0;
-            animation: floatCloud 30s linear infinite;
-        }
-
-        @keyframes floatCloud {
-            0% { transform: translateX(-200px); }
-            100% { transform: translateX(calc(100vw + 200px)); }
-        }
-
-        .cloud-1 {
-            width: 200px;
-            height: 60px;
-            top: 100px;
-            left: -200px;
-            animation-delay: 0s;
-        }
-
-        .cloud-2 {
-            width: 150px;
-            height: 50px;
-            top: 150px;
-            left: -200px;
-            animation-delay: 10s;
-        }
-
-        .cloud-3 {
-            width: 180px;
-            height: 55px;
-            top: 80px;
-            left: -200px;
-            animation-delay: 20s;
-        }
-
-        .tree {
-            position: absolute;
-            z-index: 2;
-        }
-
-        .tree-trunk {
-            position: absolute;
-            width: 20px;
-            height: 60px;
-            background-color: #8c6239;
-            bottom: 0;
-            left: 40px;
-        }
-
-        .tree-top {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background-color: #3e8948;
-            border-radius: 50%;
-            bottom: 40px;
-            left: 0;
-            transition: all 0.5s ease;
-        }
-
-        .tree-1 {
-            left: 20%;
-            bottom: 30%;
-        }
-
-        .tree-2 {
-            right: 25%;
-            bottom: 40%;
-        }
-
-        .tree-3 {
-            left: 40%;
-            bottom: 35%;
-        }
-
-        .house {
-            position: absolute;
-            z-index: 2;
-            left: 50%;
-            bottom: 40%;
-            transform: translateX(-50%);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .house:hover {
-            transform: translateX(-50%) scale(1.05);
-        }
-
-        .house-body {
-            width: 120px;
-            height: 100px;
-            background-color: #f7d3a5;
-            border: 4px solid #8c6239;
-            border-radius: 10px;
-        }
-
-        .house-roof {
-            width: 140px;
-            height: 80px;
-            background-color: #e86a58;
-            border-radius: 80px 80px 0 0;
-            position: relative;
-            top: -40px;
-            left: -10px;
-        }
-
-        .house-door {
-            position: absolute;
-            width: 40px;
-            height: 60px;
-            background-color: #8c6239;
-            bottom: 0;
-            left: 40px;
-            border-radius: 10px 10px 0 0;
-            cursor: pointer;
-        }
-
-        .house-window {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: #cae9ff;
-            border: 3px solid #8c6239;
-            border-radius: 50%;
-        }
-
-        .window-1 {
-            top: 20px;
-            left: 15px;
-        }
-
-        .window-2 {
-            top: 20px;
-            right: 15px;
-        }
-
-        .character {
-            position: absolute;
-            width: 50px;
-            height: 110px;
-            z-index: 10;
-            transform: translate(-50%, -100%);
-            cursor: pointer;
-            transition: left 0.5s ease, top 0.5s ease;
-        }
-
-        .character-head {
-            width: 50px;
-            height: 50px;
-            background-color: #ffb347;
-            border-radius: 50%;
-            position: relative;
-        }
-
-        .character-body {
-            width: 40px;
-            height: 60px;
-            background-color: #e86a58;
-            border-radius: 20px;
-            position: relative;
-            top: -10px;
-            left: 5px;
-        }
-
-        .character-eye {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #000;
-            border-radius: 50%;
-            top: 20px;
-        }
-
-        .eye-left {
-            left: 15px;
-        }
-
-        .eye-right {
-            right: 15px;
-        }
-
-        .character-mouth {
-            position: absolute;
-            width: 20px;
-            height: 5px;
-            background-color: #8c6239;
-            border-radius: 0 0 10px 10px;
-            bottom: 10px;
-            left: 15px;
-        }
-
-        .fruit {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: #e74c3c;
-            border-radius: 50%;
-            z-index: 2;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .fruit:hover {
-            transform: scale(1.2);
-        }
-
-        .fruit::after {
-            content: '';
-            position: absolute;
-            width: 8px;
-            height: 15px;
-            background-color: #8c6239;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 5px 5px 0 0;
-        }
-
-        .fruit-1 {
-            left: 25%;
-            bottom: 40%;
-        }
-
-        .fruit-2 {
-            right: 30%;
-            bottom: 50%;
-        }
-
-        .fruit-3 {
-            left: 45%;
-            bottom: 45%;
-        }
-
-        .inventory {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 10px;
-            padding: 10px;
             display: flex;
-            gap: 10px;
-            z-index: 20;
+            flex-direction: column;
         }
-
-        .inventory-slot {
-            width: 50px;
+        
+        #desktop {
+            flex-grow: 1;
+            position: relative;
+            padding: 20px;
+        }
+        
+        #taskbar {
             height: 50px;
-            background-color: white;
-            border: 2px solid #8c6239;
-            border-radius: 10px;
+            background-color: rgba(25, 25, 25, 0.8);
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
+            padding: 0 15px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
         }
-
-        .inventory-slot:hover {
-            transform: scale(1.1);
-        }
-
-        .dialog {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: white;
-            border: 3px solid #8c6239;
-            border-radius: 20px;
-            padding: 15px 20px;
-            min-width: 300px;
-            text-align: center;
-            z-index: 20;
-            display: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .dialog-arrow {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-top: 15px solid #8c6239;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .btn {
-            background-color: #e86a58;
+        
+        #start-menu {
+            background-color: #0078d7;
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-weight: bold;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn:hover {
-            background-color: #d45949;
-        }
-
-        .time-display {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 10px;
-            padding: 10px;
-            z-index: 20;
-            font-weight: bold;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .welcome-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .modal-content {
-            background-color: white;
-            border: 5px solid #8c6239;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .modal-title {
-            color: #e86a58;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .fish {
-            position: absolute;
-            width: 30px;
-            height: 15px;
-            background-color: #f39c12;
-            border-radius: 30px 10px 10px 30px;
-            z-index: 3;
-            cursor: pointer;
-        }
-
-        .fish-tail {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background-color: #f39c12;
-            right: -5px;
-            top: 0;
-            clip-path: polygon(0 50%, 100% 0, 100% 100%);
-        }
-
-        .fish-1 {
-            bottom: 30%;
-            left: 10%;
-            animation: swimHorizontal 15s linear infinite;
-        }
-
-        .fish-2 {
-            bottom: 40%;
-            left: 20%;
-            animation: swimHorizontal 20s linear infinite;
-        }
-
-        @keyframes swimHorizontal {
-            0% {
-                transform: translateX(0) scaleX(1);
-            }
-            49% {
-                transform: translateX(40vw) scaleX(1);
-            }
-            50% {
-                transform: translateX(40vw) scaleX(-1);
-            }
-            99% {
-                transform: translateX(0) scaleX(-1);
-            }
-            100% {
-                transform: translateX(0) scaleX(1);
-            }
-        }
-
-        .butterfly {
-            position: absolute;
-            width: 5px;
-            height: 10px;
-            background-color: #9b59b6;
-            z-index: 2;
-            cursor: pointer;
-        }
-
-        .butterfly-wing {
-            position: absolute;
-            width: 10px;
-            height: 15px;
-            background-color: #9b59b6;
-            border-radius: 50%;
-            opacity: 0.7;
-        }
-
-        .wing-left {
-            left: -8px;
-            animation: flapLeft 0.2s ease-in-out infinite alternate;
-        }
-
-        .wing-right {
-            right: -8px;
-            animation: flapRight 0.2s ease-in-out infinite alternate;
-        }
-
-        .butterfly-1 {
-            top: 30%;
-            left: 40%;
-            animation: butterflyPath1 30s ease-in-out infinite;
-        }
-
-        .butterfly-2 {
-            top: 25%;
-            left: 60%;
-            animation: butterflyPath2 25s ease-in-out infinite;
-        }
-
-        @keyframes butterflyPath1 {
-            0% { transform: translate(0, 0); }
-            20% { transform: translate(100px, -50px); }
-            40% { transform: translate(200px, 30px); }
-            60% { transform: translate(100px, 80px); }
-            80% { transform: translate(-100px, 30px); }
-            100% { transform: translate(0, 0); }
-        }
-
-        @keyframes butterflyPath2 {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(-150px, -30px); }
-            50% { transform: translate(-100px, 80px); }
-            75% { transform: translate(100px, 10px); }
-            100% { transform: translate(0, 0); }
-        }
-
-        @keyframes flapLeft {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(60deg); }
-        }
-
-        @keyframes flapRight {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(-60deg); }
-        }
-
-        .weather-effects {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
-            pointer-events: none;
-            display: none;
-        }
-
-        .rain {
-            position: absolute;
-            background-color: rgba(174, 194, 224, 0.6);
-            width: 2px;
-            height: 15px;
-            top: -20px;
-            animation: rainfall linear infinite;
-        }
-
-        @keyframes rainfall {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(calc(100vh + 20px)); }
-        }
-
-        .controls {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 10px;
-            padding: 10px;
-            z-index: 20;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-gap: 5px;
-        }
-
-        .control-btn {
             width: 40px;
             height: 40px;
-            background-color: #e86a58;
-            color: white;
-            border: none;
             border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
             font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
+            transition: background-color 0.3s;
         }
-
-        .control-btn:hover {
-            background-color: #d45949;
+        
+        #start-menu:hover {
+            background-color: #0063b1;
         }
-
-        .tool-selector {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 10px;
-            padding: 10px;
-            z-index: 20;
+        
+        #clock {
+            margin-left: auto;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .icon {
+            width: 80px;
+            height: 80px;
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
         }
-
-        .tool {
+        
+        .icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .icon-img {
             width: 40px;
             height: 40px;
-            background-color: white;
-            border: 2px solid #8c6239;
+            background-color: #0078d7;
             border-radius: 5px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-size: 20px;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .icon-label {
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+        
+        .window {
+            position: absolute;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-width: 300px;
+            min-height: 200px;
+            resize: both;
+        }
+        
+        .window-header {
+            height: 32px;
+            background-color: #0078d7;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            cursor: move;
+        }
+        
+        .window-title {
+            color: white;
+            flex-grow: 1;
+            font-size: 14px;
+        }
+        
+        .window-close {
+            width: 24px;
+            height: 24px;
+            background-color: #e81123;
+            color: white;
+            border: none;
             cursor: pointer;
-            transition: transform 0.2s ease;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
-
-        .tool:hover {
-            transform: scale(1.1);
+        
+        .window-content {
+            flex-grow: 1;
+            padding: 15px;
+            overflow: auto;
         }
-
-        .tool.selected {
-            background-color: #e86a58;
+        
+        #start-menu-panel {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            width: 300px;
+            background-color: rgba(25, 25, 25, 0.9);
+            color: white;
+            border-radius: 5px 5px 0 0;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .menu-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-color: #0078d7;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #taskbar-apps {
+            display: flex;
+            margin-left: 10px;
+        }
+        
+        .taskbar-app {
+            height: 40px;
+            width: 40px;
+            margin-right: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .taskbar-app.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid #0078d7;
+        }
+        
+        .note-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+            resize: none;
+            outline: none;
+            padding: 5px;
+            font-size: 14px;
+        }
+        
+        .calculator-display {
+            background-color: #f0f0f0;
+            padding: 15px;
+            text-align: right;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+        }
+        
+        .calc-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 3px;
+            background-color: #e6e6e6;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .calc-btn:hover {
+            background-color: #d1d1d1;
+        }
+        
+        .calc-btn.operator {
+            background-color: #f5923e;
             color: white;
         }
-
-        .planted-tree {
-            position: absolute;
-            z-index: 2;
-            transform: scale(0.6);
-            transition: transform 10s ease;
+        
+        .calc-btn.equals {
+            background-color: #0078d7;
+            color: white;
         }
-
-        .planted-tree.grown {
-            transform: scale(1);
-        }
-
-        .planting-spot {
-            position: absolute;
-            width: 30px;
-            height: 15px;
-            background-color: #6b5034;
-            border-radius: 50%;
-            z-index: 1;
-            transform: translate(-50%, -50%);
-        }
-
-        #money-display {
-            position: absolute;
-            top: 70px;
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 10px;
+        
+        .browser-toolbar {
+            display: flex;
             padding: 10px;
-            z-index: 20;
-            font-weight: bold;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
         }
-
-        .shake-animation {
-            animation: shake 0.5s ease-in-out;
+        
+        .browser-url {
+            flex-grow: 1;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            margin: 0 10px;
         }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            20% { transform: translateX(-10px); }
-            40% { transform: translateX(10px); }
-            60% { transform: translateX(-5px); }
-            80% { transform: translateX(5px); }
-            100% { transform: translateX(0); }
+        
+        .browser-content {
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .browser-page {
+            flex-grow: 1;
+            padding: 15px;
+            overflow: auto;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="sky"></div>
-        <div class="sun"></div>
-        
-        <div class="cloud cloud-1"></div>
-        <div class="cloud cloud-2"></div>
-        <div class="cloud cloud-3"></div>
-        
-        <div class="island" id="island"></div>
-        
-        <div class="tree tree-1" data-tree-id="1">
-            <div class="tree-trunk"></div>
-            <div class="tree-top"></div>
+    <div id="desktop">
+        <!-- Desktop icons -->
+        <div class="icon" data-app="notepad">
+            <div class="icon-img">📝</div>
+            <div class="icon-label">Blocco note</div>
         </div>
         
-        <div class="tree tree-2" data-tree-id="2">
-            <div class="tree-trunk"></div>
-            <div class="tree-top"></div>
+        <div class="icon" data-app="calculator">
+            <div class="icon-img">🧮</div>
+            <div class="icon-label">Calcolatrice</div>
         </div>
         
-        <div class="tree tree-3" data-tree-id="3">
-            <div class="tree-trunk"></div>
-            <div class="tree-top"></div>
+        <div class="icon" data-app="browser">
+            <div class="icon-img">🌐</div>
+            <div class="icon-label">Browser</div>
         </div>
         
-        <div class="house">
-            <div class="house-roof"></div>
-            <div class="house-body">
-                <div class="house-door"></div>
-                <div class="house-window window-1"></div>
-                <div class="house-window window-2"></div>
+        <div id="start-menu-panel">
+            <div class="menu-item" data-app="notepad">
+                <div class="menu-icon">📝</div>
+                Blocco note
             </div>
-        </div>
-        
-        <div class="character" id="character">
-            <div class="character-head">
-                <div class="character-eye eye-left"></div>
-                <div class="character-eye eye-right"></div>
-                <div class="character-mouth"></div>
+            <div class="menu-item" data-app="calculator">
+                <div class="menu-icon">🧮</div>
+                Calcolatrice
             </div>
-            <div class="character-body"></div>
-        </div>
-        
-        <div class="fruit fruit-1" data-type="mela" data-id="1"></div>
-        <div class="fruit fruit-2" data-type="mela" data-id="2"></div>
-        <div class="fruit fruit-3" data-type="mela" data-id="3"></div>
-        
-        <div class="water">
-            <div class="fish fish-1">
-                <div class="fish-tail"></div>
+            <div class="menu-item" data-app="browser">
+                <div class="menu-icon">🌐</div>
+                Browser
             </div>
-            <div class="fish fish-2">
-                <div class="fish-tail"></div>
-            </div>
-        </div>
-        
-        <div class="butterfly butterfly-1">
-            <div class="butterfly-wing wing-left"></div>
-            <div class="butterfly-wing wing-right"></div>
-        </div>
-        
-        <div class="butterfly butterfly-2">
-            <div class="butterfly-wing wing-left"></div>
-            <div class="butterfly-wing wing-right"></div>
-        </div>
-        
-        <div class="inventory">
-            <div class="inventory-slot" id="slot1"></div>
-            <div class="inventory-slot" id="slot2"></div>
-            <div class="inventory-slot" id="slot3"></div>
-            <div class="inventory-slot" id="slot4"></div>
-            <div class="inventory-slot" id="slot5"></div>
-        </div>
-        
-        <div class="dialog" id="dialog">
-            <p id="dialog-text">Benvenuto nella tua isola virtuale!</p>
-            <div class="dialog-arrow"></div>
-            <button class="btn" id="dialog-btn">OK</button>
-        </div>
-        
-        <div class="time-display" id="time-display">
-            00:00
-        </div>
-        
-        <div id="money-display">🪙 0</div>
-        
-        <div class="tool-selector">
-            <div class="tool" id="tool-hand" data-tool="hand">👋</div>
-            <div class="tool" id="tool-shovel" data-tool="shovel">🌱</div>
-            <div class="tool" id="tool-axe" data-tool="axe">🪓</div>
-        </div>
-        
-        <div class="controls">
-            <div class="control-btn" id="control-up">↑</div>
-            <div class="control-btn" id="control-left">←</div>
-            <div class="control-btn" id="control-down">↓</div>
-            <div class="control-btn" id="control-right">→</div>
-            <div class="control-btn" id="control-action">✓</div>
-        </div>
-        
-        <div class="weather-effects" id="weather-effects"></div>
-        
-        <div class="welcome-modal" id="welcome-modal">
-            <div class="modal-content">
-                <h2 class="modal-title">Benvenuto nell'Isola Virtuale!</h2>
-                <p>Esplora la tua piccola isola paradisiaca, raccogli frutta e scopri sorprese!</p>
-                <p>Puoi muovere il personaggio usando i tasti freccia o i pulsanti sullo schermo.</p>
-                <p>Seleziona gli strumenti per interagire con l'ambiente:</p>
-                <p>👋 - Raccogliere | 🌱 - Piantare | 🪓 - Scuotere alberi</p>
-                <button class="btn" id="start-btn">Inizia l'avventura!</button>
+            <div class="menu-item" id="shutdown">
+                <div class="menu-icon">⏻</div>
+                Spegni
             </div>
         </div>
     </div>
+    
+    <div id="taskbar">
+        <button id="start-menu">≡</button>
+        <div id="taskbar-apps"></div>
+        <div id="clock"></div>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elementi DOM
-            const character = document.getElementById('character');
-            const island = document.getElementById('island');
-            const fruits = document.querySelectorAll('.fruit');
-            const trees = document.querySelectorAll('.tree');
-            const slots = [
-                document.getElementById('slot1'),
-                document.getElementById('slot2'),
-                document.getElementById('slot3'),
-                document.getElementById('slot4'),
-                document.getElementById('slot5')
-            ];
-            const dialog = document.getElementById('dialog');
-            const dialogText = document.getElementById('dialog-text');
-            const dialogBtn = document.getElementById('dialog-btn');
-            const timeDisplay = document.getElementById('time-display');
-            const moneyDisplay = document.getElementById('money-display');
-            const welcomeModal = document.getElementById('welcome-modal');
-            const startBtn = document.getElementById('start-btn');
-            const weatherEffects = document.getElementById('weather-effects');
-            const tools = document.querySelectorAll('.tool');
+        let windows = [];
+        let activeWindow = null;
+        let zIndex = 10;
+        
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        }
+        
+        updateClock();
+        setInterval(updateClock, 60000);
+        
+        // Start menu toggle
+        document.getElementById('start-menu').addEventListener('click', function() {
+            const menu = document.getElementById('start-menu-panel');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        // Close start menu when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#start-menu') && !e.target.closest('#start-menu-panel')) {
+                document.getElementById('start-menu-panel').style.display = 'none';
+            }
+        });
+        
+        // Create window
+        function createWindow(app, title, content, width = 600, height = 400) {
+            const id = 'window-' + Date.now();
             
-            // Variabili di stato
-            let currentPosition = { x: 50, y: 50 };
-            let gameTime = { hours: 9, minutes: 0 };
-            let inventory = [];
-            let money = 0;
-            let selectedTool = 'hand';
-            let weatherState = 'clear';
-            let isRaining = false;
-            let isCharacterMoving = false;
-            let plantedTrees = [];
-            let fruitSpawnTimer = null;
+            // Create window element
+            const windowEl = document.createElement('div');
+            windowEl.className = 'window';
+            windowEl.id = id;
+            windowEl.style.width = width + 'px';
+            windowEl.style.height = height + 'px';
+            windowEl.style.left = Math.round((window.innerWidth - width) / 2) + 'px';
+            windowEl.style.top = Math.round((window.innerHeight - height) / 3) + 'px';
+            windowEl.dataset.app = app;
             
-            // Impostazioni
-            const characterSpeed = 5;
-            const islandBounds = {
-                width: 70,
-                height: 70,
-                top: 20,
-                left: 15
+            // Create window header
+            const header = document.createElement('div');
+            header.className = 'window-header';
+            
+            const titleEl = document.createElement('div');
+            titleEl.className = 'window-title';
+            titleEl.textContent = title;
+            header.appendChild(titleEl);
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'window-close';
+            closeBtn.textContent = '✕';
+            closeBtn.addEventListener('click', function() {
+                closeWindow(id);
+            });
+            header.appendChild(closeBtn);
+            
+            // Add header to window
+            windowEl.appendChild(header);
+            
+            // Add content
+            const contentEl = document.createElement('div');
+            contentEl.className = 'window-content';
+            contentEl.innerHTML = content;
+            windowEl.appendChild(contentEl);
+            
+            // Add window to desktop
+            document.getElementById('desktop').appendChild(windowEl);
+            
+            // Add to taskbar
+            const taskbarApp = document.createElement('div');
+            taskbarApp.className = 'taskbar-app';
+            taskbarApp.dataset.window = id;
+            taskbarApp.textContent = app === 'notepad' ? '📝' : app === 'calculator' ? '🧮' : '🌐';
+            taskbarApp.addEventListener('click', function() {
+                if (windowEl.style.display === 'none') {
+                    windowEl.style.display = 'flex';
+                    updateTaskbar();
+                }
+                activateWindow(id);
+            });
+            document.getElementById('taskbar-apps').appendChild(taskbarApp);
+            
+            // Store window data
+            const windowData = {
+                id,
+                app,
+                element: windowEl,
+                taskbarApp
+            };
+            windows.push(windowData);
+            
+            // Make window draggable
+            makeDraggable(windowEl, header);
+            
+            // Activate the window
+            activateWindow(id);
+            
+            return windowData;
+        }
+        
+        // Close window
+        function closeWindow(id) {
+            const index = windows.findIndex(w => w.id === id);
+            if (index > -1) {
+                // Remove window element
+                windows[index].element.remove();
+                
+                // Remove taskbar entry
+                windows[index].taskbarApp.remove();
+                
+                // Remove from windows array
+                windows.splice(index, 1);
+                
+                // Update active window
+                if (activeWindow && activeWindow.id === id) {
+                    activeWindow = windows.length > 0 ? windows[windows.length - 1] : null;
+                    if (activeWindow) {
+                        activateWindow(activeWindow.id);
+                    }
+                }
+            }
+        }
+        
+        // Activate window
+        function activateWindow(id) {
+            // Deactivate all windows
+            windows.forEach(w => {
+                w.element.style.zIndex = 10;
+                w.taskbarApp.classList.remove('active');
+            });
+            
+            // Activate the selected window
+            const window = windows.find(w => w.id === id);
+            if (window) {
+                window.element.style.zIndex = zIndex++;
+                window.taskbarApp.classList.add('active');
+                activeWindow = window;
+            }
+        }
+        
+        // Update taskbar
+        function updateTaskbar() {
+            windows.forEach(w => {
+                w.taskbarApp.classList.toggle('active', w.element.style.display !== 'none');
+            });
+        }
+        
+        function makeDraggable(element, handle) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    
+    handle.onmousedown = dragMouseDown;
+    
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // Get the mouse cursor position at startup
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // Call a function whenever the cursor moves
+        document.onmousemove = elementDrag;
+        
+        // Activate the window
+        activateWindow(element.id);
+    }
+    
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // Calculate the new cursor position
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // Set the element's new position
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
+    }
+    
+    function closeDragElement() {
+        // Stop moving when mouse button is released
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
+// Open application
+function openApp(app) {
+    // Close the start menu
+    document.getElementById('start-menu-panel').style.display = 'none';
+    
+    // Check if the app is already open
+    const existingWindow = windows.find(w => w.app === app);
+    if (existingWindow) {
+        activateWindow(existingWindow.id);
+        return;
+    }
+    
+    // Create appropriate window based on app type
+    switch(app) {
+        case 'notepad':
+            createWindow(
+                'notepad',
+                'Blocco note',
+                '<textarea class="note-content" placeholder="Scrivi qui..."></textarea>',
+                600,
+                400
+            );
+            break;
+        case 'calculator':
+            const calcContent = `
+                <div class="calculator-display">0</div>
+                <div class="calculator-buttons">
+                    <button class="calc-btn">C</button>
+                    <button class="calc-btn">±</button>
+                    <button class="calc-btn">%</button>
+                    <button class="calc-btn operator">÷</button>
+                    <button class="calc-btn">7</button>
+                    <button class="calc-btn">8</button>
+                    <button class="calc-btn">9</button>
+                    <button class="calc-btn operator">×</button>
+                    <button class="calc-btn">4</button>
+                    <button class="calc-btn">5</button>
+                    <button class="calc-btn">6</button>
+                    <button class="calc-btn operator">-</button>
+                    <button class="calc-btn">1</button>
+                    <button class="calc-btn">2</button>
+                    <button class="calc-btn">3</button>
+                    <button class="calc-btn operator">+</button>
+                    <button class="calc-btn">0</button>
+                    <button class="calc-btn">.</button>
+                    <button class="calc-btn">DEL</button>
+                    <button class="calc-btn equals">=</button>
+                </div>
+            `;
+            const calcWindow = createWindow('calculator', 'Calcolatrice', calcContent, 300, 400);
+            
+            // Add calculator functionality
+            const display = calcWindow.element.querySelector('.calculator-display');
+            const buttons = calcWindow.element.querySelectorAll('.calc-btn');
+            
+            let currentInput = '0';
+            let previousInput = '';
+            let operation = null;
+            let resetInput = false;
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.textContent;
+                    
+                    if (!isNaN(value) || value === '.') {
+                        // Handle number input
+                        if (resetInput) {
+                            currentInput = value === '.' ? '0.' : value;
+                            resetInput = false;
+                        } else {
+                            if (currentInput === '0' && value !== '.') {
+                                currentInput = value;
+                            } else {
+                                if (value === '.' && currentInput.includes('.')) return;
+                                currentInput += value;
+                            }
+                        }
+                        display.textContent = currentInput;
+                    } else if (value === 'C') {
+                        // Clear
+                        currentInput = '0';
+                        previousInput = '';
+                        operation = null;
+                        display.textContent = currentInput;
+                    } else if (value === '±') {
+                        // Toggle sign
+                        currentInput = (parseFloat(currentInput) * -1).toString();
+                        display.textContent = currentInput;
+                    } else if (value === '%') {
+                        // Percentage
+                        currentInput = (parseFloat(currentInput) / 100).toString();
+                        display.textContent = currentInput;
+                    } else if (value === 'DEL') {
+                        // Delete last character
+                        currentInput = currentInput.slice(0, -1);
+                        if (currentInput === '' || currentInput === '-') currentInput = '0';
+                        display.textContent = currentInput;
+                    } else if (value === '=') {
+                        // Calculate result
+                        if (operation && previousInput !== '') {
+                            const prev = parseFloat(previousInput);
+                            const current = parseFloat(currentInput);
+                            let result;
+                            
+                            switch(operation) {
+                                case '+': result = prev + current; break;
+                                case '-': result = prev - current; break;
+                                case '×': result = prev * current; break;
+                                case '÷': result = prev / current; break;
+                            }
+                            
+                            currentInput = result.toString();
+                            previousInput = '';
+                            operation = null;
+                            display.textContent = currentInput;
+                            resetInput = true;
+                        }
+                    } else {
+                        // Operation
+                        if (previousInput === '') {
+                            previousInput = currentInput;
+                        } else if (operation) {
+                            // Chain operations
+                            const prev = parseFloat(previousInput);
+                            const current = parseFloat(currentInput);
+                            let result;
+                            
+                            switch(operation) {
+                                case '+': result = prev + current; break;
+                                case '-': result = prev - current; break;
+                                case '×': result = prev * current; break;
+                                case '÷': result = prev / current; break;
+                            }
+                            
+                            previousInput = result.toString();
+                        }
+                        
+                        operation = value;
+                        resetInput = true;
+                        display.textContent = previousInput;
+                    }
+                });
+            });
+            break;
+        case 'browser':
+            const browserContent = `
+                <div class="browser-content">
+                    <div class="browser-toolbar">
+                        <button class="browser-back">←</button>
+                        <button class="browser-forward">→</button>
+                        <button class="browser-refresh">↻</button>
+                        <input type="text" class="browser-url" value="https://mini-os.example.com">
+                        <button class="browser-go">Go</button>
+                    </div>
+                    <div class="browser-page">
+                        <h1>Benvenuto nel Mini Browser</h1>
+                        <p>Questo è un browser web simulato all'interno del nostro Mini OS.</p>
+                        <p>Puoi navigare tra le pagine usando i pulsanti o digitando un URL.</p>
+                        <hr>
+                        <h2>Pagine disponibili:</h2>
+                        <ul>
+                            <li><a href="#home">Home</a></li>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#contact">Contatti</a></li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            const browserWindow = createWindow('browser', 'Browser', browserContent, 700, 500);
+            
+            // Add browser functionality
+            const pages = {
+                'home': `
+                    <h1>Benvenuto nel Mini Browser</h1>
+                    <p>Questo è un browser web simulato all'interno del nostro Mini OS.</p>
+                    <p>Puoi navigare tra le pagine usando i pulsanti o digitando un URL.</p>
+                    <hr>
+                    <h2>Pagine disponibili:</h2>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contatti</a></li>
+                    </ul>
+                `,
+                'about': `
+                    <h1>About Mini OS</h1>
+                    <p>Mini OS è un sistema operativo simulato creato con HTML, CSS e JavaScript.</p>
+                    <p>Caratteristiche principali:</p>
+                    <ul>
+                        <li>Desktop con icone</li>
+                        <li>Finestre ridimensionabili e trascinabili</li>
+                        <li>Applicazioni funzionanti</li>
+                        <li>Barra delle applicazioni con menu Start</li>
+                    </ul>
+                    <p><a href="#home">Torna alla Home</a></p>
+                `,
+                'contact': `
+                    <h1>Contatti</h1>
+                    <p>Questo è un progetto dimostrativo per GitHub.</p>
+                    <p>Puoi contattarci attraverso la nostra pagina GitHub.</p>
+                    <p><a href="#home">Torna alla Home</a></p>
+                `
             };
             
-            // Inizializza la posizione del personaggio
-            function initCharacterPosition() {
-                character.style.left = '50%';
-                character.style.top = '50%';
-                updateCharacterPosition();
-            }
+            const browserPage = browserWindow.element.querySelector('.browser-page');
+            const urlInput = browserWindow.element.querySelector('.browser-url');
+            const goButton = browserWindow.element.querySelector('.browser-go');
+            const backButton = browserWindow.element.querySelector('.browser-back');
+            const forwardButton = browserWindow.element.querySelector('.browser-forward');
+            const refreshButton = browserWindow.element.querySelector('.browser-refresh');
             
-            // Aggiorna la posizione del personaggio
-            function updateCharacterPosition() {
-                const islandRect = island.getBoundingClientRect();
-                const charRect = character.getBoundingClientRect();
-                
-                // Limita la posizione all'interno dell'isola
-                const minX = islandRect.left + charRect.width / 2;
-                const maxX = islandRect.right - charRect.width / 2;
-                const minY = islandRect.top + charRect.height / 2;
-                const maxY = islandRect.bottom - charRect.height / 2;
-                
-                const screenX = (currentPosition.x / 100) * islandRect.width + islandRect.left;
-                const screenY = (currentPosition.y / 100) * islandRect.height + islandRect.top;
-                
-                const clampedX = Math.max(minX, Math.min(maxX, screenX));
-                const clampedY = Math.max(minY, Math.min(maxY, screenY));
-                
-                // Aggiorna la posizione sullo schermo
-                character.style.left = `${clampedX}px`;
-                character.style.top = `${clampedY}px`;
-                
-                // Controlla collisioni
-                checkCollisions();
-            }
+            let currentPage = 'home';
+            let history = ['home'];
+            let historyIndex = 0;
             
-            // Muovi il personaggio
-            function moveCharacter(direction) {
-                if (isCharacterMoving) return;
-                
-                switch (direction) {
-                    case 'up':
-                        currentPosition.y = Math.max(0, currentPosition.y - characterSpeed);
-                        break;
-                    case 'down':
-                        currentPosition.y = Math.min(100, currentPosition.y + characterSpeed);
-                        break;
-                    case 'left':
-                        currentPosition.x = Math.max(0, currentPosition.x - characterSpeed);
-                        break;
-                    case 'right':
-                        currentPosition.x = Math.min(100, currentPosition.x + characterSpeed);
-                        break;
-                }
-                
-                updateCharacterPosition();
-            }
-            
-            // Aggiorna l'orologio
-            function updateClock() {
-                gameTime.minutes += 1;
-                if (gameTime.minutes >= 60) {
-                    gameTime.minutes = 0;
-                    gameTime.hours += 1;
-                    if (gameTime.hours >= 24) {
-                        gameTime.hours = 0;
-                        onNewDay();
-                    }
-                }
-                
-                const displayHours = gameTime.hours.toString().padStart(2, '0');
-                const displayMinutes = gameTime.minutes.toString().padStart(2, '0');
-                timeDisplay.textContent = `${displayHours}:${displayMinutes}`;
-                
-                updateEnvironment();
-            }
-            
-            // Aggiorna l'ambiente in base all'ora
-            function updateEnvironment() {
-                const sky = document.querySelector('.sky');
-                const sun = document.querySelector('.sun');
-                
-                // Orario e ambiente
-                if (gameTime.hours >= 6 && gameTime.hours < 10) {
-                    // Alba
-                    sky.style.background = 'linear-gradient(#f8c9a5, #c6e6f7)';
-                    sun.style.top = '150px';
-                    sun.style.right = '300px';
-                    sun.style.backgroundColor = '#ffde59';
-                    sun.style.boxShadow = '0 0 50px #ffde59';
-                } else if (gameTime.hours >= 10 && gameTime.hours < 16) {
-                    // Giorno
-                    sky.style.background = 'linear-gradient(#77c0e8, #c6e6f7)';
-                    sun.style.top = '50px';
-                    sun.style.right = '200px';
-                    sun.style.backgroundColor = '#ffde59';
-                    sun.style.boxShadow = '0 0 50px #ffde59';
-                } else if (gameTime.hours >= 16 && gameTime.hours < 20) {
-                    // Tramonto
-                    sky.style.background = 'linear-gradient(#ff8c69, #f8c9a5)';
-                    sun.style.top = '150px';
-                    sun.style.right = '100px';
-                    sun.style.backgroundColor = '#ff7e29';
-                    sun.style.boxShadow = '0 0 50px #ff7e29';
-                } else {
-                    // Notte
-                    sky.style.background = 'linear-gradient(#2c3e50, #4a6572)';
-                    sun.style.top = '300px';
-                    sun.style.right = '200px';
-                    sun.style.backgroundColor = '#f5f5f5';
-                    sun.style.boxShadow = '0 0 20px #f5f5f5';
-                }
-                
-                //
-// Continua dalla funzione updateEnvironment
-                // Controlla il meteo
-                if (weatherState === 'raining' && !isRaining) {
-                    startRain();
-                } else if (weatherState !== 'raining' && isRaining) {
-                    stopRain();
-                }
-            }
-            
-            // Funzioni per la pioggia
-            function startRain() {
-                isRaining = true;
-                weatherEffects.style.display = 'block';
-                
-                // Crea le gocce di pioggia
-                for (let i = 0; i < 100; i++) {
-                    createRaindrop();
-                }
-            }
-            
-            function stopRain() {
-                isRaining = false;
-                weatherEffects.style.display = 'none';
-                weatherEffects.innerHTML = '';
-            }
-            
-            function createRaindrop() {
-                const drop = document.createElement('div');
-                drop.className = 'rain';
-                drop.style.left = `${Math.random() * 100}%`;
-                drop.style.animationDuration = `${Math.random() * 0.5 + 0.5}s`;
-                drop.style.animationDelay = `${Math.random() * 0.5}s`;
-                
-                weatherEffects.appendChild(drop);
-                
-                // Rimuovi la goccia dopo l'animazione
-                setTimeout(() => {
-                    drop.remove();
-                    if (isRaining) {
-                        createRaindrop();
-                    }
-                }, (parseFloat(drop.style.animationDuration) + parseFloat(drop.style.animationDelay)) * 1000);
-            }
-            
-            // Funzioni per il meteo casuale
-            function randomizeWeather() {
-                const weatherChance = Math.random();
-                
-                if (weatherChance < 0.2) {
-                    weatherState = 'raining';
-                    showDialog('Ha iniziato a piovere!');
-                } else {
-                    weatherState = 'clear';
-                    if (isRaining) {
-                        showDialog('La pioggia si è fermata.');
-                    }
-                }
-            }
-            
-            // Controlla le collisioni
-            function checkCollisions() {
-                const charRect = character.getBoundingClientRect();
-                
-                // Collisione con la frutta
-                fruits.forEach(fruit => {
-                    const fruitRect = fruit.getBoundingClientRect();
+            function loadPage(page) {
+                if (pages[page]) {
+                    browserPage.innerHTML = pages[page];
+                    currentPage = page;
+                    urlInput.value = `https://mini-os.example.com/${page}`;
                     
-                    if (isColliding(charRect, fruitRect)) {
-                        if (selectedTool === 'hand') {
-                            collectFruit(fruit);
-                        }
-                    }
-                });
-                
-                // Collisione con gli alberi
-                trees.forEach(tree => {
-                    const treeRect = tree.getBoundingClientRect();
-                    
-                    if (isColliding(charRect, treeRect, 20)) {
-                        if (selectedTool === 'axe') {
-                            shakeTree(tree);
-                        }
-                    }
-                });
-            }
-            
-            // Controlla se due elementi stanno collidendo
-            function isColliding(rect1, rect2, margin = 0) {
-                return !(
-                    rect1.right < rect2.left + margin ||
-                    rect1.left > rect2.right - margin ||
-                    rect1.bottom < rect2.top + margin ||
-                    rect1.top > rect2.bottom - margin
-                );
-            }
-            
-            // Raccogli la frutta
-            function collectFruit(fruit) {
-                const fruitType = fruit.getAttribute('data-type');
-                const fruitId = fruit.getAttribute('data-id');
-                
-                // Verifica se c'è spazio nell'inventario
-                if (inventory.length < 5) {
-                    // Aggiungi la frutta all'inventario
-                    inventory.push({
-                        type: fruitType,
-                        id: fruitId
-                    });
-                    
-                    // Aggiorna l'inventario visuale
-                    updateInventory();
-                    
-                    // Rimuovi la frutta dalla scena
-                    fruit.style.display = 'none';
-                    
-                    // Mostra messaggio
-                    showDialog(`Hai raccolto una ${fruitType}!`);
-                } else {
-                    showDialog('Il tuo inventario è pieno!');
-                }
-            }
-            
-            // Scuoti l'albero
-            function shakeTree(tree) {
-                // Controlla se l'albero è già stato scosso
-                if (tree.classList.contains('shake-animation')) {
-                    return;
-                }
-                
-                // Aggiungi l'animazione di scuotimento
-                tree.classList.add('shake-animation');
-                
-                // Genera frutti casuali
-                const treeRect = tree.getBoundingClientRect();
-                const chance = Math.random();
-                
-                if (chance > 0.3) {
-                    // Crea un nuovo frutto
-                    const newFruit = document.createElement('div');
-                    newFruit.className = 'fruit';
-                    newFruit.setAttribute('data-type', 'mela');
-                    newFruit.setAttribute('data-id', `new-${Date.now()}`);
-                    
-                    // Posiziona il frutto vicino all'albero
-                    newFruit.style.position = 'absolute';
-                    newFruit.style.left = `${treeRect.left + Math.random() * 50 - 25}px`;
-                    newFruit.style.top = `${treeRect.bottom - 20}px`;
-                    
-                    // Aggiungi il frutto alla scena
-                    document.querySelector('.container').appendChild(newFruit);
-                    
-                    // Aggiorna la lista di frutti
-                    fruits.forEach(fruit => {
-                        fruit.addEventListener('click', function() {
-                            if (selectedTool === 'hand') {
-                                collectFruit(fruit);
+                    // Handle links
+                    browserPage.querySelectorAll('a').forEach(link => {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const href = link.getAttribute('href').substring(1);
+                            if (pages[href]) {
+                                history = history.slice(0, historyIndex + 1);
+                                history.push(href);
+                                historyIndex = history.length - 1;
+                                loadPage(href);
                             }
                         });
                     });
-                    
-                    // Mostra messaggio
-                    showDialog('Una mela è caduta dall\'albero!');
                 } else {
-                    showDialog('Niente è caduto dall\'albero.');
-                }
-                
-                // Rimuovi l'animazione dopo un po'
-                setTimeout(() => {
-                    tree.classList.remove('shake-animation');
-                }, 500);
-            }
-            
-            // Aggiorna l'inventario visuale
-            function updateInventory() {
-                // Resetta tutti gli slot
-                slots.forEach(slot => {
-                    slot.textContent = '';
-                });
-                
-                // Aggiorna gli slot con gli elementi dell'inventario
-                inventory.forEach((item, index) => {
-                    if (index < slots.length) {
-                        slots[index].textContent = item.type === 'mela' ? '🍎' : '?';
-                    }
-                });
-            }
-            
-            // Vendi gli oggetti dell'inventario
-            function sellInventory() {
-                let earning = 0;
-                
-                inventory.forEach(item => {
-                    if (item.type === 'mela') {
-                        earning += 10;
-                    }
-                });
-                
-                if (earning > 0) {
-                    money += earning;
-                    moneyDisplay.textContent = `🪙 ${money}`;
-                    inventory = [];
-                    updateInventory();
-                    showDialog(`Hai venduto i tuoi oggetti per ${earning} monete!`);
-                } else {
-                    showDialog('Non hai nulla da vendere!');
+                    browserPage.innerHTML = `
+                        <h1>Pagina non trovata</h1>
+                        <p>La pagina "${page}" non esiste.</p>
+                        <p><a href="#home">Torna alla Home</a></p>
+                    `;
                 }
             }
             
-            // Mostra un messaggio di dialogo
-            function showDialog(text) {
-                dialogText.textContent = text;
-                dialog.style.display = 'block';
-            }
+            goButton.addEventListener('click', () => {
+                const url = urlInput.value;
+                const match = url.match(/mini-os\.example\.com\/([a-z]*)/);
+                if (match) {
+                    const page = match[1] || 'home';
+                    history = history.slice(0, historyIndex + 1);
+                    history.push(page);
+                    historyIndex = history.length - 1;
+                    loadPage(page);
+                }
+            });
             
-            // Nascondi il messaggio di dialogo
-            function hideDialog() {
-                dialog.style.display = 'none';
-            }
+            backButton.addEventListener('click', () => {
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    loadPage(history[historyIndex]);
+                }
+            });
             
-            // Pianta un albero
-            function plantTree(x, y) {
-                // Verifica se c'è già un albero nelle vicinanze
-                for (const tree of plantedTrees) {
-                    const distance = Math.sqrt(
-                        Math.pow(tree.x - x, 2) + 
-                        Math.pow(tree.y - y, 2)
-                    );
-                    
-                    if (distance < 50) {
-                        showDialog('Non puoi piantare qui, è troppo vicino a un altro albero!');
-                        return;
+            forwardButton.addEventListener('click', () => {
+                if (historyIndex < history.length - 1) {
+                    historyIndex++;
+                    loadPage(history[historyIndex]);
+                }
+            });
+            
+            refreshButton.addEventListener('click', () => {
+                loadPage(currentPage);
+            });
+            
+            // Links event delegation
+            browserPage.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') {
+                    e.preventDefault();
+                    const href = e.target.getAttribute('href').substring(1);
+                    if (pages[href]) {
+                        history = history.slice(0, historyIndex + 1);
+                        history.push(href);
+                        historyIndex = history.length - 1;
+                        loadPage(href);
                     }
                 }
-                
-                // Crea una macchia di terreno per piantare
-                const spot = document.createElement('div');
-                spot.className = 'planting-spot';
-                spot.style.left = `${x}px`;
-                spot.style.top = `${y}px`;
-                document.querySelector('.container').appendChild(spot);
-                
-                // Crea un nuovo albero
-                const newTree = document.createElement('div');
-                newTree.className = 'planted-tree tree';
-                newTree.style.left = `${x - 50}px`;
-                newTree.style.bottom = `${window.innerHeight - y - 50}px`;
-                
-                const trunk = document.createElement('div');
-                trunk.className = 'tree-trunk';
-                
-                const top = document.createElement('div');
-                top.className = 'tree-top';
-                
-                newTree.appendChild(trunk);
-                newTree.appendChild(top);
-                
-                document.querySelector('.container').appendChild(newTree);
-                
-                // Salva l'albero piantato
-                plantedTrees.push({
-                    x: x,
-                    y: y,
-                    element: newTree,
-                    spot: spot,
-                    growthStage: 0,
-                    growthTime: Date.now()
-                });
-                
-                showDialog('Hai piantato un albero! Crescerà col tempo.');
-                
-                // Rimuovi la macchia dopo che l'albero è cresciuto
-                setTimeout(() => {
-                    newTree.classList.add('grown');
-                    spot.style.display = 'none';
-                    
-                    // Aggiungi l'evento di shake per l'albero cresciuto
-                    newTree.addEventListener('click', function() {
-                        if (selectedTool === 'axe') {
-                            shakeTree(newTree);
-                        }
-                    });
-                }, 30000); // 30 secondi per crescere
+            });
+            
+            // Initialize with home page
+            loadPage('home');
+            break;
+    }
+}
+
+// Handle desktop icon clicks
+document.querySelectorAll('.icon').forEach(icon => {
+    icon.addEventListener('click', function() {
+        const app = this.dataset.app;
+        openApp(app);
+    });
+});
+
+// Handle start menu item clicks
+document.querySelectorAll('.menu-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const app = this.dataset.app;
+        if (app) {
+            openApp(app);
+        } else if (this.id === 'shutdown') {
+            if (confirm('Sei sicuro di voler spegnere il Mini OS?')) {
+                document.body.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #000; color: #fff; font-size: 24px;">Sistema spento. Aggiorna la pagina per riavviare.</div>';
             }
-            
-            // Funzione eseguita ogni nuovo giorno
-            function onNewDay() {
-                // Fai crescere nuovi frutti
-                spawnNewFruits();
-                
-                // Cambia casualmente il meteo
-                randomizeWeather();
-                
-                // Mostra messaggio
-                showDialog('È un nuovo giorno! Nuovi frutti sono cresciuti sull\'isola.');
-            }
-            
-            // Genera nuovi frutti
-            function spawnNewFruits() {
-                // Rimuovi i frutti nascosti
-                fruits.forEach(fruit => {
-                    fruit.style.display = 'block';
-                });
-                
-                // Crea nuovi frutti in posizioni casuali
-                for (let i = 0; i < 3; i++) {
-                    const newFruit = document.createElement('div');
-                    newFruit.className = 'fruit';
-                    newFruit.setAttribute('data-type', 'mela');
-                    newFruit.setAttribute('data-id', `new-${Date.now()}-${i}`);
-                    
-                    // Posiziona il frutto casualmente sull'isola
-                    const islandRect = island.getBoundingClientRect();
-                    
-                    const fruitX = islandRect.left + islandRect.width * 0.3 + Math.random() * islandRect.width * 0.4;
-                    const fruitY = islandRect.top + islandRect.height * 0.3 + Math.random() * islandRect.height * 0.4;
-                    
-                    newFruit.style.position = 'absolute';
-                    newFruit.style.left = `${fruitX}px`;
-                    newFruit.style.top = `${fruitY}px`;
-                    
-                    // Aggiungi il frutto alla scena
-                    document.querySelector('.container').appendChild(newFruit);
-                    
-                    // Aggiungi evento al nuovo frutto
-                    newFruit.addEventListener('click', function() {
-                        if (selectedTool === 'hand') {
-                            collectFruit(newFruit);
-                        }
-                    });
-                }
-            }
-            
-            // Esegui l'azione in base allo strumento selezionato
-            function performAction() {
-                const charRect = character.getBoundingClientRect();
-                
-                switch(selectedTool) {
-                    case 'hand':
-                        // Verifica se è vicino alla casa
-                        const house = document.querySelector('.house');
-                        const houseRect = house.getBoundingClientRect();
-                        
-                        if (isColliding(charRect, houseRect, 20)) {
-                            sellInventory();
-                        }
-                        break;
-                        
-                    case 'shovel':
-                        // Pianta un albero nella posizione attuale
-                        plantTree(charRect.left + charRect.width / 2, charRect.top + charRect.height);
-                        break;
-                        
-                    case 'axe':
-                        // L'azione viene eseguita con la collisione
-                        break;
-                }
-            }
-            
-            // Imposta l'evento per il pulsante di dialogo
-            dialogBtn.addEventListener('click', function() {
-                hideDialog();
-            });
-            
-            // Imposta l'evento per il pulsante di inizio
-            startBtn.addEventListener('click', function() {
-                welcomeModal.style.display = 'none';
-                showDialog('Benvenuto nella tua isola! Esplora e raccogli frutti.');
-            });
-            
-            // Imposta gli eventi per gli strumenti
-            tools.forEach(tool => {
-                tool.addEventListener('click', function() {
-                    // Rimuovi la selezione dagli altri strumenti
-                    tools.forEach(t => t.classList.remove('selected'));
-                    
-                    // Seleziona lo strumento corrente
-                    tool.classList.add('selected');
-                    
-                    // Imposta lo strumento selezionato
-                    selectedTool = tool.getAttribute('data-tool');
-                    
-                    showDialog(`Hai selezionato: ${selectedTool}`);
-                });
-            });
-            
-            // Seleziona lo strumento predefinito
-            document.getElementById('tool-hand').classList.add('selected');
-            
-            // Imposta gli eventi per i controlli
-            document.getElementById('control-up').addEventListener('click', function() {
-                moveCharacter('up');
-            });
-            
-            document.getElementById('control-down').addEventListener('click', function() {
-                moveCharacter('down');
-            });
-            
-            document.getElementById('control-left').addEventListener('click', function() {
-                moveCharacter('left');
-            });
-            
-            document.getElementById('control-right').addEventListener('click', function() {
-                moveCharacter('right');
-            });
-            
-            document.getElementById('control-action').addEventListener('click', function() {
-                performAction();
-            });
-            
-            // Imposta gli eventi per i tasti
-            document.addEventListener('keydown', function(event) {
-                switch(event.key) {
-                    case 'ArrowUp':
-                        moveCharacter('up');
-                        break;
-                    case 'ArrowDown':
-                        moveCharacter('down');
-                        break;
-                    case 'ArrowLeft':
-                        moveCharacter('left');
-                        break;
-                    case 'ArrowRight':
-                        moveCharacter('right');
-                        break;
-                    case ' ':
-                    case 'Enter':
-                        performAction();
-                        break;
-                    case '1':
-                        document.getElementById('tool-hand').click();
-                        break;
-                    case '2':
-                        document.getElementById('tool-shovel').click();
-                        break;
-                    case '3':
-                        document.getElementById('tool-axe').click();
-                        break;
-                }
-            });
-            
-            // Imposta gli eventi per la frutta
-            fruits.forEach(fruit => {
-                fruit.addEventListener('click', function() {
-                    if (selectedTool === 'hand') {
-                        collectFruit(fruit);
-                    }
-                });
-            });
-            
-            // Imposta gli eventi per gli alberi
-            trees.forEach(tree => {
-                tree.addEventListener('click', function() {
-                    if (selectedTool === 'axe') {
-                        shakeTree(tree);
-                    }
-                });
-            });
-            
-            // Imposta l'evento per la casa
-            document.querySelector('.house').addEventListener('click', function() {
-                const charRect = character.getBoundingClientRect();
-                const houseRect = this.getBoundingClientRect();
-                
-                if (isColliding(charRect, houseRect, 50)) {
-                    sellInventory();
-                } else {
-                    showDialog('Avvicinati alla casa per vendere gli oggetti!');
-                }
-            });
-            
-            // Imposta l'evento per l'isola
-            island.addEventListener('click', function(event) {
-                if (selectedTool === 'shovel') {
-                    // Pianta un albero dove hai cliccato
-                    plantTree(event.clientX, event.clientY);
-                }
-            });
-            
-            // Inizializza il gioco
-            function initGame() {
-                // Imposta la posizione iniziale del personaggio
-                initCharacterPosition();
-                
-                // Imposta l'orologio
-                setInterval(updateClock, 1000);
-                
-                // Imposta il timer per la generazione di nuovi frutti
-                fruitSpawnTimer = setInterval(spawnNewFruits, 300000); // Ogni 5 minuti
-                
-                // Seleziona lo strumento predefinito
-                document.getElementById('tool-hand').classList.add('selected');
-                
-                // Randomizza il meteo iniziale
-                randomizeWeather();
-            }
-            
-            // Avvia il gioco
-            initGame();
-        });
-    </script>
+        }
+    });
+});
+
+// Initialize the system
+window.addEventListener('load', function() {
+    // Welcome message
+    setTimeout(() => {
+        alert('Benvenuto nel Mini OS!\n\nQuesto è un sistema operativo simulato creato con HTML, CSS e JavaScript.\n\nPuoi aprire le applicazioni facendo clic sulle icone sul desktop o dal menu Start.');
+    }, 500);
+});
+</script>
 </body>
 </html>

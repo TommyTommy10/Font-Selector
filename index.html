@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniOS</title>
+    <title>AdvancedOS</title>
     <style>
         * {
             margin: 0;
@@ -13,19 +13,144 @@
         }
         
         body {
-            background-image: url('/api/placeholder/1920/1080');
-            background-size: cover;
-            background-position: center;
             height: 100vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            background-color: #000;
+        }
+        
+        #boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+        }
+        
+        #boot-logo {
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+        
+        #boot-progress {
+            width: 300px;
+            height: 5px;
+            background-color: #333;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        #boot-progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #0078d7;
+            transition: width 0.5s;
+        }
+        
+        #boot-status {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #888;
+        }
+        
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+        }
+        
+        #login-form {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            width: 350px;
+            color: white;
+            text-align: center;
+        }
+        
+        #user-avatar {
+            width: 100px;
+            height: 100px;
+            background-color: #555;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #ccc;
+        }
+        
+        #login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        #login-form button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0078d7;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #login-form button:hover {
+            background-color: #0063b1;
+        }
+        
+        #desktop-container {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            display: none;
         }
         
         #desktop {
-            flex-grow: 1;
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
             padding: 20px;
+            overflow: hidden;
+        }
+        
+        #desktop-icons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 100px);
+            grid-gap: 20px;
+            grid-auto-rows: 100px;
+            align-content: start;
         }
         
         #taskbar {
@@ -35,6 +160,9 @@
             align-items: center;
             padding: 0 15px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            position: relative;
+            backdrop-filter: blur(10px);
         }
         
         #start-menu {
@@ -58,19 +186,27 @@
             margin-left: auto;
             color: white;
             font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        #date {
+            font-size: 12px;
+            color: #ddd;
         }
         
         .icon {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
+            justify-content: center;
             cursor: pointer;
             padding: 5px;
             border-radius: 5px;
+            transition: background-color 0.2s;
         }
         
         .icon:hover {
@@ -78,15 +214,20 @@
         }
         
         .icon-img {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             background-color: #0078d7;
             border-radius: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 18px;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .folder .icon-img {
+            background-color: #dcb67a;
         }
         
         .icon-label {
@@ -94,67 +235,143 @@
             text-align: center;
             font-size: 12px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
         .window {
             position: absolute;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            background-color: rgba(40, 40, 40, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             min-width: 300px;
             min-height: 200px;
-            resize: both;
+            color: white;
+        }
+        
+        .window.maximized {
+            width: 100% !important;
+            height: calc(100% - 50px) !important;
+            top: 0 !important;
+            left: 0 !important;
+            border-radius: 0;
         }
         
         .window-header {
             height: 32px;
-            background-color: #0078d7;
+            background-color: rgba(60, 60, 60, 0.5);
             display: flex;
             align-items: center;
             padding: 0 10px;
             cursor: move;
+            backdrop-filter: blur(5px);
         }
         
         .window-title {
             color: white;
             flex-grow: 1;
             font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .window-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .window-minimize, .window-maximize, .window-close {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .window-minimize {
+            background-color: #f5cc00;
+        }
+        
+        .window-maximize {
+            background-color: #27ca40;
         }
         
         .window-close {
-            width: 24px;
-            height: 24px;
-            background-color: #e81123;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            background-color: #ff5f57;
         }
         
         .window-content {
             flex-grow: 1;
             padding: 15px;
             overflow: auto;
+            position: relative;
         }
         
         #start-menu-panel {
             position: absolute;
             bottom: 50px;
             left: 0;
-            width: 300px;
-            background-color: rgba(25, 25, 25, 0.9);
+            width: 350px;
+            background-color: rgba(25, 25, 25, 0.95);
             color: white;
             border-radius: 5px 5px 0 0;
-            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
             z-index: 1000;
             display: none;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        #start-menu-header {
+            padding: 15px;
+            background-color: rgba(0, 120, 215, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        #start-menu-user {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #ccc;
+        }
+        
+        #start-menu-username {
+            font-weight: bold;
+        }
+        
+        #app-categories {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .app-category {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .app-category.active {
+            border-color: #0078d7;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        #app-list {
+            max-height: 350px;
+            overflow-y: auto;
         }
         
         .menu-item {
@@ -162,6 +379,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+            transition: background-color 0.2s;
         }
         
         .menu-item:hover {
@@ -171,102 +389,258 @@
         .menu-icon {
             width: 24px;
             height: 24px;
-            margin-right: 10px;
+            margin-right: 15px;
             background-color: #0078d7;
-            border-radius: 3px;
+            border-radius: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .menu-item.folder .menu-icon {
+            background-color: #dcb67a;
+        }
+        
+        #start-menu-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .footer-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-button:hover {
+            text-decoration: underline;
         }
         
         #taskbar-apps {
             display: flex;
             margin-left: 10px;
+            gap: 5px;
         }
         
         .taskbar-app {
             height: 40px;
-            width: 40px;
-            margin-right: 5px;
+            min-width: 40px;
             background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            border-radius: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             cursor: pointer;
+            padding: 0 10px;
+            transition: background-color 0.2s;
+            overflow: hidden;
         }
         
         .taskbar-app.active {
             background-color: rgba(255, 255, 255, 0.2);
-            border-bottom: 2px solid #0078d7;
+            box-shadow: 0 -3px 0 #0078d7 inset;
         }
         
+        .taskbar-app:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .taskbar-app-icon {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+        
+        .taskbar-app-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+            font-size: 13px;
+        }
+        
+        #system-tray {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+            padding-left: 10px;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            gap: 15px;
+        }
+        
+        .tray-icon {
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .context-menu {
+            position: absolute;
+            background-color: rgba(40, 40, 40, 0.95);
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            min-width: 200px;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+            color: white;
+        }
+        
+        .context-menu-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .context-menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .context-menu-icon {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        
+        .context-menu-separator {
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 3px 0;
+        }
+        
+        /* Application specific styles */
         .note-content {
             width: 100%;
             height: 100%;
             border: none;
-            resize: none;
+
+resize: none;
             outline: none;
             padding: 5px;
             font-size: 14px;
+            background-color: #2d2d2d;
+            color: #f0f0f0;
+        }
+        
+        .note-toolbar {
+            padding: 5px;
+            background-color: #333;
+            border-bottom: 1px solid #444;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .note-toolbar button {
+            background-color: #444;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .note-toolbar button:hover {
+            background-color: #555;
         }
         
         .calculator-display {
-            background-color: #f0f0f0;
-            padding: 15px;
+            background-color: #2d2d2d;
+            padding: 20px;
             text-align: right;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             border-radius: 3px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            border: 1px solid #444;
+            color: #f0f0f0;
+        }
+        
+        .calculator-history {
+            max-height: 60px;
+            overflow-y: auto;
+            font-size: 14px;
+            color: #aaa;
+            text-align: right;
+            margin-bottom: 5px;
         }
         
         .calculator-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
+            gap: 8px;
         }
         
         .calc-btn {
             padding: 15px;
             border: none;
-            border-radius: 3px;
-            background-color: #e6e6e6;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.2s;
         }
         
         .calc-btn:hover {
-            background-color: #d1d1d1;
+            background-color: #555;
         }
         
         .calc-btn.operator {
-            background-color: #f5923e;
-            color: white;
+            background-color: #0078d7;
         }
         
         .calc-btn.equals {
-            background-color: #0078d7;
-            color: white;
+            background-color: #27ca40;
+        }
+        
+        .calc-btn.function {
+            background-color: #333;
         }
         
         .browser-toolbar {
             display: flex;
             padding: 10px;
-            background-color: #f5f5f5;
-            border-bottom: 1px solid #ddd;
+            background-color: #333;
+            border-bottom: 1px solid #444;
+            gap: 5px;
+        }
+        
+        .browser-toolbar button {
+            background-color: #444;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .browser-toolbar button:hover {
+            background-color: #555;
         }
         
         .browser-url {
             flex-grow: 1;
             padding: 5px 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #444;
             border-radius: 15px;
-            margin: 0 10px;
+            margin: 0 5px;
+            background-color: #2d2d2d;
+            color: white;
         }
         
         .browser-content {
@@ -276,569 +650,446 @@
             flex-direction: column;
         }
         
+        .browser-tabs {
+            display: flex;
+            background-color: #262626;
+            padding: 5px 5px 0;
+            gap: 5px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+        
+        .browser-tab {
+            padding: 8px 25px 8px 10px;
+            background-color: #333;
+            border-radius: 5px 5px 0 0;
+            font-size: 12px;
+            white-space: nowrap;
+            position: relative;
+            cursor: pointer;
+            min-width: 120px;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .browser-tab.active {
+            background-color: #444;
+        }
+        
+        .browser-tab-close {
+            position: absolute;
+            right: 5px;
+            top: 8px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #555;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .browser-tab-close:hover {
+            background-color: #ff5f57;
+        }
+        
+        .browser-tab-favicon {
+            margin-right: 5px;
+        }
+        
+        .browser-new-tab {
+            padding: 8px;
+            background-color: #333;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
         .browser-page {
             flex-grow: 1;
             padding: 15px;
             overflow: auto;
-        }
-    </style>
-</head>
-<body>
-    <div id="desktop">
-        <!-- Desktop icons -->
-        <div class="icon" data-app="notepad">
-            <div class="icon-img">📝</div>
-            <div class="icon-label">Blocco note</div>
-        </div>
-        
-        <div class="icon" data-app="calculator">
-            <div class="icon-img">🧮</div>
-            <div class="icon-label">Calcolatrice</div>
-        </div>
-        
-        <div class="icon" data-app="browser">
-            <div class="icon-img">🌐</div>
-            <div class="icon-label">Browser</div>
-        </div>
-        
-        <div id="start-menu-panel">
-            <div class="menu-item" data-app="notepad">
-                <div class="menu-icon">📝</div>
-                Blocco note
-            </div>
-            <div class="menu-item" data-app="calculator">
-                <div class="menu-icon">🧮</div>
-                Calcolatrice
-            </div>
-            <div class="menu-item" data-app="browser">
-                <div class="menu-icon">🌐</div>
-                Browser
-            </div>
-            <div class="menu-item" id="shutdown">
-                <div class="menu-icon">⏻</div>
-                Spegni
-            </div>
-        </div>
-    </div>
-    
-    <div id="taskbar">
-        <button id="start-menu">≡</button>
-        <div id="taskbar-apps"></div>
-        <div id="clock"></div>
-    </div>
-
-    <script>
-        let windows = [];
-        let activeWindow = null;
-        let zIndex = 10;
-        
-        // Update clock
-        function updateClock() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+            background-color: #222;
         }
         
-        updateClock();
-        setInterval(updateClock, 60000);
-        
-        // Start menu toggle
-        document.getElementById('start-menu').addEventListener('click', function() {
-            const menu = document.getElementById('start-menu-panel');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        });
-        
-        // Close start menu when clicking elsewhere
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('#start-menu') && !e.target.closest('#start-menu-panel')) {
-                document.getElementById('start-menu-panel').style.display = 'none';
-            }
-        });
-        
-        // Create window
-        function createWindow(app, title, content, width = 600, height = 400) {
-            const id = 'window-' + Date.now();
-            
-            // Create window element
-            const windowEl = document.createElement('div');
-            windowEl.className = 'window';
-            windowEl.id = id;
-            windowEl.style.width = width + 'px';
-            windowEl.style.height = height + 'px';
-            windowEl.style.left = Math.round((window.innerWidth - width) / 2) + 'px';
-            windowEl.style.top = Math.round((window.innerHeight - height) / 3) + 'px';
-            windowEl.dataset.app = app;
-            
-            // Create window header
-            const header = document.createElement('div');
-            header.className = 'window-header';
-            
-            const titleEl = document.createElement('div');
-            titleEl.className = 'window-title';
-            titleEl.textContent = title;
-            header.appendChild(titleEl);
-            
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'window-close';
-            closeBtn.textContent = '✕';
-            closeBtn.addEventListener('click', function() {
-                closeWindow(id);
-            });
-            header.appendChild(closeBtn);
-            
-            // Add header to window
-            windowEl.appendChild(header);
-            
-            // Add content
-            const contentEl = document.createElement('div');
-            contentEl.className = 'window-content';
-            contentEl.innerHTML = content;
-            windowEl.appendChild(contentEl);
-            
-            // Add window to desktop
-            document.getElementById('desktop').appendChild(windowEl);
-            
-            // Add to taskbar
-            const taskbarApp = document.createElement('div');
-            taskbarApp.className = 'taskbar-app';
-            taskbarApp.dataset.window = id;
-            taskbarApp.textContent = app === 'notepad' ? '📝' : app === 'calculator' ? '🧮' : '🌐';
-            taskbarApp.addEventListener('click', function() {
-                if (windowEl.style.display === 'none') {
-                    windowEl.style.display = 'flex';
-                    updateTaskbar();
-                }
-                activateWindow(id);
-            });
-            document.getElementById('taskbar-apps').appendChild(taskbarApp);
-            
-            // Store window data
-            const windowData = {
-                id,
-                app,
-                element: windowEl,
-                taskbarApp
-            };
-            windows.push(windowData);
-            
-            // Make window draggable
-            makeDraggable(windowEl, header);
-            
-            // Activate the window
-            activateWindow(id);
-            
-            return windowData;
+        .browser-page h1 {
+            margin-bottom: 20px;
         }
         
-        // Close window
-        function closeWindow(id) {
-            const index = windows.findIndex(w => w.id === id);
-            if (index > -1) {
-                // Remove window element
-                windows[index].element.remove();
-                
-                // Remove taskbar entry
-                windows[index].taskbarApp.remove();
-                
-                // Remove from windows array
-                windows.splice(index, 1);
-                
-                // Update active window
-                if (activeWindow && activeWindow.id === id) {
-                    activeWindow = windows.length > 0 ? windows[windows.length - 1] : null;
-                    if (activeWindow) {
-                        activateWindow(activeWindow.id);
-                    }
-                }
-            }
+        .browser-page p {
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
         
-        // Activate window
-        function activateWindow(id) {
-            // Deactivate all windows
-            windows.forEach(w => {
-                w.element.style.zIndex = 10;
-                w.taskbarApp.classList.remove('active');
-            });
-            
-            // Activate the selected window
-            const window = windows.find(w => w.id === id);
-            if (window) {
-                window.element.style.zIndex = zIndex++;
-                window.taskbarApp.classList.add('active');
-                activeWindow = window;
-            }
+        .browser-page a {
+            color: #0078d7;
+            text-decoration: none;
         }
         
-        // Update taskbar
-        function updateTaskbar() {
-            windows.forEach(w => {
-                w.taskbarApp.classList.toggle('active', w.element.style.display !== 'none');
-            });
+        .browser-page a:hover {
+            text-decoration: underline;
         }
         
-        function makeDraggable(element, handle) {
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    
-    handle.onmousedown = dragMouseDown;
-    
-    function dragMouseDown(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // Get the mouse cursor position at startup
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // Call a function whenever the cursor moves
-        document.onmousemove = elementDrag;
-        
-        // Activate the window
-        activateWindow(element.id);
-    }
-    
-    function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // Calculate the new cursor position
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // Set the element's new position
-        element.style.top = (element.offsetTop - pos2) + "px";
-        element.style.left = (element.offsetLeft - pos1) + "px";
-    }
-    
-    function closeDragElement() {
-        // Stop moving when mouse button is released
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
-}
-
-// Open application
-function openApp(app) {
-    // Close the start menu
-    document.getElementById('start-menu-panel').style.display = 'none';
-    
-    // Check if the app is already open
-    const existingWindow = windows.find(w => w.app === app);
-    if (existingWindow) {
-        activateWindow(existingWindow.id);
-        return;
-    }
-    
-    // Create appropriate window based on app type
-    switch(app) {
-        case 'notepad':
-            createWindow(
-                'notepad',
-                'Blocco note',
-                '<textarea class="note-content" placeholder="Scrivi qui..."></textarea>',
-                600,
-                400
-            );
-            break;
-        case 'calculator':
-            const calcContent = `
-                <div class="calculator-display">0</div>
-                <div class="calculator-buttons">
-                    <button class="calc-btn">C</button>
-                    <button class="calc-btn">±</button>
-                    <button class="calc-btn">%</button>
-                    <button class="calc-btn operator">÷</button>
-                    <button class="calc-btn">7</button>
-                    <button class="calc-btn">8</button>
-                    <button class="calc-btn">9</button>
-                    <button class="calc-btn operator">×</button>
-                    <button class="calc-btn">4</button>
-                    <button class="calc-btn">5</button>
-                    <button class="calc-btn">6</button>
-                    <button class="calc-btn operator">-</button>
-                    <button class="calc-btn">1</button>
-                    <button class="calc-btn">2</button>
-                    <button class="calc-btn">3</button>
-                    <button class="calc-btn operator">+</button>
-                    <button class="calc-btn">0</button>
-                    <button class="calc-btn">.</button>
-                    <button class="calc-btn">DEL</button>
-                    <button class="calc-btn equals">=</button>
-                </div>
-            `;
-            const calcWindow = createWindow('calculator', 'Calcolatrice', calcContent, 300, 400);
-            
-            // Add calculator functionality
-            const display = calcWindow.element.querySelector('.calculator-display');
-            const buttons = calcWindow.element.querySelectorAll('.calc-btn');
-            
-            let currentInput = '0';
-            let previousInput = '';
-            let operation = null;
-            let resetInput = false;
-            
-            buttons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const value = button.textContent;
-                    
-                    if (!isNaN(value) || value === '.') {
-                        // Handle number input
-                        if (resetInput) {
-                            currentInput = value === '.' ? '0.' : value;
-                            resetInput = false;
-                        } else {
-                            if (currentInput === '0' && value !== '.') {
-                                currentInput = value;
-                            } else {
-                                if (value === '.' && currentInput.includes('.')) return;
-                                currentInput += value;
-                            }
-                        }
-                        display.textContent = currentInput;
-                    } else if (value === 'C') {
-                        // Clear
-                        currentInput = '0';
-                        previousInput = '';
-                        operation = null;
-                        display.textContent = currentInput;
-                    } else if (value === '±') {
-                        // Toggle sign
-                        currentInput = (parseFloat(currentInput) * -1).toString();
-                        display.textContent = currentInput;
-                    } else if (value === '%') {
-                        // Percentage
-                        currentInput = (parseFloat(currentInput) / 100).toString();
-                        display.textContent = currentInput;
-                    } else if (value === 'DEL') {
-                        // Delete last character
-                        currentInput = currentInput.slice(0, -1);
-                        if (currentInput === '' || currentInput === '-') currentInput = '0';
-                        display.textContent = currentInput;
-                    } else if (value === '=') {
-                        // Calculate result
-                        if (operation && previousInput !== '') {
-                            const prev = parseFloat(previousInput);
-                            const current = parseFloat(currentInput);
-                            let result;
-                            
-                            switch(operation) {
-                                case '+': result = prev + current; break;
-                                case '-': result = prev - current; break;
-                                case '×': result = prev * current; break;
-                                case '÷': result = prev / current; break;
-                            }
-                            
-                            currentInput = result.toString();
-                            previousInput = '';
-                            operation = null;
-                            display.textContent = currentInput;
-                            resetInput = true;
-                        }
-                    } else {
-                        // Operation
-                        if (previousInput === '') {
-                            previousInput = currentInput;
-                        } else if (operation) {
-                            // Chain operations
-                            const prev = parseFloat(previousInput);
-                            const current = parseFloat(currentInput);
-                            let result;
-                            
-                            switch(operation) {
-                                case '+': result = prev + current; break;
-                                case '-': result = prev - current; break;
-                                case '×': result = prev * current; break;
-                                case '÷': result = prev / current; break;
-                            }
-                            
-                            previousInput = result.toString();
-                        }
-                        
-                        operation = value;
-                        resetInput = true;
-                        display.textContent = previousInput;
-                    }
-                });
-            });
-            break;
-        case 'browser':
-            const browserContent = `
-                <div class="browser-content">
-                    <div class="browser-toolbar">
-                        <button class="browser-back">←</button>
-                        <button class="browser-forward">→</button>
-                        <button class="browser-refresh">↻</button>
-                        <input type="text" class="browser-url" value="https://mini-os.example.com">
-                        <button class="browser-go">Go</button>
-                    </div>
-                    <div class="browser-page">
-                        <h1>Benvenuto nel Mini Browser</h1>
-                        <p>Questo è un browser web simulato all'interno del nostro Mini OS.</p>
-                        <p>Puoi navigare tra le pagine usando i pulsanti o digitando un URL.</p>
-                        <hr>
-                        <h2>Pagine disponibili:</h2>
-                        <ul>
-                            <li><a href="#home">Home</a></li>
-                            <li><a href="#about">About</a></li>
-                            <li><a href="#contact">Contatti</a></li>
-                        </ul>
-                    </div>
-                </div>
-            `;
-            const browserWindow = createWindow('browser', 'Browser', browserContent, 700, 500);
-            
-            // Add browser functionality
-            const pages = {
-                'home': `
-                    <h1>Benvenuto nel Mini Browser</h1>
-                    <p>Questo è un browser web simulato all'interno del nostro Mini OS.</p>
-                    <p>Puoi navigare tra le pagine usando i pulsanti o digitando un URL.</p>
-                    <hr>
-                    <h2>Pagine disponibili:</h2>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contatti</a></li>
-                    </ul>
-                `,
-                'about': `
-                    <h1>About Mini OS</h1>
-                    <p>Mini OS è un sistema operativo simulato creato con HTML, CSS e JavaScript.</p>
-                    <p>Caratteristiche principali:</p>
-                    <ul>
-                        <li>Desktop con icone</li>
-                        <li>Finestre ridimensionabili e trascinabili</li>
-                        <li>Applicazioni funzionanti</li>
-                        <li>Barra delle applicazioni con menu Start</li>
-                    </ul>
-                    <p><a href="#home">Torna alla Home</a></p>
-                `,
-                'contact': `
-                    <h1>Contatti</h1>
-                    <p>Questo è un progetto dimostrativo per GitHub.</p>
-                    <p>Puoi contattarci attraverso la nostra pagina GitHub.</p>
-                    <p><a href="#home">Torna alla Home</a></p>
-                `
-            };
-            
-            const browserPage = browserWindow.element.querySelector('.browser-page');
-            const urlInput = browserWindow.element.querySelector('.browser-url');
-            const goButton = browserWindow.element.querySelector('.browser-go');
-            const backButton = browserWindow.element.querySelector('.browser-back');
-            const forwardButton = browserWindow.element.querySelector('.browser-forward');
-            const refreshButton = browserWindow.element.querySelector('.browser-refresh');
-            
-            let currentPage = 'home';
-            let history = ['home'];
-            let historyIndex = 0;
-            
-            function loadPage(page) {
-                if (pages[page]) {
-                    browserPage.innerHTML = pages[page];
-                    currentPage = page;
-                    urlInput.value = `https://mini-os.example.com/${page}`;
-                    
-                    // Handle links
-                    browserPage.querySelectorAll('a').forEach(link => {
-                        link.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            const href = link.getAttribute('href').substring(1);
-                            if (pages[href]) {
-                                history = history.slice(0, historyIndex + 1);
-                                history.push(href);
-                                historyIndex = history.length - 1;
-                                loadPage(href);
-                            }
-                        });
-                    });
-                } else {
-                    browserPage.innerHTML = `
-                        <h1>Pagina non trovata</h1>
-                        <p>La pagina "${page}" non esiste.</p>
-                        <p><a href="#home">Torna alla Home</a></p>
-                    `;
-                }
-            }
-            
-            goButton.addEventListener('click', () => {
-                const url = urlInput.value;
-                const match = url.match(/mini-os\.example\.com\/([a-z]*)/);
-                if (match) {
-                    const page = match[1] || 'home';
-                    history = history.slice(0, historyIndex + 1);
-                    history.push(page);
-                    historyIndex = history.length - 1;
-                    loadPage(page);
-                }
-            });
-            
-            backButton.addEventListener('click', () => {
-                if (historyIndex > 0) {
-                    historyIndex--;
-                    loadPage(history[historyIndex]);
-                }
-            });
-            
-            forwardButton.addEventListener('click', () => {
-                if (historyIndex < history.length - 1) {
-                    historyIndex++;
-                    loadPage(history[historyIndex]);
-                }
-            });
-            
-            refreshButton.addEventListener('click', () => {
-                loadPage(currentPage);
-            });
-            
-            // Links event delegation
-            browserPage.addEventListener('click', (e) => {
-                if (e.target.tagName === 'A') {
-                    e.preventDefault();
-                    const href = e.target.getAttribute('href').substring(1);
-                    if (pages[href]) {
-                        history = history.slice(0, historyIndex + 1);
-                        history.push(href);
-                        historyIndex = history.length - 1;
-                        loadPage(href);
-                    }
-                }
-            });
-            
-            // Initialize with home page
-            loadPage('home');
-            break;
-    }
-}
-
-// Handle desktop icon clicks
-document.querySelectorAll('.icon').forEach(icon => {
-    icon.addEventListener('click', function() {
-        const app = this.dataset.app;
-        openApp(app);
-    });
-});
-
-// Handle start menu item clicks
-document.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', function() {
-        const app = this.dataset.app;
-        if (app) {
-            openApp(app);
-        } else if (this.id === 'shutdown') {
-            if (confirm('Sei sicuro di voler spegnere il Mini OS?')) {
-                document.body.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #000; color: #fff; font-size: 24px;">Sistema spento. Aggiorna la pagina per riavviare.</div>';
-            }
+        .file-explorer {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
-    });
-});
-
-// Initialize the system
-window.addEventListener('load', function() {
-    // Welcome message
-    setTimeout(() => {
-        alert('Benvenuto nel Mini OS!\n\nQuesto è un sistema operativo simulato creato con HTML, CSS e JavaScript.\n\nPuoi aprire le applicazioni facendo clic sulle icone sul desktop o dal menu Start.');
-    }, 500);
-});
-</script>
+        
+        .file-toolbar {
+            padding: 10px;
+            background-color: #333;
+            border-bottom: 1px solid #444;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .file-toolbar button {
+            background-color: #444;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .file-toolbar button:hover {
+            background-color: #555;
+        }
+        
+        .file-path {
+            background-color: #2d2d2d;
+            padding: 5px 10px;
+            border: 1px solid #444;
+            border-radius: 3px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .file-container {
+            display: flex;
+            flex-grow: 1;
+        }
+        
+        .file-sidebar {
+            width: 200px;
+            background-color: #2d2d2d;
+            border-right: 1px solid #444;
+            padding: 10px;
+        }
+        
+        .file-sidebar-item {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-sidebar-item:hover {
+            background-color: #444;
+        }
+        
+        .file-sidebar-item.active {
+            background-color: #0078d7;
+        }
+        
+        .file-content {
+            flex-grow: 1;
+            padding: 10px;
+            overflow: auto;
+        }
+        
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-gap: 10px;
+        }
+        
+        .file-item, .folder-item {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        
+        .file-item:hover, .folder-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .file-icon, .folder-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .file-icon {
+            background-color: #0078d7;
+        }
+        
+        .folder-icon {
+            background-color: #dcb67a;
+        }
+        
+        .file-name, .folder-name {
+            font-size: 12px;
+            text-align: center;
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .notification-center {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: rgba(25, 25, 25, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+        }
+        
+        .notification-center.open {
+            transform: translateX(0);
+        }
+        
+        .notification-header {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-title {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .notification-clear {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .notification-clear:hover {
+            opacity: 1;
+        }
+        
+        .notification-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .notification-item {
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .notification-item-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .notification-item-message {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .notification-item-time {
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .terminal {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            height: 100%;
+            overflow: auto;
+        }
+        
+        .terminal-output {
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+        
+        .terminal-prompt {
+            display: flex;
+        }
+        
+        .terminal-prompt-text {
+            color: #0f0;
+            margin-right: 5px;
+        }
+        
+        .terminal-input {
+            background: none;
+            border: none;
+            color: #f0f0f0;
+            font-family: 'Courier New', monospace;
+            flex-grow: 1;
+            outline: none;
+        }
+        
+        .music-player {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .music-cover {
+            width: 200px;
+            height: 200px;
+            background-color: #333;
+            margin: 20px auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+        }
+        
+        .music-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .music-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .music-artist {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .music-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background-color: #444;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .music-btn:hover {
+            background-color: #555;
+        }
+        
+        .music-btn.play {
+            background-color: #0078d7;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
+        
+        .music-progress {
+            padding: 0 20px;
+        }
+        
+        .music-progress-bar {
+            height: 5px;
+            background-color: #444;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        
+        .music-progress-fill {
+            height: 100%;
+            width: 30%;
+            background-color: #0078d7;
+        }
+        
+        .music-progress-time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .music-volume {
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            margin-top: 20px;
+        }
+        
+        .music-volume-icon {
+            margin-right: 10px;
+        }
+        
+        .music-volume-bar {
+            flex-grow: 1;
+            height: 5px;
+            background-color: #444;
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .music-volume-fill {
+            height: 100%;
+            width: 70%;
+            background-color: #0078d7;
+        }
+        
+        .music-playlist {
+            margin-top: 20px;
+            padding: 0 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+  <style>
 </body>
 </html>

@@ -3,1093 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AdvancedOS</title>
+    <title>GitOS - Sistema Operativo GitHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            background-color: #000;
-        }
-        
-        #boot-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            color: white;
-        }
-        
-        #boot-logo {
-            font-size: 48px;
-            margin-bottom: 30px;
-        }
-        
-        #boot-progress {
-            width: 300px;
-            height: 5px;
-            background-color: #333;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        #boot-progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: #0078d7;
-            transition: width 0.5s;
-        }
-        
-        #boot-status {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #888;
-        }
-        
-        #login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('/api/placeholder/1920/1080');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9998;
-        }
-        
-        #login-form {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 30px;
-            border-radius: 10px;
-            width: 350px;
-            color: white;
-            text-align: center;
-        }
-        
-        #user-avatar {
-            width: 100px;
-            height: 100px;
-            background-color: #555;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: #ccc;
-        }
-        
-        #login-form input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        
-        #login-form button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #0078d7;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        #login-form button:hover {
-            background-color: #0063b1;
-        }
-        
-        #desktop-container {
-            flex-grow: 1;
-            position: relative;
-            overflow: hidden;
-            display: none;
-        }
-        
-        #desktop {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('/api/placeholder/1920/1080');
-            background-size: cover;
-            background-position: center;
-            padding: 20px;
-            overflow: hidden;
-        }
-        
-        #desktop-icons {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, 100px);
-            grid-gap: 20px;
-            grid-auto-rows: 100px;
-            align-content: start;
-        }
-        
-        #taskbar {
-            height: 50px;
-            background-color: rgba(25, 25, 25, 0.8);
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
-            z-index: 100;
-            position: relative;
+        .taskbar {
+            background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(10px);
-        }
-        
-        #start-menu {
-            background-color: #0078d7;
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 18px;
-            transition: background-color 0.3s;
-        }
-        
-        #start-menu:hover {
-            background-color: #0063b1;
-        }
-        
-        #clock {
-            margin-left: auto;
-            color: white;
-            font-size: 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-        
-        #date {
-            font-size: 12px;
-            color: #ddd;
-        }
-        
-        .icon {
-            width: 100px;
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-        }
-        
-        .icon:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .icon-img {
-            width: 48px;
-            height: 48px;
-            background-color: #0078d7;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-        
-        .folder .icon-img {
-            background-color: #dcb67a;
-        }
-        
-        .icon-label {
-            color: white;
-            text-align: center;
-            font-size: 12px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-            max-width: 90px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
         
         .window {
-            position: absolute;
-            background-color: rgba(40, 40, 40, 0.95);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #e5e7eb;
             border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            min-width: 300px;
-            min-height: 200px;
-            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        
-        .window.maximized {
-            width: 100% !important;
-            height: calc(100% - 50px) !important;
-            top: 0 !important;
-            left: 0 !important;
-            border-radius: 0;
-        }
-        
-        .window-header {
-            height: 32px;
-            background-color: rgba(60, 60, 60, 0.5);
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            cursor: move;
-            backdrop-filter: blur(5px);
-        }
-        
-        .window-title {
-            color: white;
-            flex-grow: 1;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .window-controls {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .window-minimize, .window-maximize, .window-close {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .window-minimize {
-            background-color: #f5cc00;
-        }
-        
-        .window-maximize {
-            background-color: #27ca40;
-        }
-        
-        .window-close {
-            background-color: #ff5f57;
-        }
-        
-        .window-content {
-            flex-grow: 1;
-            padding: 15px;
-            overflow: auto;
-            position: relative;
-        }
-        
-        #start-menu-panel {
-            position: absolute;
-            bottom: 50px;
-            left: 0;
-            width: 350px;
-            background-color: rgba(25, 25, 25, 0.95);
-            color: white;
-            border-radius: 5px 5px 0 0;
-            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            display: none;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-        
-        #start-menu-header {
-            padding: 15px;
-            background-color: rgba(0, 120, 215, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-        }
-        
-        #start-menu-user {
-            width: 40px;
-            height: 40px;
-            background-color: #555;
-            border-radius: 50%;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #ccc;
-        }
-        
-        #start-menu-username {
-            font-weight: bold;
-        }
-        
-        #app-categories {
-            display: flex;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .app-category {
-            padding: 10px 15px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-        }
-        
-        .app-category.active {
-            border-color: #0078d7;
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        
-        #app-list {
-            max-height: 350px;
-            overflow-y: auto;
-        }
-        
-        .menu-item {
-            padding: 12px 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            transition: background-color 0.2s;
-        }
-        
-        .menu-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 15px;
-            background-color: #0078d7;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-        }
-        
-        .menu-item.folder .menu-icon {
-            background-color: #dcb67a;
-        }
-        
-        #start-menu-footer {
-            padding: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .footer-button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .footer-button:hover {
-            text-decoration: underline;
-        }
-        
-        #taskbar-apps {
-            display: flex;
-            margin-left: 10px;
-            gap: 5px;
-        }
-        
-        .taskbar-app {
-            height: 40px;
-            min-width: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            padding: 0 10px;
-            transition: background-color 0.2s;
-            overflow: hidden;
-        }
-        
-        .taskbar-app.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 -3px 0 #0078d7 inset;
-        }
-        
-        .taskbar-app:hover:not(.active) {
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-        
-        .taskbar-app-icon {
-            font-size: 18px;
-            margin-right: 8px;
-        }
-        
-        .taskbar-app-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 120px;
-            font-size: 13px;
-        }
-        
-        #system-tray {
-            display: flex;
-            align-items: center;
-            margin-left: 10px;
-            padding-left: 10px;
-            border-left: 1px solid rgba(255, 255, 255, 0.2);
-            gap: 15px;
-        }
-        
-        .tray-icon {
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        
-        .context-menu {
-            position: absolute;
-            background-color: rgba(40, 40, 40, 0.95);
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            min-width: 200px;
-            z-index: 2000;
-            backdrop-filter: blur(10px);
-            color: white;
-        }
-        
-        .context-menu-item {
-            padding: 10px 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-        
-        .context-menu-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .context-menu-icon {
-            margin-right: 10px;
-            width: 16px;
-            text-align: center;
-        }
-        
-        .context-menu-separator {
-            height: 1px;
-            background-color: rgba(255, 255, 255, 0.1);
-            margin: 3px 0;
-        }
-        
-        /* Application specific styles */
-        .note-content {
-            width: 100%;
-            height: 100%;
-            border: none;
 
-resize: none;
-            outline: none;
-            padding: 5px;
-            font-size: 14px;
-            background-color: #2d2d2d;
-            color: #f0f0f0;
-        }
-        
-        .note-toolbar {
-            padding: 5px;
-            background-color: #333;
-            border-bottom: 1px solid #444;
-            display: flex;
-            gap: 5px;
-        }
-        
-        .note-toolbar button {
-            background-color: #444;
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-        
-        .note-toolbar button:hover {
-            background-color: #555;
-        }
-        
-        .calculator-display {
-            background-color: #2d2d2d;
-            padding: 20px;
-            text-align: right;
-            font-size: 28px;
-            font-weight: bold;
-            border-radius: 3px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            border: 1px solid #444;
-            color: #f0f0f0;
-        }
-        
-        .calculator-history {
-            max-height: 60px;
-            overflow-y: auto;
-            font-size: 14px;
-            color: #aaa;
-            text-align: right;
-            margin-bottom: 5px;
-        }
-        
-        .calculator-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-        
-        .calc-btn {
-            padding: 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #444;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.2s;
-        }
-        
-        .calc-btn:hover {
-            background-color: #555;
-        }
-        
-        .calc-btn.operator {
-            background-color: #0078d7;
-        }
-        
-        .calc-btn.equals {
-            background-color: #27ca40;
-        }
-        
-        .calc-btn.function {
-            background-color: #333;
-        }
-        
-        .browser-toolbar {
-            display: flex;
-            padding: 10px;
-            background-color: #333;
-            border-bottom: 1px solid #444;
-            gap: 5px;
-        }
-        
-        .browser-toolbar button {
-            background-color: #444;
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 3px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .browser-toolbar button:hover {
-            background-color: #555;
-        }
-        
-        .browser-url {
-            flex-grow: 1;
-            padding: 5px 10px;
-            border: 1px solid #444;
-            border-radius: 15px;
-            margin: 0 5px;
-            background-color: #2d2d2d;
-            color: white;
-        }
-        
-        .browser-content {
-            padding: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .browser-tabs {
-            display: flex;
-            background-color: #262626;
-            padding: 5px 5px 0;
-            gap: 5px;
-            overflow-x: auto;
-            scrollbar-width: thin;
-        }
-        
-        .browser-tab {
-            padding: 8px 25px 8px 10px;
-            background-color: #333;
-            border-radius: 5px 5px 0 0;
-            font-size: 12px;
-            white-space: nowrap;
-            position: relative;
-            cursor: pointer;
-            min-width: 120px;
-            max-width: 180px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .browser-tab.active {
-            background-color: #444;
-        }
-        
-        .browser-tab-close {
-            position: absolute;
-            right: 5px;
-            top: 8px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #555;
-            font-size: 10px;
-            cursor: pointer;
-        }
-        
-        .browser-tab-close:hover {
-            background-color: #ff5f57;
-        }
-        
-        .browser-tab-favicon {
-            margin-right: 5px;
-        }
-        
-        .browser-new-tab {
-            padding: 8px;
-            background-color: #333;
-            border-radius: 5px 5px 0 0;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .browser-page {
-            flex-grow: 1;
-            padding: 15px;
-            overflow: auto;
-            background-color: #222;
-        }
-        
-        .browser-page h1 {
-            margin-bottom: 20px;
-        }
-        
-        .browser-page p {
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
-        
-        .browser-page a {
-            color: #0078d7;
-            text-decoration: none;
-        }
-        
-        .browser-page a:hover {
-            text-decoration: underline;
-        }
-        
-        .file-explorer {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        
-        .file-toolbar {
-            padding: 10px;
-            background-color: #333;
-            border-bottom: 1px solid #444;
-            display: flex;
-            gap: 5px;
-        }
-        
-        .file-toolbar button {
-            background-color: #444;
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .file-toolbar button:hover {
-            background-color: #555;
-        }
-        
-        .file-path {
-            background-color: #2d2d2d;
-            padding: 5px 10px;
-            border: 1px solid #444;
-            border-radius: 3px;
-            color: white;
-            font-size: 14px;
-        }
-        
-        .file-container {
-            display: flex;
-            flex-grow: 1;
-        }
-        
-        .file-sidebar {
-            width: 200px;
-            background-color: #2d2d2d;
-            border-right: 1px solid #444;
-            padding: 10px;
-        }
-        
-        .file-sidebar-item {
-            padding: 8px;
-            cursor: pointer;
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .file-sidebar-item:hover {
-            background-color: #444;
-        }
-        
-        .file-sidebar-item.active {
-            background-color: #0078d7;
-        }
-        
-        .file-content {
-            flex-grow: 1;
-            padding: 10px;
-            overflow: auto;
-        }
-        
-        .file-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            grid-gap: 10px;
-        }
-        
-        .file-item, .folder-item {
-            width: 100px;
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-        }
-        
-        .file-item:hover, .folder-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .file-icon, .folder-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-        
-        .file-icon {
-            background-color: #0078d7;
-        }
-        
-        .folder-icon {
-            background-color: #dcb67a;
-        }
-        
-        .file-name, .folder-name {
-            font-size: 12px;
-            text-align: center;
-            max-width: 90px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .notification-center {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 300px;
-            height: 100%;
-            background-color: rgba(25, 25, 25, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            transform: translateX(100%);
-            transition: transform 0.3s;
-        }
-        
-        .notification-center.open {
-            transform: translateX(0);
-        }
-        
-        .notification-header {
-            padding: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .notification-title {
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        .notification-clear {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 12px;
-            opacity: 0.7;
-        }
-        
-        .notification-clear:hover {
-            opacity: 1;
-        }
-        
-        .notification-list {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 10px;
-        }
-        
-        .notification-item {
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        
-        .notification-item-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .notification-item-message {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-        
-        .notification-item-time {
-            font-size: 12px;
-            opacity: 0.6;
-            margin-top: 5px;
-            text-align: right;
-        }
-        
-        .terminal {
-            background-color: #1a1a1a;
-            color: #f0f0f0;
-            font-family: 'Courier New', monospace;
-            padding: 10px;
-            height: 100%;
-            overflow: auto;
-        }
-        
-        .terminal-output {
-            margin-bottom: 10px;
-            white-space: pre-wrap;
-        }
-        
-        .terminal-prompt {
-            display: flex;
-        }
-        
-        .terminal-prompt-text {
-            color: #0f0;
-            margin-right: 5px;
-        }
-        
-        .terminal-input {
-            background: none;
-            border: none;
-            color: #f0f0f0;
-            font-family: 'Courier New', monospace;
-            flex-grow: 1;
-            outline: none;
-        }
-        
-        .music-player {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        
-        .music-cover {
-            width: 200px;
-            height: 200px;
-            background-color: #333;
-            margin: 20px auto;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 80px;
-        }
-        
-        .music-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .music-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .music-artist {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-        
-        .music-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .music-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
-            background-color: #444;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-        
-        .music-btn:hover {
-            background-color: #555;
-        }
-        
-        .music-btn.play {
-            background-color: #0078d7;
-            width: 50px;
-            height: 50px;
-            font-size: 20px;
-        }
-        
-        .music-progress {
-            padding: 0 20px;
-        }
-        
-        .music-progress-bar {
-            height: 5px;
-            background-color: #444;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 5px;
-            cursor: pointer;
-        }
-        
-        .music-progress-fill {
-            height: 100%;
-            width: 30%;
-            background-color: #0078d7;
-        }
-        
-        .music-progress-time {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            opacity: 0.8;
-        }
-        
-        .music-volume {
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            margin-top: 20px;
-        }
-        
-        .music-volume-icon {
-            margin-right: 10px;
-        }
-        
-        .music-volume-bar {
-            flex-grow: 1;
-            height: 5px;
-            background-color: #444;
-            border-radius: 3px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        
-        .music-volume-fill {
-            height: 100%;
-            width: 70%;
-            background-color: #0078d7;
-        }
-        
-        .music-playlist {
-            margin-top: 20px;
-            padding: 0 20px;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-  <style>
+        .window-header {
+            cursor: move;
+        }
+
+        .desktop-icon {
+            transition: all 0.2s;
+        }
+
+        .desktop-icon:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen overflow-hidden">
+    <!-- Taskbar -->
+    <div class="taskbar fixed bottom-0 w-full h-16 flex items-center justify-between px-4 text-white z-50">
+        <!-- Start Menu Button -->
+        <div class="flex items-center space-x-4">
+            <button class="p-2 hover:bg-gray-700 rounded-lg flex items-center space-x-2">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span>Start</span>
+            </button>
+        </div>
+
+        <!-- Center - Running Apps -->
+        <div class="flex space-x-2">
+            <!-- Active Windows -->
+        </div>
+
+        <!-- Right - System Tray -->
+        <div class="flex items-center space-x-4">
+            <div class="text-sm" id="clock">
+                2025-03-18 20:13:54
+            </div>
+            <div class="flex items-center space-x-2 px-3 py-1 rounded-lg bg-gray-700">
+                <img src="https://github.com/TommyTommy10.png" alt="TommyTommy10" class="w-8 h-8 rounded-full">
+                <span>TommyTommy10</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop -->
+    <div class="absolute inset-0 p-4 grid grid-cols-6 gap-4 pb-20">
+        <!-- Desktop Icons -->
+        <div class="desktop-icon text-center p-4 rounded-lg cursor-pointer">
+            <div class="w-16 h-16 mx-auto mb-2 bg-blue-500 rounded-lg flex items-center justify-center">
+                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"/>
+                </svg>
+            </div>
+            <span class="text-sm text-gray-700">Repositories</span>
+        </div>
+
+        <div class="desktop-icon text-center p-4 rounded-lg cursor-pointer">
+            <div class="w-16 h-16 mx-auto mb-2 bg-green-500 rounded-lg flex items-center justify-center">
+                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                    <path fill-rule="evenodd" d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"/>
+                </svg>
+            </div>
+            <span class="text-sm text-gray-700">Issues</span>
+        </div>
+
+        <div class="desktop-icon text-center p-4 rounded-lg cursor-pointer">
+            <div class="w-16 h-16 mx-auto mb-2 bg-purple-500 rounded-lg flex items-center justify-center">
+                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M7.177 3.073L9.573.677A.25.25 0 0110 .854v4.792a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354zM3.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25zM11 2.5h-1V4h1a1 1 0 011 1v5.628a2.251 2.251 0 101.5 0V5A2.5 2.5 0 0011 2.5zm1 10.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0zM3.75 12a.75.75 0 100 1.5.75.75 0 000-1.5z"/>
+                </svg>
+            </div>
+            <span class="text-sm text-gray-700">Pull Requests</span>
+        </div>
+    </div>
+
+    <!-- Example Window -->
+    <div class="window absolute top-10 left-10 w-[600px] shadow-lg">
+        <div class="window-header bg-gray-100 p-3 flex items-center justify-between rounded-t-lg">
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"/>
+                </svg>
+                <span class="font-medium">Repository Browser</span>
+            </div>
+            <div class="flex space-x-2">
+                <button class="w-3 h-3 rounded-full bg-yellow-400"></button>
+                <button class="w-3 h-3 rounded-full bg-green-400"></button>
+                <button class="w-3 h-3 rounded-full bg-red-400"></button>
+            </div>
+        </div>
+        <div class="p-4">
+            <div class="flex items-center space-x-2 mb-4">
+                <input type="text" placeholder="Search repositories..." class="w-full px-3 py-2 border rounded-lg">
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    Search
+                </button>
+            </div>
+            <div class="space-y-2">
+                <div class="p-3 border rounded-lg hover:bg-gray-50">
+                    <div class="flex items-center justify-between">
+                        <div class="font-medium">GitOS</div>
+                        <span class="text-sm text-gray-500">Updated 2 hours ago</span>
+                    </div>
+                    <p class="text-sm text-gray-600">A web-based GitHub operating system interface</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            const formatted = now.getUTCFullYear() + '-' + 
+                            String(now.getUTCMonth() + 1).padStart(2, '0') + '-' + 
+                            String(now.getUTCDate()).padStart(2, '0') + ' ' + 
+                            String(now.getUTCHours()).padStart(2, '0') + ':' + 
+                            String(now.getUTCMinutes()).padStart(2, '0') + ':' + 
+                            String(now.getUTCSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = formatted;
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Make windows draggable
+        document.querySelectorAll('.window').forEach(makeWindowDraggable);
+
+        function makeWindowDraggable(window) {
+            const header = window.querySelector('.window-header');
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+
+            header.addEventListener('mousedown', startDragging);
+
+            function startDragging(e) {
+                isDragging = true;
+                initialX = e.clientX - window.offsetLeft;
+                initialY = e.clientY - window.offsetTop;
+                
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDragging);
+            }
+
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                    
+                    window.style.left = currentX + 'px';
+                    window.style.top = currentY + 'px';
+                }
+            }
+
+            function stopDragging() {
+                isDragging = false;
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDragging);
+            }
+        }
+    </script>
 </body>
 </html>

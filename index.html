@@ -1,83 +1,503 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nyol'thas Translator</title>
+    <title>Traduttore Nyol'thas</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+        :root {
+            --primary-color: #6a11cb;
+            --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --text-dark: #333;
+            --text-light: #fff;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
         }
-        .word-list {
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: var(--primary-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 10px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .toggle {
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .toggle:hover {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        p {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+        }
+        
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
             margin-top: 20px;
         }
-        .word {
+        
+        .word-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             cursor: pointer;
-            color: blue;
-            margin: 5px 0;
+            transition: var(--transition);
+            text-align: center;
+            border: 2px solid transparent;
         }
-        .word:hover {
-            text-decoration: underline;
+        
+        .word-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
         }
-        .toggle {
+        
+        .word-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .translation {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+            display: none;
+        }
+        
+        .word-card.show-translation .translation {
+            display: block;
+        }
+        
+        .info-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .pronunciation {
+            font-style: italic;
+            color: #777;
+        }
+        
+        .no-results {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 20px;
+            color: #666;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .word-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        .floating-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 24px;
+            z-index: 100;
+        }
+        
+        .floating-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+        
+        .popup.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--card-shadow);
+            transform: translateY(-20px);
+            transition: var(--transition);
+        }
+        
+        .popup.show .popup-content {
+            transform: translateY(0);
+        }
+        
+        .popup-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .popup-close {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
             cursor: pointer;
-            background: #f0f0f0;
-            padding: 5px 10px;
-            border: 1px solid #ccc;
+            color: #999;
+        }
+        
+        .popup-close:hover {
+            color: var(--primary-color);
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
             border-radius: 5px;
+        }
+        
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
-    <h1>Nyol'thas Translator</h1>
-    <div class="toggle" onclick="toggleLanguage()">Nyol'thas➡️Italiano</div>
-    <p>Clicca su una parola per vedere la traduzione:</p>
-    <div class="word-list" id="word-list">
-        <!-- Le parole saranno mostrate qui -->
+    <div class="container">
+        <h1>Traduttore Nyol'thas</h1>
+        
+        <div class="toggle-container">
+            <div class="toggle" id="toggle-btn" onclick="toggleLanguage()">
+                <span id="toggle-text">Nyol'thas ➡️ Italiano</span>
+            </div>
+        </div>
+        
+        <p>Esplora il vocabolario Nyol'thas e scopri le traduzioni</p>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" id="search-input" placeholder="Cerca una parola..." oninput="filterWords()">
+        </div>
+        
+        <div class="word-grid" id="word-grid">
+            <!-- Le parole saranno mostrate qui -->
+        </div>
+        
+        <p class="info-text">Clicca su una parola per vedere la traduzione, tocca nuovamente per nasconderla</p>
     </div>
-
+    
+    <div class="floating-button" id="add-word-btn">+</div>
+    
+    <div class="popup" id="add-word-popup">
+        <div class="popup-content">
+            <button class="popup-close" id="close-popup">&times;</button>
+            <h2 class="popup-title">Aggiungi Nuova Parola</h2>
+            
+            <div class="input-group">
+                <label for="nyolthas-word">Parola in Nyol'thas:</label>
+                <input type="text" id="nyolthas-word" placeholder="Inserisci parola in Nyol'thas">
+            </div>
+            
+            <div class="input-group">
+                <label for="italian-word">Traduzione in Italiano:</label>
+                <input type="text" id="italian-word" placeholder="Inserisci traduzione in Italiano">
+            </div>
+            
+            <div class="input-group">
+                <label for="pronunciation">Pronuncia (opzionale):</label>
+                <input type="text" id="pronunciation" placeholder="Come si pronuncia?">
+            </div>
+            
+            <button class="btn" id="save-word-btn">Salva Parola</button>
+        </div>
+    </div>
+    
     <script>
-        // Vocabolario
-        const vocabulary = {
-            "khal": "acqua",
-            "thar": "fuoco",
-            "zol": "cielo",
-            "ynd": "terra",
-            "mel": "amore",
-            "duzh": "odio",
-            "shol": "gioia",
-            "vryn": "tristezza"
+        // Vocabolario avanzato con pronuncia
+        let vocabulary = {
+            "khal": { italian: "acqua", pronunciation: "kh-ahl" },
+            "thar": { italian: "fuoco", pronunciation: "th-ar" },
+            "zol": { italian: "cielo", pronunciation: "z-ohl" },
+            "ynd": { italian: "terra", pronunciation: "ynd" },
+            "mel": { italian: "amore", pronunciation: "m-ehl" },
+            "duzh": { italian: "odio", pronunciation: "d-ooz-h" },
+            "shol": { italian: "gioia", pronunciation: "sh-ohl" },
+            "vryn": { italian: "tristezza", pronunciation: "vr-iin" },
+            "kalthir": { italian: "vento", pronunciation: "kal-th-iir" },
+            "morvak": { italian: "forza", pronunciation: "mor-vak" },
+            "nythar": { italian: "saggezza", pronunciation: "ni-th-ar" },
+            "zuul": { italian: "oscurità", pronunciation: "z-uul" },
+            "elar": { italian: "luce", pronunciation: "eh-lar" },
+            "thazdor": { italian: "montagna", pronunciation: "thaz-dor" },
+            "eztul": { italian: "albero", pronunciation: "ez-tuul" }
         };
-
+        
+        // Caricare il vocabolario dal localStorage se esiste
+        if (localStorage.getItem('nyolthasVocabulary')) {
+            vocabulary = JSON.parse(localStorage.getItem('nyolthasVocabulary'));
+        }
+        
         let isNyolthasToItalian = true;
-
+        
         // Funzione per generare la lista di parole
         function generateWordList() {
-            const wordListDiv = document.getElementById("word-list");
-            wordListDiv.innerHTML = "";
-
-            for (const [nyolthas, italiano] of Object.entries(vocabulary)) {
-                const wordDiv = document.createElement("div");
-                wordDiv.className = "word";
-                wordDiv.textContent = isNyolthasToItalian ? nyolthas : italiano;
-                wordDiv.onclick = () => alert(isNyolthasToItalian ? italiano : nyolthas);
-                wordListDiv.appendChild(wordDiv);
+            const wordGrid = document.getElementById("word-grid");
+            wordGrid.innerHTML = "";
+            
+            // Converti l'oggetto vocabulary in un array per poterlo ordinare
+            const entries = Object.entries(vocabulary);
+            entries.sort((a, b) => {
+                const wordA = isNyolthasToItalian ? a[0] : a[1].italian;
+                const wordB = isNyolthasToItalian ? b[0] : b[1].italian;
+                return wordA.localeCompare(wordB);
+            });
+            
+            for (const [nyolthas, details] of entries) {
+                const wordCard = document.createElement("div");
+                wordCard.className = "word-card";
+                
+                const wordText = document.createElement("div");
+                wordText.className = "word-text";
+                wordText.textContent = isNyolthasToItalian ? nyolthas : details.italian;
+                
+                const translation = document.createElement("div");
+                translation.className = "translation";
+                
+                if (isNyolthasToItalian) {
+                    translation.innerHTML = `${details.italian}<br><span class="pronunciation">${details.pronunciation || ''}</span>`;
+                } else {
+                    translation.innerHTML = `${nyolthas}<br><span class="pronunciation">${details.pronunciation || ''}</span>`;
+                }
+                
+                wordCard.appendChild(wordText);
+                wordCard.appendChild(translation);
+                
+                wordCard.addEventListener("click", function() {
+                    this.classList.toggle("show-translation");
+                });
+                
+                wordGrid.appendChild(wordCard);
             }
         }
-
+        
+        // Funzione per filtrare le parole in base alla ricerca
+        function filterWords() {
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            const wordCards = document.querySelectorAll(".word-card");
+            let hasResults = false;
+            
+            wordCards.forEach(card => {
+                const wordText = card.querySelector(".word-text").textContent.toLowerCase();
+                const translationText = card.querySelector(".translation").textContent.toLowerCase();
+                
+                if (wordText.includes(searchTerm) || translationText.includes(searchTerm)) {
+                    card.style.display = "block";
+                    hasResults = true;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+            
+            // Mostra un messaggio se non ci sono risultati
+            const noResults = document.querySelector(".no-results");
+            if (!hasResults && !noResults && searchTerm !== "") {
+                const noResultsDiv = document.createElement("div");
+                noResultsDiv.className = "no-results";
+                noResultsDiv.textContent = "Nessuna parola trovata.";
+                document.getElementById("word-grid").appendChild(noResultsDiv);
+            } else if (hasResults && noResults) {
+                noResults.remove();
+            }
+        }
+        
         // Funzione per invertire la lingua
         function toggleLanguage() {
             isNyolthasToItalian = !isNyolthasToItalian;
-            document.querySelector(".toggle").textContent = isNyolthasToItalian
-                ? "Nyol'thas➡️Italiano"
-                : "Italiano➡️Nyol'thas";
+            document.getElementById("toggle-text").textContent = isNyolthasToItalian
+                ? "Nyol'thas ➡️ Italiano"
+                : "Italiano ➡️ Nyol'thas";
+            
             generateWordList();
+            filterWords(); // Applica il filtro di ricerca corrente
         }
-
+        
+        // Funzioni per il popup di aggiunta parole
+        document.getElementById("add-word-btn").addEventListener("click", function() {
+            document.getElementById("add-word-popup").classList.add("show");
+        });
+        
+        document.getElementById("close-popup").addEventListener("click", function() {
+            document.getElementById("add-word-popup").classList.remove("show");
+        });
+        
+        document.getElementById("save-word-btn").addEventListener("click", function() {
+            const nyolthasWord = document.getElementById("nyolthas-word").value.trim();
+            const italianWord = document.getElementById("italian-word").value.trim();
+            const pronunciation = document.getElementById("pronunciation").value.trim();
+            
+            if (nyolthasWord && italianWord) {
+                // Aggiungi la nuova parola al vocabolario
+                vocabulary[nyolthasWord] = {
+                    italian: italianWord,
+                    pronunciation: pronunciation
+                };
+                
+                // Salva nel localStorage
+                localStorage.setItem('nyolthasVocabulary', JSON.stringify(vocabulary));
+                
+                // Rigenerare la lista di parole
+                generateWordList();
+                
+                // Resetta il form e chiudi il popup
+                document.getElementById("nyolthas-word").value = "";
+                document.getElementById("italian-word").value = "";
+                document.getElementById("pronunciation").value = "";
+                document.getElementById("add-word-popup").classList.remove("show");
+                
+                // Mostra un messaggio di successo (opzionale)
+                alert(`Parola "${nyolthasWord}" aggiunta con successo!`);
+            } else {
+                alert("Per favore inserisci sia la parola in Nyol'thas che la traduzione in Italiano.");
+            }
+        });
+        
+        // Chiudere il popup cliccando fuori
+        document.getElementById("add-word-popup").addEventListener("click", function(e) {
+            if (e.target === this) {
+                this.classList.remove("show");
+            }
+        });
+        
         // Genera la lista iniziale
         generateWordList();
     </script>

@@ -1,701 +1,85 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SimplOS - Demo</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Arial', sans-serif;
-    }
-    
-    body {
-      background-color: #f5f5f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    
-    .phone {
-      width: 300px;
-      height: 600px;
-      background-color: #111;
-      border-radius: 30px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-      padding: 10px;
-    }
-    
-    .screen {
-      width: 280px;
-      height: 580px;
-      background-color: #000;
-      border-radius: 20px;
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .status-bar {
-      height: 20px;
-      background-color: #000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 10px;
-      color: white;
-      font-size: 12px;
-    }
-    
-    .home-screen {
-      height: calc(100% - 70px);
-      background: linear-gradient(to bottom, #1a82c5, #4ca6e2);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-      display: none;
-    }
-    
-    .app-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-gap: 15px;
-      padding: 20px 10px;
-    }
-    
-    .app-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 20px;
-      margin: 0 auto;
-      cursor: pointer;
-    }
-    
-    .app-name {
-      text-align: center;
-      color: white;
-      font-size: 10px;
-      margin-top: 5px;
-    }
-    
-    .dock {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      right: 10px;
-      height: 60px;
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 0 10px;
-    }
-    
-    .dock-icon {
-      width: 45px;
-      height: 45px;
-      border-radius: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    
-    .boot-screen {
-      height: calc(100% - 20px);
-      background-color: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
-    
-    .boot-logo {
-      font-size: 40px;
-      margin-bottom: 20px;
-    }
-    
-    .loader {
-      width: 100px;
-      height: 2px;
-      background-color: #333;
-      border-radius: 2px;
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .loader::after {
-      content: '';
-      position: absolute;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background-color: #1a82c5;
-      animation: loading 2s linear infinite;
-    }
-    
-    @keyframes loading {
-      0% { left: -100%; }
-      100% { left: 100%; }
-    }
-    
-    .app-screen {
-      height: calc(100% - 20px);
-      background-color: #fff;
-      display: none;
-      flex-direction: column;
-    }
-    
-    .app-header {
-      height: 40px;
-      background-color: #1a82c5;
-      color: white;
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-      position: relative;
-    }
-    
-    .back-button {
-      font-size: 18px;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-    
-    .app-content {
-      flex-grow: 1;
-      padding: 10px;
-      overflow-y: auto;
-    }
-    
-    /* Calculator App */
-    .calculator {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-    
-    .calc-display {
-      height: 80px;
-      background-color: #eee;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 0 10px;
-      font-size: 30px;
-      border-bottom: 1px solid #ddd;
-    }
-    
-    .calc-buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      flex-grow: 1;
-    }
-    
-    .calc-button {
-      border: 1px solid #ddd;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    
-    .calc-button:active {
-      background-color: #eee;
-    }
-    
-    /* Snake Game */
-    .game-area {
-      width: 260px;
-      height: 260px;
-      border: 1px solid #333;
-      margin: 10px auto;
-      position: relative;
-      background-color: #222;
-    }
-    
-    .snake-dot {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: #1a82c5;
-      border: 1px solid #000;
-    }
-    
-    .food-dot {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: #ff0000;
-      border: 1px solid #000;
-      border-radius: 50%;
-    }
-    
-    .game-controls {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    
-    .control-btn {
-      width: 50px;
-      height: 50px;
-      margin: 0 5px;
-      background-color: #1a82c5;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    
-    /* Notes App */
-    .notes-list {
-      list-style: none;
-    }
-    
-    .note-item {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      cursor: pointer;
-    }
-    
-    .note-title {
-      font-weight: bold;
-    }
-    
-    .note-date {
-      font-size: 12px;
-      color: #777;
-    }
-    
-    .new-note-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      background-color: #1a82c5;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    
-    /* Browser App */
-    .browser-bar {
-      display: flex;
-      padding: 5px;
-      background-color: #eee;
-    }
-    
-    .url-input {
-      flex-grow: 1;
-      padding: 5px;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      margin-right: 5px;
-    }
-    
-    .browser-content {
-      height: calc(100% - 40px);
-      border: 1px solid #ddd;
-      margin-top: 5px;
-      padding: 10px;
-      overflow-y: auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nyol'thas Translator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .word-list {
+            margin-top: 20px;
+        }
+        .word {
+            cursor: pointer;
+            color: blue;
+            margin: 5px 0;
+        }
+        .word:hover {
+            text-decoration: underline;
+        }
+        .toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-  <div class="phone">
-    <div class="screen">
-      <div class="status-bar">
-        <span id="time">12:00</span>
-        <div>
-          <span>📶</span>
-          <span>🔋</span>
-        </div>
-      </div>
-      
-      <!-- Boot Screen -->
-      <div class="boot-screen" id="bootScreen">
-        <div class="boot-logo">SimplOS</div>
-        <div class="loader"></div>
-        <p style="margin-top: 20px;">Versione 0.1</p>
-      </div>
-      
-      <!-- Home Screen -->
-      <div class="home-screen" id="homeScreen">
-        <div class="app-grid">
-          <div class="app-item" onclick="openApp('calculator')">
-            <div class="app-icon" style="background-color: #f4b400;">🧮</div>
-            <div class="app-name">Calcolatrice</div>
-          </div>
-          <div class="app-item" onclick="openApp('snake')">
-            <div class="app-icon" style="background-color: #0f9d58;">🐍</div>
-            <div class="app-name">Snake</div>
-          </div>
-          <div class="app-item" onclick="openApp('notes')">
-            <div class="app-icon" style="background-color: #4285f4;">📝</div>
-            <div class="app-name">Note</div>
-          </div>
-          <div class="app-item" onclick="openApp('browser')">
-            <div class="app-icon" style="background-color: #db4437;">🌐</div>
-            <div class="app-name">Browser</div>
-          </div>
-        </div>
-        
-        <div class="dock">
-          <div class="dock-icon" style="background-color: #f4b400;" onclick="openApp('calculator')">🧮</div>
-          <div class="dock-icon" style="background-color: #0f9d58;" onclick="openApp('snake')">🐍</div>
-          <div class="dock-icon" style="background-color: #4285f4;" onclick="openApp('notes')">📝</div>
-          <div class="dock-icon" style="background-color: #db4437;" onclick="openApp('browser')">🌐</div>
-        </div>
-      </div>
-      
-      <!-- Calculator App -->
-      <div class="app-screen" id="calculatorApp">
-        <div class="app-header">
-          <div class="back-button" onclick="closeApp()">←</div>
-          <div>Calcolatrice</div>
-        </div>
-        <div class="app-content">
-          <div class="calculator">
-            <div class="calc-display" id="calcDisplay">0</div>
-            <div class="calc-buttons">
-              <div class="calc-button" onclick="calcInput('7')">7</div>
-              <div class="calc-button" onclick="calcInput('8')">8</div>
-              <div class="calc-button" onclick="calcInput('9')">9</div>
-              <div class="calc-button" onclick="calcInput('/')" style="background-color: #f4b400; color: white;">÷</div>
-              <div class="calc-button" onclick="calcInput('4')">4</div>
-              <div class="calc-button" onclick="calcInput('5')">5</div>
-              <div class="calc-button" onclick="calcInput('6')">6</div>
-              <div class="calc-button" onclick="calcInput('*')" style="background-color: #f4b400; color: white;">×</div>
-              <div class="calc-button" onclick="calcInput('1')">1</div>
-              <div class="calc-button" onclick="calcInput('2')">2</div>
-              <div class="calc-button" onclick="calcInput('3')">3</div>
-              <div class="calc-button" onclick="calcInput('-')" style="background-color: #f4b400; color: white;">−</div>
-              <div class="calc-button" onclick="calcInput('C')" style="background-color: #db4437; color: white;">C</div>
-              <div class="calc-button" onclick="calcInput('0')">0</div>
-              <div class="calc-button" onclick="calcInput('=')" style="background-color: #4285f4; color: white;">=</div>
-              <div class="calc-button" onclick="calcInput('+')" style="background-color: #f4b400; color: white;">+</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Snake Game App -->
-      <div class="app-screen" id="snakeApp">
-        <div class="app-header">
-          <div class="back-button" onclick="closeApp()">←</div>
-          <div>Snake</div>
-        </div>
-        <div class="app-content">
-          <div style="text-align: center; margin-bottom: 10px;">
-            Punteggio: <span id="snakeScore">0</span>
-          </div>
-          <div class="game-area" id="gameArea">
-            <div class="food-dot" id="food"></div>
-          </div>
-          <div class="game-controls">
-            <button class="control-btn" id="upBtn">↑</button>
-            <button class="control-btn" id="leftBtn">←</button>
-            <button class="control-btn" id="rightBtn">→</button>
-            <button class="control-btn" id="downBtn">↓</button>
-          </div>
-          <div style="text-align: center; margin-top: 10px;">
-            <button onclick="startSnakeGame()" style="padding: 5px 10px;">Inizia Gioco</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Notes App -->
-      <div class="app-screen" id="notesApp">
-        <div class="app-header">
-          <div class="back-button" onclick="closeApp()">←</div>
-          <div>Note</div>
-        </div>
-        <div class="app-content">
-          <ul class="notes-list" id="notesList">
-            <li class="note-item">
-              <div class="note-title">Benvenuto in Note</div>
-              <div class="note-date">Oggi</div>
-            </li>
-            <li class="note-item">
-              <div class="note-title">Progetti da fare</div>
-              <div class="note-date">Ieri</div>
-            </li>
-          </ul>
-          <button class="new-note-btn">+</button>
-        </div>
-      </div>
-      
-      <!-- Browser App -->
-      <div class="app-screen" id="browserApp">
-        <div class="app-header">
-          <div class="back-button" onclick="closeApp()">←</div>
-          <div>Browser</div>
-        </div>
-        <div class="app-content">
-          <div class="browser-bar">
-            <input type="text" class="url-input" value="https://simplos.example.com" />
-            <button style="background: #1a82c5; color: white; border: none; padding: 5px;">Vai</button>
-          </div>
-          <div class="browser-content">
-            <h2 style="text-align: center;">SimplOS Browser</h2>
-            <p style="text-align: center;">Benvenuto nel browser di SimplOS!</p>
-            <p style="text-align: center;">
-              Questa è una demo di come funzionerà il browser nel sistema operativo.
-            </p>
-          </div>
-        </div>
-      </div>
-      
+    <h1>Nyol'thas Translator</h1>
+    <div class="toggle" onclick="toggleLanguage()">Nyol'thas➡️Italiano</div>
+    <p>Clicca su una parola per vedere la traduzione:</p>
+    <div class="word-list" id="word-list">
+        <!-- Le parole saranno mostrate qui -->
     </div>
-  </div>
 
-  <script>
-    // Update time in status bar
-    function updateTime() {
-      const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      document.getElementById('time').textContent = `${hours}:${minutes}`;
-    }
-    
-    updateTime();
-    setInterval(updateTime, 60000);
-    
-    // Boot sequence
-    setTimeout(() => {
-      document.getElementById('bootScreen').style.display = 'none';
-      document.getElementById('homeScreen').style.display = 'flex';
-    }, 3000);
-    
-    // App management
-    let currentApp = null;
-    
-    function openApp(appName) {
-      document.getElementById('homeScreen').style.display = 'none';
-      document.getElementById(`${appName}App`).style.display = 'flex';
-      currentApp = appName;
-      
-      if (appName === 'snake') {
-        resetSnakeGame();
-      }
-    }
-    
-    function closeApp() {
-      document.getElementById(`${currentApp}App`).style.display = 'none';
-      document.getElementById('homeScreen').style.display = 'flex';
-      currentApp = null;
-    }
-    
-    // Calculator functionality
-    let calcState = {
-      currentValue: '0',
-      previousValue: null,
-      operator: null,
-      newInput: true
-    };
-    
-    function calcInput(key) {
-      const display = document.getElementById('calcDisplay');
-      
-      if (key === 'C') {
-        calcState = {
-          currentValue: '0',
-          previousValue: null,
-          operator: null,
-          newInput: true
+    <script>
+        // Vocabolario
+        const vocabulary = {
+            "khal": "acqua",
+            "thar": "fuoco",
+            "zol": "cielo",
+            "ynd": "terra",
+            "mel": "amore",
+            "duzh": "odio",
+            "shol": "gioia",
+            "vryn": "tristezza"
         };
-        display.textContent = '0';
-        return;
-      }
-      
-      if ('0123456789'.includes(key)) {
-        if (calcState.newInput || calcState.currentValue === '0') {
-          calcState.currentValue = key;
-          calcState.newInput = false;
-        } else {
-          calcState.currentValue += key;
+
+        let isNyolthasToItalian = true;
+
+        // Funzione per generare la lista di parole
+        function generateWordList() {
+            const wordListDiv = document.getElementById("word-list");
+            wordListDiv.innerHTML = "";
+
+            for (const [nyolthas, italiano] of Object.entries(vocabulary)) {
+                const wordDiv = document.createElement("div");
+                wordDiv.className = "word";
+                wordDiv.textContent = isNyolthasToItalian ? nyolthas : italiano;
+                wordDiv.onclick = () => alert(isNyolthasToItalian ? italiano : nyolthas);
+                wordListDiv.appendChild(wordDiv);
+            }
         }
-        display.textContent = calcState.currentValue;
-        return;
-      }
-      
-      if ('+-*/'.includes(key)) {
-        calcState.previousValue = calcState.currentValue;
-        calcState.operator = key;
-        calcState.newInput = true;
-        return;
-      }
-      
-      if (key === '=') {
-        if (calcState.operator && calcState.previousValue) {
-          try {
-            calcState.currentValue = eval(`${calcState.previousValue}${calcState.operator}${calcState.currentValue}`).toString();
-            display.textContent = calcState.currentValue;
-          } catch (e) {
-            display.textContent = 'Error';
-          }
-          calcState.previousValue = null;
-          calcState.operator = null;
-          calcState.newInput = true;
+
+        // Funzione per invertire la lingua
+        function toggleLanguage() {
+            isNyolthasToItalian = !isNyolthasToItalian;
+            document.querySelector(".toggle").textContent = isNyolthasToItalian
+                ? "Nyol'thas➡️Italiano"
+                : "Italiano➡️Nyol'thas";
+            generateWordList();
         }
-      }
-    }
-    
-    // Snake Game
-    let snake = [];
-    let food = { x: 0, y: 0 };
-    let direction = 'right';
-    let gameInterval;
-    let score = 0;
-    
-    function resetSnakeGame() {
-      // Clear any existing snake
-      snake.forEach(dot => {
-        if (document.getElementById(`snake-${dot.x}-${dot.y}`)) {
-          document.getElementById(`snake-${dot.x}-${dot.y}`).remove();
-        }
-      });
-      
-      // Reset variables
-      snake = [{ x: 10, y: 10 }];
-      direction = 'right';
-      score = 0;
-      document.getElementById('snakeScore').textContent = score;
-      
-      // Create initial snake
-      createSnake();
-      
-      // Place food
-      randomFood();
-    }
-    
-    function createSnake() {
-      snake.forEach(dot => {
-        const element = document.createElement('div');
-        element.className = 'snake-dot';
-        element.id = `snake-${dot.x}-${dot.y}`;
-        element.style.left = `${dot.x * 10}px`;
-        element.style.top = `${dot.y * 10}px`;
-        document.getElementById('gameArea').appendChild(element);
-      });
-    }
-    
-    function randomFood() {
-      // Remove previous food
-      food.x = Math.floor(Math.random() * 26);
-      food.y = Math.floor(Math.random() * 26);
-      
-      // Make sure food is not on snake
-      for (let i = 0; i < snake.length; i++) {
-        if (snake[i].x === food.x && snake[i].y === food.y) {
-          return randomFood();
-        }
-      }
-      
-      document.getElementById('food').style.left = `${food.x * 10}px`;
-      document.getElementById('food').style.top = `${food.y * 10}px`;
-    }
-    
-    function moveSnake() {
-      const head = { ...snake[0] };
-      
-      switch(direction) {
-        case 'right':
-          head.x += 1;
-          break;
-        case 'left':
-          head.x -= 1;
-          break;
-        case 'up':
-          head.y -= 1;
-          break;
-        case 'down':
-          head.y += 1;
-          break;
-      }
-      
-      // Check for collisions with walls
-      if (head.x < 0 || head.x >= 26 || head.y < 0 || head.y >= 26) {
-        clearInterval(gameInterval);
-        alert(`Game Over! Punteggio: ${score}`);
-        return;
-      }
-      
-      // Check for collisions with self
-      for (let i = 0; i < snake.length; i++) {
-        if (snake[i].x === head.x && snake[i].y === head.y) {
-          clearInterval(gameInterval);
-          alert(`Game Over! Punteggio: ${score}`);
-          return;
-        }
-      }
-      
-      // Add new head
-      snake.unshift(head);
-      
-      // Create new head element
-      const element = document.createElement('div');
-      element.className = 'snake-dot';
-      element.id = `snake-${head.x}-${head.y}`;
-      element.style.left = `${head.x * 10}px`;
-      element.style.top = `${head.y * 10}px`;
-      document.getElementById('gameArea').appendChild(element);
-      
-      // Check if snake eats food
-      if (head.x === food.x && head.y === food.y) {
-        score += 1;
-        document.getElementById('snakeScore').textContent = score;
-        randomFood();
-      } else {
-        // Remove tail
-        const tail = snake.pop();
-        document.getElementById(`snake-${tail.x}-${tail.y}`).remove();
-      }
-    }
-    
-    function startSnakeGame() {
-      clearInterval(gameInterval);
-      resetSnakeGame();
-      gameInterval = setInterval(moveSnake, 200);
-    }
-    
-    // Control buttons
-    document.getElementById('upBtn').addEventListener('click', () => {
-      if (direction !== 'down') direction = 'up';
-    });
-    
-    document.getElementById('downBtn').addEventListener('click', () => {
-      if (direction !== 'up') direction = 'down';
-    });
-    
-    document.getElementById('leftBtn').addEventListener('click', () => {
-      if (direction !== 'right') direction = 'left';
-    });
-    
-    document.getElementById('rightBtn').addEventListener('click', () => {
-      if (direction !== 'left') direction = 'right';
-    });
-  </script>
+
+        // Genera la lista iniziale
+        generateWordList();
+    </script>
 </body>
 </html>

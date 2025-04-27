@@ -475,57 +475,63 @@
                 micButton.style.backgroundColor = '#2196F3';
             }
         }
+// Funzione per elaborare le query dell'utente
+function processUserQuery(query) {
+    // Mostra l'indicatore di elaborazione
+    statusIndicator.className = 'processing';
+    
+    // Inserisci qui la tua chiave API di OpenAI
+    const apiKey = "INSERISCI_LA_TUA_CHIAVE_API_QUI";
+    
+    // Endpoint dell'API
+    const endpoint = "https://api.openai.com/v1/chat/completions";
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+    };
+    const body = {
+        model: "gpt-3.5-turbo", // Modello OpenAI da utilizzare
+        messages: [
+            { role: "system", content: "Sei un assistente vocale amichevole e utile. Rispondi in modo chiaro e semplice." },
+            { role: "user", content: query }
+        ],
+        max_tokens: 200, // Numero massimo di parole nella risposta
+        temperature: 0.7 // Creatività della risposta (0 = risposte logiche, 1 = più creative)
+    };
 
-        // Funzione per elaborare le query dell'utente
-        function processUserQuery(query) {
-            // Mostra l'indicatore di elaborazione
-            statusIndicator.className = 'processing';
-            
-            // Simula un'elaborazione con AI (in un'applicazione reale, questo sarebbe una chiamata a un'API)
-            setTimeout(() => {
-                let response = "";
-                query = query.toLowerCase();
-                
-                if (query.includes('ciao') || query.includes('salve') || query.includes('buongiorno') || query.includes('buonasera')) {
-                    response = "Ciao! Come posso aiutarti oggi?";
-                } else if (query.includes('come ti chiami')) {
-                    response = "Sono il tuo assistente vocale 3D. Puoi darmi un nome se vuoi!";
-                } else if (query.includes('che ore sono') || query.includes('ora attuale') || query.includes('orario')) {
-                    const now = new Date();
-                    response = `Sono le ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}.`;
-                } else if (query.includes('meteo') || query.includes('tempo')) {
-                    response = "Non ho accesso ai dati meteo in tempo reale, ma posso connettermi a un servizio meteo se necessario.";
-                } else if (query.includes('grazie')) {
-                    response = "Prego! È un piacere poterti aiutare.";
-                } else if (query.includes('arrivederci') || query.includes('ciao ciao') || query.includes('a presto')) {
-                    response = "Arrivederci! Non esitare a chiamarmi quando hai bisogno.";
-                    // Chiudiamo l'assistente dopo un breve ritardo
-                    setTimeout(() => {
-                        if (container.classList.contains('active')) {
-                            toggleAssistant();
-                        }
-                    }, 3000);
-                } else if (query.includes('chi sei') || query.includes('cosa sei')) {
-                    response = "Sono un assistente vocale 3D con integrazione AI. Posso rispondere alle tue domande e aiutarti con varie attività.";
-                } else if (query.includes('aiuto') || query.includes('cosa puoi fare')) {
-                    response = "Posso rispondere a domande, ricordare informazioni, assisterti in varie attività e molto altro. Prova a chiedermi qualcosa!";
-                } else if (query.includes('musica') || query.includes('canzone')) {
-                    response = "Mi piacerebbe riprodurre musica per te, ma attualmente non ho accesso a servizi di streaming. Posso però integrarmi con i tuoi servizi musicali preferiti.";
-                } else if (query.includes('scherzo') || query.includes('barzelletta')) {
-                    const jokes = [
-                        "Qual è il colmo per un programmatore? Non trovare la soluzione... anche con Google!",
-                        "Quanti programmatori servono per cambiare una lampadina? Nessuno, è un problema hardware!",
-                        "Un byte entra in un bar e ordina una birra. Il barista chiede: 'Piccola?' e il byte risponde: 'No, sono solo 8 bit'."
-                    ];
-                    response = jokes[Math.floor(Math.random() * jokes.length)];
-                } else {
-                    response = "Capisco la tua richiesta su '" + query + "'. In una versione completa sarei connesso a un'API di intelligenza artificiale per darti risposte più precise. Posso aiutarti con altro?";
-                }
-                
-                addMessageToConversation('assistant', response);
-                speak(response);
-            }, 1000);
+    // Chiamata all'API OpenAI
+    fetch(endpoint, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Se la risposta dell'API è valida
+        if (data.choices && data.choices.length > 0) {
+            const aiResponse = data.choices[0].message.content;
+            addMessageToConversation('assistant', aiResponse); // Mostra la risposta nella conversazione
+            speak(aiResponse); // Sintesi vocale della risposta
+        } else {
+            // In caso di errore nella risposta
+            const errorMsg = "Mi dispiace, non sono riuscito a trovare una risposta.";
+            addMessageToConversation('assistant', errorMsg);
+            speak(errorMsg);
         }
+    })
+    .catch(error => {
+        // Gestione degli errori
+        console.error("Errore nell'integrazione con OpenAI:", error);
+        const errorMsg = "Si è verificato un errore. Riprova più tardi.";
+        addMessageToConversation('assistant', errorMsg);
+        speak(errorMsg);
+    })
+    .finally(() => {
+        // Ripristina l'indicatore di elaborazione
+        statusIndicator.className = '';
+    });
+}
+
 
         // Verifica l'inattività per chiudere l'assistente
         function checkIdle() {

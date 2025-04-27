@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistente 3D Migliorato</title>
+    <title>Assistente 3D Vocale con AI</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/loaders/GLTFLoader.js"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         #canvas-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 200px; /* Dimensione iniziale */
+            width: 200px;
             height: 200px;
             border-radius: 50%;
             overflow: hidden;
@@ -24,79 +25,769 @@
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             transition: all 0.5s ease;
+            z-index: 10;
         }
 
         #canvas-container.active {
-            width: 350px; /* Dimensione ingrandita */
+            width: 350px;
             height: 350px;
-            bottom: 10px; /* Piccola modifica per posizionamento */
+            bottom: 10px;
             right: 10px;
         }
 
         canvas {
             display: block;
         }
+
+        #interface {
+            position: fixed;
+            bottom: 20px;
+            right: 240px;
+            width: 0;
+            max-width: 400px;
+            background-color: rgba(30, 30, 30, 0.9);
+            border-radius: 16px;
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            opacity: 0;
+            color: white;
+            z-index: 5;
+        }
+
+        #interface.active {
+            width: 350px;
+            padding: 20px;
+            opacity: 1;
+        }
+
+        #conversation {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding-right: 10px;
+        }
+
+        .message {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+
+        .user {
+            background-color: #0084ff;
+            margin-left: auto;
+        }
+
+        .assistant {
+            background-color: #424242;
+            margin-right: auto;
+        }
+
+        #status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+            transition: background-color 0.3s ease;
+        }
+
+        #status.listening {
+            background-color: #4CAF50;
+            box-shadow: 0 0 10px #4CAF50;
+            animation: pulse 1.5s infinite;
+        }
+
+        #status.processing {
+            background-color: #FFC107;
+            box-shadow: 0 0 10px #FFC107;
+        }
+
+        #status.speaking {
+            background-color: #2196F3;
+            box-shadow: 0 0 10px #2196F3;
+        }
+
+        #mic-button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        #mic-button:hover {
+            background-color: #0b7dda;
+        }
+
+        #mic-button:active {
+            background-color: #0a5999;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .visualizer {
+            width: 100%;
+            height: 30px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bar {
+            background-color: #2196F3;
+            width: 4px;
+            height: 5px;
+            margin: 0 2px;
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+
+        .loading-dots {
+            display: inline-block;
+        }
+
+        .loading-dots:after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
     </style>
 </head>
 <body>
-    <div id="canvas-container"></div>
+    <div id="canvas-container">
+        <div id="status"></div>
+    </div>
+
+    <div id="interface">
+        <div id="conversation"></div>
+        <div class="visualizer" id="audio-visualizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <button id="mic-button">
+            <i>🎤</i>
+        </button>
+    </div>
 
     <script>
+        // Elementi DOM
         const container = document.getElementById('canvas-container');
+        const interface = document.getElementById('interface');
+        const conversation = document.getElementById('conversation');
+        const micButton = document.getElementById('mic-button');
+        const statusIndicator = document.getElementById('status');
+        const visualizerBars = document.querySelectorAll('.bar');
 
-        // Crea il renderer e lo aggiunge al contenitore
+        // Variabili per il riconoscimento vocale e la sintesi vocale
+        let recognition;
+        let speechSynthesis = window.speechSynthesis;
+        let speaking = false;
+        let listening = false;
+        let model;
+        let lastInteractionTime = Date.now();
+        let idleCheckInterval;
+        let audioContext;
+        let analyser;
+        let microphone;
+        let dataArray;
+        let animationFrameId;
+
+        // Crea renderer e la scena THREE.js
         const renderer = new THREE.WebGLRenderer({ alpha: true });
         renderer.setSize(container.offsetWidth, container.offsetHeight);
         container.appendChild(renderer.domElement);
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 1000);
-        camera.position.set(0, 0.5, 3); // Posizionamento della camera per vedere tutto il modello
+        camera.position.set(0, 0.5, 3);
 
-        // Aggiungi una luce per illuminare il modello
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(2, 2, 2);
-        scene.add(light);
+        // Configurazione delle luci
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
 
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(2, 2, 2);
+        scene.add(dirLight);
+
+        const backLight = new THREE.DirectionalLight(0x0084ff, 0.5);
+        backLight.position.set(-2, 1, -1);
+        scene.add(backLight);
+
+        // Carica il modello 3D
         const loader = new THREE.GLTFLoader();
         loader.load(
             'https://raw.githubusercontent.com/TommyTommy10/Font-Selector/main/voice_assistant.glb',
             (gltf) => {
-                const model = gltf.scene;
+                model = gltf.scene;
                 scene.add(model);
 
-                // Scala il modello per farlo entrare nel contenitore
-                model.scale.set(0.5, 0.5, 0.5); // Modifica questa dimensione se il modello è troppo grande/piccolo
-                model.position.set(0, -0.5, 0); // Regola la posizione se non è centrata
+                model.scale.set(0.5, 0.5, 0.5);
+                model.position.set(0, -0.5, 0);
+                model.rotation.y = Math.PI / -4; // Rotazione iniziale
 
-                // Aggiungi animazione al clic
-                container.addEventListener('click', () => {
-                    container.classList.toggle('active'); // Ingrandisce il contenitore
-
-                    let rotationCount = 0; // Numero di frame di rotazione
-                    const spinAnimation = setInterval(() => {
-                        model.rotation.x += 0.1;
-                        model.rotation.y += 0.2;
-                        model.rotation.z += 0.1;
-                        rotationCount++;
-
-                        // Ferma l'animazione dopo un po'
-                        if (rotationCount > 100) {
-                            clearInterval(spinAnimation);
-                        }
-                    }, 16);
-                });
+                // Imposta l'animazione di idle
+                startIdleAnimation();
             },
             undefined,
             (error) => console.error('Errore durante il caricamento del modello:', error)
         );
 
-        // Anima la scena continuamente
+        // Gestione degli eventi del contenitore
+        container.addEventListener('click', () => {
+            toggleAssistant();
+        });
+
+        micButton.addEventListener('click', () => {
+            if (speaking) {
+                stopSpeaking();
+            } else if (listening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        });
+
+        // Configurazione del riconoscimento vocale
+        function setupSpeechRecognition() {
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (window.SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'it-IT';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onstart = () => {
+                    listening = true;
+                    statusIndicator.className = 'listening';
+                    playPulseAnimation();
+                    updateMicButton();
+                };
+
+                recognition.onend = () => {
+                    listening = false;
+                    statusIndicator.className = '';
+                    stopPulseAnimation();
+                    updateMicButton();
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    addMessageToConversation('user', transcript);
+                    processUserQuery(transcript);
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Errore nel riconoscimento vocale:', event.error);
+                    listening = false;
+                    statusIndicator.className = '';
+                    updateMicButton();
+                };
+            } else {
+                alert('Il riconoscimento vocale non è supportato dal tuo browser.');
+            }
+        }
+
+        // Configurazione della sintesi vocale
+        function setupSpeechSynthesis() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis = window.speechSynthesis;
+            } else {
+                alert('La sintesi vocale non è supportata dal tuo browser.');
+            }
+        }
+
+        // Configura l'audio context per il visualizzatore
+        function setupAudioContext() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+
+        // Funzione per attivare/disattivare l'assistente
+        function toggleAssistant() {
+            container.classList.toggle('active');
+            interface.classList.toggle('active');
+            
+            lastInteractionTime = Date.now();
+            
+            if (container.classList.contains('active')) {
+                playActivationAnimation();
+                
+                if (!recognition) {
+                    setupSpeechRecognition();
+                }
+                
+                if (!speechSynthesis) {
+                    setupSpeechSynthesis();
+                }
+                
+                if (!audioContext) {
+                    setupAudioContext();
+                }
+                
+                if (idleCheckInterval) {
+                    clearInterval(idleCheckInterval);
+                }
+                
+                idleCheckInterval = setInterval(checkIdle, 30000);
+                
+                speak("Ciao, come posso aiutarti oggi?");
+            } else {
+                if (idleCheckInterval) {
+                    clearInterval(idleCheckInterval);
+                    idleCheckInterval = null;
+                }
+                
+                if (speaking) {
+                    stopSpeaking();
+                }
+                
+                if (listening) {
+                    stopListening();
+                }
+            }
+        }
+
+        // Funzione per aggiungere messaggi alla conversazione
+        function addMessageToConversation(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = text;
+            conversation.appendChild(messageDiv);
+            conversation.scrollTop = conversation.scrollHeight;
+            lastInteractionTime = Date.now();
+        }
+
+        // Funzione per parlare
+        function speak(text) {
+            if (!speechSynthesis) return;
+            
+            stopSpeaking();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'it-IT';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            
+            utterance.onstart = () => {
+                speaking = true;
+                statusIndicator.className = 'speaking';
+                playTalkingAnimation();
+                updateMicButton();
+            };
+            
+            utterance.onend = () => {
+                speaking = false;
+                statusIndicator.className = '';
+                stopTalkingAnimation();
+                updateMicButton();
+            };
+            
+            utterance.onerror = (event) => {
+                console.error('Errore nella sintesi vocale:', event);
+                speaking = false;
+                statusIndicator.className = '';
+                updateMicButton();
+            };
+            
+            speechSynthesis.speak(utterance);
+        }
+
+        // Ferma la sintesi vocale
+        function stopSpeaking() {
+            if (speechSynthesis) {
+                speechSynthesis.cancel();
+                speaking = false;
+                statusIndicator.className = '';
+                stopTalkingAnimation();
+                updateMicButton();
+            }
+        }
+
+        // Inizia il riconoscimento vocale
+        function startListening() {
+            if (recognition && !listening && !speaking) {
+                try {
+                    recognition.start();
+                    startAudioVisualization();
+                } catch (error) {
+                    console.error('Errore nell\'avvio del riconoscimento vocale:', error);
+                }
+            }
+        }
+
+        // Ferma il riconoscimento vocale
+        function stopListening() {
+            if (recognition && listening) {
+                recognition.stop();
+                stopAudioVisualization();
+            }
+        }
+
+        // Aggiorna l'aspetto del pulsante del microfono
+        function updateMicButton() {
+            if (speaking) {
+                micButton.innerHTML = '<i>🔊</i>';
+                micButton.style.backgroundColor = '#2196F3';
+            } else if (listening) {
+                micButton.innerHTML = '<i>⏹️</i>';
+                micButton.style.backgroundColor = '#4CAF50';
+            } else {
+                micButton.innerHTML = '<i>🎤</i>';
+                micButton.style.backgroundColor = '#2196F3';
+            }
+        }
+
+        // Funzione per elaborare le query dell'utente
+        function processUserQuery(query) {
+            // Mostra l'indicatore di elaborazione
+            statusIndicator.className = 'processing';
+            
+            // Simula un'elaborazione con AI (in un'applicazione reale, questo sarebbe una chiamata a un'API)
+            setTimeout(() => {
+                let response = "";
+                query = query.toLowerCase();
+                
+                if (query.includes('ciao') || query.includes('salve') || query.includes('buongiorno') || query.includes('buonasera')) {
+                    response = "Ciao! Come posso aiutarti oggi?";
+                } else if (query.includes('come ti chiami')) {
+                    response = "Sono il tuo assistente vocale 3D. Puoi darmi un nome se vuoi!";
+                } else if (query.includes('che ore sono') || query.includes('ora attuale') || query.includes('orario')) {
+                    const now = new Date();
+                    response = `Sono le ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}.`;
+                } else if (query.includes('meteo') || query.includes('tempo')) {
+                    response = "Non ho accesso ai dati meteo in tempo reale, ma posso connettermi a un servizio meteo se necessario.";
+                } else if (query.includes('grazie')) {
+                    response = "Prego! È un piacere poterti aiutare.";
+                } else if (query.includes('arrivederci') || query.includes('ciao ciao') || query.includes('a presto')) {
+                    response = "Arrivederci! Non esitare a chiamarmi quando hai bisogno.";
+                    // Chiudiamo l'assistente dopo un breve ritardo
+                    setTimeout(() => {
+                        if (container.classList.contains('active')) {
+                            toggleAssistant();
+                        }
+                    }, 3000);
+                } else if (query.includes('chi sei') || query.includes('cosa sei')) {
+                    response = "Sono un assistente vocale 3D con integrazione AI. Posso rispondere alle tue domande e aiutarti con varie attività.";
+                } else if (query.includes('aiuto') || query.includes('cosa puoi fare')) {
+                    response = "Posso rispondere a domande, ricordare informazioni, assisterti in varie attività e molto altro. Prova a chiedermi qualcosa!";
+                } else if (query.includes('musica') || query.includes('canzone')) {
+                    response = "Mi piacerebbe riprodurre musica per te, ma attualmente non ho accesso a servizi di streaming. Posso però integrarmi con i tuoi servizi musicali preferiti.";
+                } else if (query.includes('scherzo') || query.includes('barzelletta')) {
+                    const jokes = [
+                        "Qual è il colmo per un programmatore? Non trovare la soluzione... anche con Google!",
+                        "Quanti programmatori servono per cambiare una lampadina? Nessuno, è un problema hardware!",
+                        "Un byte entra in un bar e ordina una birra. Il barista chiede: 'Piccola?' e il byte risponde: 'No, sono solo 8 bit'."
+                    ];
+                    response = jokes[Math.floor(Math.random() * jokes.length)];
+                } else {
+                    response = "Capisco la tua richiesta su '" + query + "'. In una versione completa sarei connesso a un'API di intelligenza artificiale per darti risposte più precise. Posso aiutarti con altro?";
+                }
+                
+                addMessageToConversation('assistant', response);
+                speak(response);
+            }, 1000);
+        }
+
+        // Verifica l'inattività per chiudere l'assistente
+        function checkIdle() {
+            const now = Date.now();
+            if (now - lastInteractionTime > 60000 && !speaking && !listening) { // 1 minuto
+                if (container.classList.contains('active')) {
+                    speak("Sembra che tu sia inattivo. Entrerò in modalità standby.");
+                    setTimeout(() => {
+                        toggleAssistant();
+                    }, 3000);
+                }
+            }
+        }
+
+        // Animazioni del modello 3D
+        function startIdleAnimation() {
+            if (!model) return;
+            
+            const idleAnimation = () => {
+                model.rotation.y += Math.sin(Date.now() * 0.001) * 0.0008;
+                
+                requestAnimationFrame(idleAnimation);
+            };
+            
+            idleAnimation();
+        }
+
+        function playActivationAnimation() {
+            if (!model) return;
+            
+            const duration = 1000; // ms
+            const startTime = Date.now();
+            const startRotationY = model.rotation.y;
+            const targetRotationY = startRotationY + Math.PI * 2; // Rotazione completa
+            
+            const animate = () => {
+                const elapsedTime = Date.now() - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                // Funzione di easing
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                
+                model.rotation.y = startRotationY + (targetRotationY - startRotationY) * easedProgress;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+        }
+
+        function playTalkingAnimation() {
+            if (!model) return;
+            
+            let talkingScale = 1;
+            const baseTalkingSpeed = 0.1;
+            
+            const talkAnimation = () => {
+                if (!speaking) return;
+                
+                // Simula movimento durante il parlato
+                talkingScale = 1 + Math.sin(Date.now() * baseTalkingSpeed) * 0.05;
+                model.scale.set(0.5 * talkingScale, 0.5, 0.5 * talkingScale);
+                
+                // Piccole rotazioni per simulare movimenti naturali
+                model.rotation.x = Math.sin(Date.now() * 0.002) * 0.05;
+                model.rotation.z = Math.cos(Date.now() * 0.001) * 0.03;
+                
+                if (speaking) {
+                    requestAnimationFrame(talkAnimation);
+                }
+            };
+            
+            talkAnimation();
+        }
+
+        function stopTalkingAnimation() {
+            if (!model) return;
+            
+            // Ripristina la scala e rotazione originale con animazione
+            const duration = 300; // ms
+            const startTime = Date.now();
+            const startScale = { x: model.scale.x, y: model.scale.y, z: model.scale.z };
+            const targetScale = { x: 0.5, y: 0.5, z: 0.5 };
+            const startRotation = { x: model.rotation.x, z: model.rotation.z };
+            const targetRotation = { x: 0, z: 0 };
+            
+            const animate = () => {
+                const elapsedTime = Date.now() - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                // Funzione di easing
+                const easedProgress = 1 - Math.pow(1 - progress, 2);
+                
+                model.scale.set(
+                    startScale.x + (targetScale.x - startScale.x) * easedProgress,
+                    startScale.y + (targetScale.y - startScale.y) * easedProgress,
+                    startScale.z + (targetScale.z - startScale.z) * easedProgress
+                );
+                
+                model.rotation.x = startRotation.x + (targetRotation.x - startRotation.x) * easedProgress;
+                model.rotation.z = startRotation.z + (targetRotation.z - startRotation.z) * easedProgress;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+        }
+
+        function playPulseAnimation() {
+            if (!model) return;
+            
+            let pulseScale = 1;
+            
+            const pulseAnimation = () => {
+                if (!listening) return;
+                
+                // Effetto pulsante
+                pulseScale = 1 + Math.sin(Date.now() * 0.005) * 0.04;
+                model.scale.set(0.5 * pulseScale, 0.5 * pulseScale, 0.5 * pulseScale);
+                
+                // Colore blu pulsante
+                if (backLight) {
+                    backLight.intensity = 0.5 + Math.sin(Date.now() * 0.005) * 0.3;
+                }
+                
+                if (listening) {
+                    requestAnimationFrame(pulseAnimation);
+                }
+            };
+            
+            pulseAnimation();
+        }
+
+        function stopPulseAnimation() {
+            if (!model) return;
+            
+            // Ripristina la scala e l'intensità della luce
+            if (backLight) {
+                backLight.intensity = 0.5;
+            }
+            
+            // Animazione per tornare alle dimensioni normali
+            const duration = 300; // ms
+            const startTime = Date.now();
+            const startScale = { x: model.scale.x, y: model.scale.y, z: model.scale.z };
+            const targetScale = { x: 0.5, y: 0.5, z: 0.5 };
+            
+            const animate = () => {
+                const elapsedTime = Date.now() - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                // Funzione di easing
+                const easedProgress = 1 - Math.pow(1 - progress, 2);
+                
+                model.scale.set(
+                    startScale.x + (targetScale.x - startScale.x) * easedProgress,
+                    startScale.y + (targetScale.y - startScale.y) * easedProgress,
+                    startScale.z + (targetScale.z - startScale.z) * easedProgress
+                );
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+        }
+
+        // Visualizzatore audio
+        function startAudioVisualization() {
+            if (!audioContext) return;
+            
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        microphone = audioContext.createMediaStreamSource(stream);
+                        microphone.connect(analyser);
+                        
+                        updateVisualization();
+                    })
+                    .catch(error => {
+                        console.error('Errore nell\'accesso al microfono:', error);
+                    });
+            }
+        }
+
+        function updateVisualization() {
+            if (!listening || !analyser || !dataArray) {
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+                return;
+            }
+            
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Calcola la media e aggiorna le barre del visualizzatore
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+            }
+            
+            const average = sum / dataArray.length;
+            
+            // Aggiorna le barre con altezze casuali basate sul volume
+            visualizerBars.forEach(bar => {
+                const height = Math.max(5, Math.min(average * (0.7 + Math.random() * 0.5), 30));
+                bar.style.height = `${height}px`;
+            });
+            
+            animationFrameId = requestAnimationFrame(updateVisualization);
+        }
+
+        function stopAudioVisualization() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            
+            if (microphone) {
+                microphone.disconnect();
+                microphone = null;
+            }
+            
+            // Ripristina le barre del visualizzatore
+            visualizerBars.forEach(bar => {
+                bar.style.height = '5px';
+            });
+        }
+
+        // Funzione di rendering principale
         function animate() {
             requestAnimationFrame(animate);
+            
+            // Se il contenitore è stato ridimensionato, aggiorna camera e renderer
+            if (renderer.domElement.width !== container.offsetWidth || 
+                renderer.domElement.height !== container.offsetHeight) {
+                
+                camera.aspect = container.offsetWidth / container.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.offsetWidth, container.offsetHeight);
+            }
+            
             renderer.render(scene, camera);
         }
+        
+        // Avvia animazione
         animate();
+
+        // Handler per il resize della finestra
+        window.addEventListener('resize', () => {
+            if (container.classList.contains('active')) {
+                // Aggiorna le dimensioni in base alle dimensioni della finestra
+                const newSize = Math.min(window.innerWidth * 0.4, 350); // Max 40% della larghezza o 350px
+                container.style.width = `${newSize}px`;
+                container.style.height = `${newSize}px`;
+                
+                // Aggiorna anche l'interfaccia
+                interface.style.maxWidth = `${Math.min(window.innerWidth * 0.4, 400)}px`;
+            }
+        });
     </script>
 </body>
 </html>

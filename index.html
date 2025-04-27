@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistente in Spline</title>
+    <title>Assistente Rotante</title>
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.87/build/spline-viewer.js"></script>
     <style>
         #assistant {
@@ -25,9 +25,12 @@
     </style>
 </head>
 <body>
-    <!-- Visualizzatore posizionato in basso a destra -->
+    <!-- Visualizzatore con rotazione automatica -->
     <div id="assistant">
-        <spline-viewer url="https://prod.spline.design/MSCcnyIckFuju2EP/scene.splinecode"></spline-viewer>
+        <spline-viewer 
+            url="https://prod.spline.design/MSCcnyIckFuju2EP/scene.splinecode" 
+            interaction-prompt="none">
+        </spline-viewer>
     </div>
 </body>
 </html>

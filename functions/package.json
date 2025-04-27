@@ -4,6 +4,7 @@
   "description": "Funzioni serverless per il proxy OpenAI",
   "main": "index.js",
   "dependencies": {
-    "node-fetch": "^2.6.9"
+    "node-fetch": "^2.6.9",
+    "styled-components": "^5.3.10"
   }
 }

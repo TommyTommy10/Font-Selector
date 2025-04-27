@@ -231,7 +231,7 @@
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 1000);
-        camera.position.set(0, 0.5, 3);
+        camera.position.set(0, 1, 5); // Allontana la camera per includere tutto il modello
 
         // Configurazione delle luci
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -253,8 +253,8 @@
                 model = gltf.scene;
                 scene.add(model);
 
-                model.scale.set(0.5, 0.5, 0.5);
-                model.position.set(0, -0.5, 0);
+                model.scale.set(0.8, 0.8, 0.8); // Modifica le dimensioni per migliorare visibilità
+                model.position.set(0, 0, 0); // Centra il modello
                 model.rotation.y = Math.PI / -4; // Rotazione iniziale
 
                 // Imposta l'animazione di idle
@@ -286,8 +286,8 @@
             if (window.SpeechRecognition) {
                 recognition = new SpeechRecognition();
                 recognition.lang = 'it-IT';
-                recognition.continuous = false;
-                recognition.interimResults = false;
+                recognition.continuous = true; // Mantiene l'ascolto attivo
+                recognition.interimResults = true; // Risultati parziali durante l'ascolto
 
                 recognition.onstart = () => {
                     listening = true;
@@ -303,10 +303,12 @@
                     updateMicButton();
                 };
 
-                recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    addMessageToConversation('user', transcript);
-                    processUserQuery(transcript);
+              recognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                .map(result => result[0].transcript)
+                .join(' ');
+                addMessageToConversation('user', transcript);
+                processUserQuery(transcript);
                 };
 
                 recognition.onerror = (event) => {
@@ -399,9 +401,11 @@
             stopSpeaking();
             
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'it-IT';
-            utterance.rate = 1.0;
-            utterance.pitch = 1.0;
+            utterance.lang = 'it-IT'; 
+            utterance.rate = 0.9; // Voce più naturale
+            utterance.pitch = 1.2; // Tonalità vivace
+            utterance.volume = 1; // Volume pieno
+
             
             utterance.onstart = () => {
                 speaking = true;

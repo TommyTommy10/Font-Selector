@@ -183,23 +183,11 @@
     </div>
 
     <div id="interface">
-        <div id="conversation"></div>
-        <div class="visualizer" id="audio-visualizer">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-        <button id="mic-button">
-            <i>🎤</i>
-        </button>
-    </div>
+       <div id="manual-input">
+    <input type="text" id="queryInput" placeholder="Scrivi qui la tua domanda">
+    <button onclick="submitQuery()">Invia</button>
+</div>
+
 
     <script>
         // Elementi DOM
@@ -798,6 +786,14 @@ function processUserQuery(query) {
                 interface.style.maxWidth = `${Math.min(window.innerWidth * 0.4, 400)}px`;
             }
         });
+
+        function submitQuery() {
+    const query = document.getElementById("queryInput").value;
+    if (query.trim() !== "") {
+        processUserQuery(query); // Chiama la funzione di elaborazione
+        document.getElementById("queryInput").value = ""; // Pulisce il campo di input
+    }
+}
     </script>
 </body>
 </html>

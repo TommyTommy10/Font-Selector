@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Assistente</title>
+    <title>Visualizzatore Spline</title>
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.87/build/spline-viewer.js"></script>
     <style>
         spline-viewer {
             width: 100%;
-            height: 500px;
-            border: none;
+            height: 100vh;
+        }
+        body {
+            margin: 0;
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
-    <h1>Test del Visualizzatore Spline</h1>
     <spline-viewer url="https://prod.spline.design/MSCcnyIckFuju2EP/scene.splinecode"></spline-viewer>
 </body>
 </html>

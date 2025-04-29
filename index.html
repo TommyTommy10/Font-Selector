@@ -469,7 +469,7 @@ function processUserQuery(query) {
     statusIndicator.className = 'processing';
 
     // Endpoint del proxy su Netlify
-    const endpoint = "/.netlify/functions/openaiProxy"; // Usa il proxy, non l'API diretta
+    const endpoint = "https://app.netlify.com/sites/starlit-beijinho-87144d/.netlify/functions/openaiProxy";
 
     const body = {
         model: "gpt-3.5-turbo", // Modello OpenAI

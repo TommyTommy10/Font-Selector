@@ -641,7 +641,11 @@ h2 {
         <div class="settings-button" id="settingsButton" onclick="toggleSettings()">⚙️</div>
 
 <button class="music-button" onclick="toggleMusic()">🎵</button>
-        
+
+<div id="music" class="music-popup" style="display: none;">
+    <div class="music-popup-content">
+        <span class="music-close" onclick="toggleMusic()">&times;</span>
+        <div class="music-menu">
             <h2>Her</h2>
             <div class="music-list">
                 <div class="music-item" onclick="playSong(

@@ -3,1217 +3,792 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Per la De Prettiest</title>
-    <link rel="icon" href="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/2.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css?family=Alex+Brush|Allura|Amatic+SC|Arial|Bilbo+Swash+Caps|Brush+Script+MT|Comic+Sans+MS|Courier+New|Dancing+Script|Edwardian+Script+ITC|Euphoria+Script|Fondamento|Gabriola|Garamond|Georgia|Great+Vibes|Herr+Von+Muellerhoff|Indie+Flower|Italianno|Just+Another+Hand|Kunstler+Script|League+Script|Lobster|Lucida+Handwriting|Meddon|Merienda|Monotype+Corsiva|Monsieur+La+Doulaise|Niconne|Norican|Oleo+Script|Over+the+Rainbow|Pacifico|Palace+Script+MT|Papyrus|Parisienne|Permanent+Marker|Pangolin|Pinyon+Script|Poiret+One|Segoe+Script|Snell+Roundhand|Times+New+Roman|Trebuchet+MS|Verdana&display=swap" rel="stylesheet">
-    <title>Ricordi Speciali</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Amatic+SC&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bilbo+Swash+Caps&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Euphoria+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fondamento&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Garamond&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Herr+Von+Muellerhoff&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Italianno&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Italiana&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=League+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lobster+Two&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Meddon&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merienda&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montez&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Monsieur+La+Doulaise&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Niconne&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Norican&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Over+the+Rainbow&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Pangolin&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poiret+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Zeyada&display=swap');
-    @font-face {
-        font-family: 'Apple Chancery';
-        src: url('https://example.com/path-to-apple-chancery.woff') format('woff');
-    }
-
-    :root {
-        --colore-primario: #2F4F4F; /* Grigio Scuro */
-        --colore-secondario: #FAF3E0; /* Bianco Panna */
-        --colore-accento: #DAA520; /* Oro */
-        --colore-sfondo: #FAF3E0; /* Bianco Panna */
-        --colore-texto: #2F4F4F; /* Grigio Scuro */
-        --colore-button: #4682B4; /* Blu Petrolio */
-        --colore-link: #2F4F4F; /* Stesso colore del testo */
-        --colore-riquadro: #5c7d3b; /* Verde Oliva Scuro */
-        --colore-riquadro-alt: #D3D3D3; /* Grigio Chiaro */
-        --colore-titolo: #5C7D3B; /* Verde Oliva Scuro */
-        --colore-testo-impostazioni: #2F4F4F; /* Blu Petrolio */
-    }
-
-    body {
-        font-family: 'Italianno', sans-serif;
-        background-color: var(--colore-sfondo);
-        margin: 0;
-        padding: 20px;
-        color: var(--colore-titolo);
-    }
-
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        background-color: var(--colore-primario);
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .entry {
-        margin-bottom: 40px;
-        padding: 20px;
-        border-radius: 10px;
-        background-color: var(--colore-riquadro); /* Colore riquadro principale */
-    }
-
-    .entry.alt {
-        background-color: var(--colore-riquadro-alt); /* Colore riquadro alternativo */
-    }
-
-    .entry h2 {
-        margin-top: 0;
-        color: var(--colore-accento);
-    }
-
-   .entry p {
-    line-height: 1.6;
-    color: var(--colore-primario); /* Grigio Scuro per il testo */
-    font-size: 22px; /* Aumenta il font a 18px */
-}
-
-    .entry img {
-        max-width: 100%;
-        height: auto;
-        margin-top: 20px;
-        border-radius: 10px;
-    }
-
-    .highlight {
-        color: var(--colore-accento);
-        cursor: pointer;
-        text-decoration: underline;
-    }
-
-    .settings, .music {
-        display: none;
-        position: fixed;
-        top: 20px;
-        background-color: var(--colore-riquadro);
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        z-index: 100;
-        width: 300px;
-    }
-
-    .settings {
-        right: 20px;
-    }
-
-    .music {
-        left: 20px;
-    }
-
-    .settings h2, .music h2 {
-        margin-top: 0;
-        font-size: 1.5em;
-        color: var(--colore-testo-impostazioni); /* Colore del titolo "Impostazioni" e "Musica" */
-    }
-
-    .settings label, .music label {
-        margin-top: 10px;
-        display: block;
-        font-weight: bold;
-        color: var(--colore-testo-impostazioni); /* Colore del testo "Impostazioni" e "Musica" */
-    }
-
-    .settings select, .settings input[type="color"] {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        margin-top: 5px;
-    }
-
-    .settings input[type="color"] {
-        -webkit-appearance: none;
-        border: none;
-        height: 40px;
-        cursor: pointer;
-    }
-
-    .settings input[type="color"]::-webkit-color-swatch-wrapper {
-        padding: 0;
-    }
-
-    .settings input[type="color"]::-webkit-color-swatch {
-        border: none;
-        border-radius: 5px;
-    }
-
-    .settings-button, .music-button {
-        position: fixed;
-        top: 20px;
-        background-color: var(--colore-button);
-        color: #fff;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 101;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .settings-button {
-        right: 20px;
-    }
-
-    .music-button {
-        left: 20px;
-    }
-/* Arrotondare tutti i bordi */
-.music, .music-item, .music-icon, .current-song-icon, .close-music, .music-button, .settings-button, .container, .close-settings {
-    border-radius: 15px;
-}
-
-/* Stile dei pulsanti di chiusura */
-.close-music, .close-settings {
-    background-color: #f44336; /* Colore rosso */
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 15px; /* Arrotondare i bordi */
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Aggiungi ombreggiatura */
-    margin-top: 15px;
-}
-    .settings {
-    overflow-y: auto; /* Abilita lo scorrimento verticale */
-    max-height: 400px; /* Assicura che la finestra abbia una dimensione massima */
-}
-
-.close-music, .close-settings {
-    background-color: var(--colore-chiusura); /* Usa una variabile per il colore */
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 15px; /* Arrotondare i bordi */
-    cursor: pointer;
-  }  
-    
-    .close-settings {
-    background-color: #f44336; /* Colore rosso, uguale al pulsante di chiusura della musica */
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 15px; /* Arrotondare i bordi */
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-    
-    .close-music {
-    background-color: #f44336; /* Colore rosso */
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 5px; /* Arrotondare i bordi */
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 15px; /* Spazio tra il player e il pulsante di chiusura */
-}
-
-/* Arrotondare i color picker */
-.settings input[type="color"] {
-    -webkit-appearance: none;
-    border: none;
-    height: 40px;
-    cursor: pointer;
-    border-radius: 15px; /* Arrotondare i picker */
-    overflow: hidden; /* Assicurarsi che il colore rimanga all'interno dei bordi arrotondati */
-    padding: 0; /* Rimuovere padding per bordi arrotondati */
-    background: none;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Aggiungi ombreggiatura leggermente più intensa */
-}
-
-.settings input[type="color"]::-webkit-color-swatch-wrapper {
-    padding: 0;
-    border-radius: 15px; /* Arrotondare anche il wrapper */
-}
-
-.settings input[type="color"]::-webkit-color-swatch {
-    border: none;
-    border-radius: 15px; /* Arrotondare il colore swatch */
-}
-
-/* Specifico per Safari */
-@supports (-webkit-appearance:none) {
-    .settings input[type="color"] {
-        -webkit-appearance: none;
-        padding: 0;
-        border: none;
-        border-radius: 15px;
-        background: none;
-        height: 40px;
-        cursor: pointer;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Aggiungi ombreggiatura leggermente più intensa */
-    }
-
-    .settings input[type="color"]::-webkit-color-swatch-wrapper {
-        padding: 0;
-        border-radius: 15px;
-    }
-
-    .settings input[type="color"]::-webkit-color-swatch {
-        border: none;
-        border-radius: 15px;
-    }
-}
-    
-    .music-container {
-        display: flex;
-        align-items: center;
-        margin-top: 20px;
-        flex-direction: column;
-    }
-
-    .music-container img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 10px;
-        margin-bottom: 10px;
-    }
-
-    .music-container audio {
-        width: 100%;
-        height: 50px;
-        border-radius: 10px;
-    }
-    
-    .song-info {
-    text-align: center; /* Centra il testo */
-    margin-top: 10px; /* Spazio tra l'immagine e il testo */
-}
-
-.song-title {
-    font-size: 1em; /* Dimensione del font per il titolo della canzone */
-    color: var(--colore-texto); /* Colore del testo */
-    margin: 0; /* Rimuovere margine predefinito */
-    font-weight: bold; /* Aggiungi grassetto per il titolo della canzone */
-}
-
-.song-artist {
-    font-size: 0.75em; /* Dimensione del font per il nome dell'artista */
-    color: var(--colore-texto); /* Colore del testo */
-    margin: 0; /* Rimuovere margine predefinito */
-    opacity: 0.7; /* Aggiungi trasparenza per dare un effetto di sottotitolo */
-    width: 75%; /* Imposta la larghezza al 75% */
-    display: block; /* Assicurati che sia un blocco per occupare la larghezza */
-}
-
-/* Stile del pulsante di chiusura */
-.close-music {
-    background-color: #f44336; /* Colore rosso */
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 5px; /* Arrotondare i bordi */
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Aggiungi ombreggiatura */
-    margin-top: 10px; /* Riduci lo spazio tra il player e il pulsante di chiusura */
-}
-
-    .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 99;
-    }
-
-    .link-style {
-        text-decoration: none;
-        color: var(--colore-link);
-        border-bottom: 1px solid transparent;
-        transition: border-bottom 0.3s; /* Aumentato il tempo di transizione */
-    }
-
-    .link-style:hover {
-        border-bottom: 1px solid var(--colore-link); /* Sottolinea con il colore del link */
-    }
-
-/* Arrotondare tutti i bordi */
-.music, .music-item, .music-icon, .current-song-icon, .close-music, .music-button, .settings-button, .container {
-    border-radius: 15px;
-}
-
-/* Abilitare lo scorrimento verticale */
-.music {
-    overflow-y: auto;
-    max-height: 400px;
-}
-
-    .music-menu {
-    max-height: 100%; /* Assicura che la lista occupi tutta l'altezza disponibile */
-    overflow: hidden; /* Disattiva lo scorrimento */
-    padding-top: 20px; /* Sposta le intestazioni verso l'alto */
-}
-    
-.music-menu {
-    margin-top: 20px; /* Aggiungi margine superiore per le icone */
-}
-
-h2 {
-    margin-bottom: 20px; /* Aggiungi margine inferiore al titolo */
-}
-    
-.music-item {
-    margin: 5px 0; /* Aggiunge un po' di spazio tra gli elementi musicali */
-}
-
-.music-item p {
-    margin: 0; /* Rimuove il margine per evitare disallineamenti */
-    padding: 5px 0; /* Aggiunge un po' di spazio intorno al testo */
-}
-
-/* Disporre le icone in due per riga */
-.music-menu {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-between; /* Distribuisci le icone uniformemente */
-}
-
-.music-item {
-    width: calc(50% - 10px); /* Assicura due icone per riga con spaziatura */
-    margin-bottom: 20px;
-    box-sizing: border-box;
-}
-
-.music-icon {
-    width: 100%;
-    height: auto;
-    border-radius: 50%; /* Arrotonda le immagini */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.music-item p {
-    margin-top: 5px;
-    font-size: 0.9em;
-    color: var(--colore-primario);
-    text-align: center; /* Centra il testo */
-    overflow: hidden;
-    white-space: nowrap;
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    position: relative;
-}
-
-/* Rimuovere l'animazione di scorrimento */
-.music-item p span {
-    display: inline-block;
-    padding-left: 0; /* Rimuovere il padding sinistro */
-    animation: none; /* Disabilita l'animazione */
-}
-
-/* Ripristinare la freccia indietro */
-.back-button {
-    background: none;
-    border: none;
-    font-size: 2em;
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 102;
-    color: #fff;
-    background-color: transparent;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-    
-.song-info {
-    text-align: center; /* Centra il testo */
-    margin-top: 10px; /* Spazio tra l'immagine e il testo */
-}
-
-.song-title {
-    font-size: 1em; /* Riduci la dimensione del font */
-    color: var(--colore-texto); /* Usa il colore del testo */
-    margin: 0; /* Rimuovere margine predefinito */
-    font-weight: bold; /* Aggiungi grassetto per il titolo della canzone */
-}
-
-.song-artist {
-    font-size: 0.75em; /* Riduci ulteriormente la dimensione del font */
-    color: var(--colore-texto); /* Usa il colore del testo */
-    margin: 5px 0 0; /* Aggiungi margine sopra per separare dal titolo della canzone */
-    font-style: normal; /* Stile normale per il nome del cantante/band */
-    opacity: 0.7; /* Aggiungi trasparenza per dare un effetto di sottotitolo */
-}
-
-    
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  position: relative;
-  color: white;
-}
-
-.container .label {
-  font-size: 15px;
-  padding-left: 10px;
-  position: absolute;
-  top: 13px;
-  transition: 0.3s;
-  pointer-events: none;
-}
-
-.input {
-  width: 200px;
-  height: 45px;
-  border: none;
-  outline: none;
-  padding: 0px 7px;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 15px;
-  background-color: transparent;
-  box-shadow: 3px 3px 10px rgba(0,0,0,1),
-  -1px -1px 6px rgba(255, 255, 255, 0.4);
-}
-
-.input:focus {
-  border: 2px solid transparent;
-  color: #fff;
-  box-shadow: 3px 3px 10px rgba(0,0,0,1),
-  -1px -1px 6px rgba(255, 255, 255, 0.4),
-  inset 3px 3px 10px rgba(0,0,0,1),
-  inset -1px -1px 6px rgba(255, 255, 255, 0.4);
-}
-
-.container .input:valid ~ .label,
-.container .input:focus ~ .label {
-  transition: 0.3s;
-  padding-left: 2px;
-  transform: translateY(-35px);
-}
-
-.container .input:valid,
-.container .input:focus {
-  box-shadow: 3px 3px 10px rgba(0,0,0,1),
-  -1px -1px 6px rgba(255, 255, 255, 0.4),
-  inset 3px 3px 10px rgba(0,0,0,1),
-  inset -1px -1px 6px rgba(255, 255, 255, 0.4);
-}
-    
-/* Stile del pulsante di chiusura */
-.close-music {
-    background-color: #f44336;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 5px; /* Arrotondare i bordi */
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 15px; /* Spazio tra il player e il pulsante di chiusura */
-}
-
-    .current-song-icon {
-        width: 100%;
-        max-width: 300px;
-        height: auto;
-        margin-bottom: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .music-player {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 30px; /* Aggiunto margine superiore per evitare la sovrapposizione */
-    }
-
-    /* Media queries per dispositivi diversi */
-    @media (max-width: 768px) {
-        .container {
-            padding: 10px;
+    <title>Assistente 3D Vocale con AI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .settings, .music {
+        #canvas-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: transparent;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+
+        #canvas-container.active {
+            width: 350px;
+            height: 350px;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #interface {
+            position: fixed;
+            bottom: 20px;
+            right: 240px;
+            width: 0;
+            max-width: 400px;
+            background-color: rgba(30, 30, 30, 0.9);
+            border-radius: 16px;
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            opacity: 0;
+            color: white;
+            z-index: 5;
+        }
+
+        #interface.active {
+            width: 350px;
+            padding: 20px;
+            opacity: 1;
+        }
+
+        #conversation {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding-right: 10px;
+        }
+
+        .message {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+
+        .user {
+            background-color: #0084ff;
+            margin-left: auto;
+        }
+
+        .assistant {
+            background-color: #424242;
+            margin-right: auto;
+        }
+
+        #status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+            transition: background-color 0.3s ease;
+        }
+
+        #status.listening {
+            background-color: #4CAF50;
+            box-shadow: 0 0 10px #4CAF50;
+            animation: pulse 1.5s infinite;
+        }
+
+        #status.processing {
+            background-color: #FFC107;
+            box-shadow: 0 0 10px #FFC107;
+        }
+
+        #status.speaking {
+            background-color: #2196F3;
+            box-shadow: 0 0 10px #2196F3;
+        }
+
+        #mic-button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        #mic-button:hover {
+            background-color: #0b7dda;
+        }
+
+        #mic-button:active {
+            background-color: #0a5999;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .visualizer {
             width: 100%;
-        }
-
-        .settings-button, .music-button {
-            width: 30px;
             height: 30px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .back-button {
-            font-size: 1.5em; /* Ridotto il font size per dispositivi più piccoli */
-            padding: 5px; /* Ridotto il padding per dispositivi più piccoli */
-        }
-    }
-
-    @media (max-width: 480px) {
-        .container {
-            width: 100%;
-            padding: 5px;
+        .bar {
+            background-color: #2196F3;
+            width: 4px;
+            height: 5px;
+            margin: 0 2px;
+            border-radius: 2px;
+            transition: height 0.1s ease;
         }
 
-        .entry {
-            padding: 10px;
+        .loading-dots {
+            display: inline-block;
         }
 
-        .settings, .music {
-            width: 100%;
+        .loading-dots:after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
         }
 
-        .settings-button, .music-button {
-            width: 30px;
-            height: 30px;
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
         }
-
-        .back-button {
-            font-size: 1.5em; /* Ridotto il font size per dispositivi più piccoli */
-            padding: 5px; /* Ridotto il padding per dispositivi più piccoli */
-        }
-    }
-</style>
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Ricordi Speciali</h1>
-
-        <!-- Overlay -->
-        <div class="overlay" id="overlay" onclick="closeWindows()"></div>
-
-        <!-- Pulsante per mostrare le impostazioni -->
-        <div class="settings-button" id="settingsButton" onclick="toggleSettings()">⚙️</div>
-
-<!-- Pulsante per mostrare la musica -->
-<div class="music-button" id="musicButton" onclick="toggleMusic()">🎵</div>
-
-<!-- Finestra della musica -->
-<div class="music" id="music">
-    <div class="music-menu" id="musicMenu">
-        
-<div class="container">
-  <input required="" type="text" name="text" class="input">
-  <label class="label">Cerca un brano o un artista...</label>
-</div>
-        <!-- Sezione "Her" -->
-        <h2>Her</h2>
-<div class="music-item" onclick="playSong('miFaiImpazzire')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Mi%20Fai%20Impazzire.jpeg" alt="Someone To Stay Icon" class="music-icon">
-    <p class="song-title"><span>Mi Fai Impazzire</span></p>
-    <p class="song-artist">Blanco</p>
-</div>
-<div class="music-item" onclick="playSong('someoneToStay')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Someone%20To%20Stay.jpeg" alt="Someone To Stay Icon" class="music-icon">
-    <p class="song-title"><span>Someone To Stay</span></p>
-    <p class="song-artist">Vancouver Sleep Clinic</p>
-</div>
-<div class="music-item" onclick="playSong('whyILoveYou')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Why%20I%20Love%20You.jpeg" alt="Why I Love You Icon" class="music-icon">
-    <p class="song-title"><span>Why I Love You</span></p>
-    <p class="song-artist">Jay-Z</p>
-</div>
-<div class="music-item" onclick="playSong('dontPanic')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Don't%20Panic.jpeg" alt="Don’t Panic Icon" class="music-icon">
-    <p class="song-title"><span>Don’t Panic</span></p>
-    <p class="song-artist">Coldplay</p>
-</div>
-<div class="music-item" onclick="playSong('no1PartyAnthem')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/AM.webp" alt="No 1 Party Anthem Icon" class="music-icon">
-    <p class="song-title"><span>No 1 Party Anthem</span></p>
-    <p class="song-artist">- Arctic Monkeys</p>
-</div>
-<div class="music-item" onclick="playSong('dangerousWoman')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Dangerous%20Woman.jpg" alt="Dangerous Woman Icon" class="music-icon">
-    <p class="song-title"><span>Dangerous Woman</span></p>
-    <p class="song-artist">- Ariana Grande</p>
-</div>
-<div class="music-item" onclick="playSong('madSounds')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/AM.webp" alt="Mad Sounds Icon" class="music-icon">
-    <p class="song-title"><span>Mad Sounds</span></p>
-    <p class="song-artist">Arctic Monkeys</p>
-</div>
-<div class="music-item" onclick="playSong('endOfBeginning')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/End%20Of%20Beginning.jpeg" alt="End Of Beginning Icon" class="music-icon">
-    <p class="song-title"><span>End Of Beginning</span></p>
-    <p class="song-artist">Djo</p>
-</div>
-<div class="music-item" onclick="playSong('iWannaBeYours')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/AM.webp" alt="I Wanna Be Yours Icon" class="music-icon">
-    <p class="song-title"><span>I Wanna Be Yours</span></p>
-    <p class="song-artist">Arctic Monkeys</p>
-</div>
-<div class="music-item" onclick="playSong('mothToAFlame')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Moth%20To%20A%20Flame.jpeg" alt="Moth To A Flame Icon" class="music-icon">
-    <p class="song-title"><span>Moth To A Flame</span></p>
-    <p class="song-artist">The Weeknd</p>
-</div>
- <div class="music-item" onclick="playSong('outOfMyLeague')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Out%20Of%20My%20League.jpeg" alt="Out Of My League Icon" class="music-icon">
-    <p class="song-title"><span>Out Of My League</span></p>
-    <p class="song-artist">Fitz And The Tantrums</p>
-</div>
-<div class="music-item" onclick="playSong('favorite')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Favorite.jpeg" alt="Favorite Icon" class="music-icon">
-    <p class="song-title"><span>Favorite</span></p>
-    <p class="song-artist">Isabel LaRosa</p>
-</div>
-<div class="music-item" onclick="playSong('fiveOfive')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/505.jpg" alt="505 Icon" class="music-icon">
-    <p class="song-title"><span>505</span></p>
-    <p class="song-artist">Arctic Monkeys</p>
-</div>
-<div class="music-item" onclick="playSong('confident')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Confident.jpg" alt="Confident Icon" class="music-icon">
-    <p class="song-title"><span>Confident</span></p>
-    <p class="song-artist">Justin Bieber</p>
-</div>
-<div class="music-item" onclick="playSong('wildestDreams')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Wildest%20Dreams.jpeg" alt="Wildest Dreams Icon" class="music-icon">
-    <p class="song-title"><span>Wildest Dreams</span></p>
-    <p class="song-artist">Taylor Swift</p>
-</div>
-<div class="music-item" onclick="playSong('iSeeYou')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/I%20See%20You.jpeg" alt="I See You Icon" class="music-icon">
-    <p class="song-title"><span>I See You</span></p>
-    <p class="song-artist">Jutty Ranx</p>
-</div>
-<div class="music-item" onclick="playSong('beautifulThings')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Beautiful%20Things.jpeg" alt="Beautiful Things Icon" class="music-icon">
-    <p class="song-title"><span>Beautiful Things</span></p>
-    <p class="song-artist">Benson Boone</p>
-</div>
-<div class="music-item" onclick="playSong('myType')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/My%20Type.png" alt="My Type Icon" class="music-icon">
-    <p class="song-title"><span>My Type</span></p>
-    <p class="song-artist">Saweetie</p>
-</div>
-<div class="music-item" onclick="playSong('babyGoddamn')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Baby%20Goddamn.jpeg" alt="Baby Goddamn Icon" class="music-icon">
-    <p class="song-title"><span>Baby Goddamn</span></p>
-    <p class="song-artist">Tananai</p>
-</div>
-<div class="music-item" onclick="playSong('tranTran')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Tran%20Tran.jpeg" alt="Tran Tran Icon" class="music-icon">
-    <p class="song-title"><span>Tran Tran</span></p>
-    <p class="song-artist">Sfera E Basta</p>
-</div>
-<div class="music-item" onclick="playSong('rockstar')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Rockstar.jpg" alt="Rockstar Icon" class="music-icon">
-    <p class="song-title"><span>Rockstar</span></p>
-    <p class="song-artist">Sfera E Basta</p>
-</div>
-<div class="music-item" onclick="playSong('older')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Older.jpeg" alt="Older Icon" class="music-icon">
-    <p class="song-title"><span>Older</span></p>
-    <p class="song-artist">Isabel LaRosa</p>
-</div>
-<div class="music-item" onclick="playSong('mockingbird')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Mockingbird.jpeg" alt="Mockingbird Icon" class="music-icon">
-    <p class="song-title"><span>Mockingbird</span></p>
-    <p class="song-artist">Eminem</p>
-</div>
-<div class="music-item" onclick="playSong('yellow')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Yellow.jpeg" alt="Yellow Icon" class="music-icon">
-    <p class="song-title"><span>Yellow</span></p>
-    <p class="song-artist">Coldplay</p>
-</div>
-<div class="music-item" onclick="playSong('cigarettesDaydream')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Cigarette%20Daydream.jpeg" alt="Cigarettes Daydream Icon" class="music-icon">
-    <p class="song-title"><span>Cigarette Daydream</span></p>
-    <p class="song-artist">Cage The Elephant</p>
-</div>
-<div class="music-item" onclick="playSong('apocalypse')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Apocalypse.png" alt="Apocalypse Icon" class="music-icon">
-    <p class="song-title"><span>Apocalypse</span></p>
-    <p class="song-artist">Cigarettes After Sex</p>
-</div>
-<div class="music-item" onclick="playSong('friends')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Friends.jpeg" alt="Friends Icon" class="music-icon">
-    <p class="song-title"><span>Friends</span></p>
-    <p class="song-artist">Chase Atlantic</p>
-</div>
-<div class="music-item" onclick="playSong('swim')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/Swim.jpeg" alt="Swim Icon" class="music-icon">
-    <p class="song-title"><span>Swim</span></p>
-    <p class="song-artist">Chase Atlantic</p>
-</div>
-        <!-- Sezione "Mine" -->
-        <h2>Mine</h2>
-<div class="music-item" onclick="playSong('youWereThereForMe')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/In%20All%20Of%20My%20Lonely%20Nights.jpeg" alt="You Were There For Me Icon" class="music-icon">
-    <p class="song-title"><span>You Were There For Me</span></p>
-    <p class="song-artist">Henry Moodie</p>
-</div>
-<div class="music-item" onclick="playSong('theNightWeMet')">
-    <img src="https://github.com/TommyTommy10/Biglietto.Anna/raw/main/The%20Night%20We%20Met.jpeg" alt="The Night We Met Icon" class="music-icon">
-    <p class="song-title"><span>The Night We Met</span></p>
-    <p class="song-artist">Lord Huron</p>
-</div>
-        <!-- Aggiungi altre canzoni come desideri -->
-    </div>
-    <div class="music-player" id="musicPlayer" style="display:none;">
-        <button id="backButton" class="back-button" onclick="showMenu()">&#8592;</button>
-        <img id="currentSongImage" src="music-icon" alt="Current Song Icon" class="current-song-icon">
-        <!-- Blocco HTML aggiunto per le informazioni sulla canzone -->
-        <div class="song-info">
-            <h3 class="song-title"/h3>
-            <p class="song-artist"/p>
-        </div>
-        <audio id="audioPlayer" controls>
-            <source id="audioSource" src="" type="audio/mpeg">
-            Il tuo browser non supporta l'elemento audio.
-        </audio>
-    </div>
-    <button class="close-music" onclick="toggleMusic()">Chiudi</button>
-</div>
-        <!-- Interfaccia per cambiare font e colori -->
-        <div class="settings" id="settings">
-            <h2>Personalizza il Sito</h2>
-            <label for="fontSelect">Seleziona Font:</label>
-            <select id="fontSelect">
-               <option value="Abril Fatface">Abril Fatface</option>
-<option value="Alex Brush">Alex Brush</option>
-<option value="Allura">Allura</option>
-<option value="Amatic SC">Amatic SC</option>
-<option value="Architects Daughter">Architects Daughter</option>
-<option value="Apple Chancery">Apple Chancery</option>
-<option value="Arial">Arial</option>
-<option value="Bilbo Swash Caps">Bilbo Swash Caps</option>
-<option value="Brush Script MT">Brush Script MT</option>
-<option value="Comic Sans MS">Comic Sans MS</option>
-<option value="Courier New">Courier New</option>
-<option value="Dancing Script">Dancing Script</option>
-<option value="Euphoria Script">Euphoria Script</option>
-<option value="Fondamento">Fondamento</option>
-<option value="Fredericka the Great">Fredericka the Great</option>
-<option value="Gabriela">Gabriela</option>
-<option value="Georgia">Georgia</option>
-<option value="Great Vibes">Great Vibes</option>
-<option value="Herr Von Muellerhoff">Herr Von Muellerhoff</option>
-<option value="Indie Flower">Indie Flower</option>
-<option value="Italianno">Italianno</option>
-<option value="Italiana">Italiana</option>
-<option value="Just Another Hand">Just Another Hand</option>
-<option value="Kaushan Script">Kaushan Script</option>
-<option value="Lobster">Lobster</option>
-<option value="Lobster Two">Lobster Two</option>
-<option value="Meddon">Meddon</option>
-<option value="Merienda">Merienda</option>
-<option value="Montez">Montez</option>
-<option value="Monsieur La Doulaise">Monsieur La Doulaise</option>
-<option value="Niconne">Niconne</option>
-<option value="Norican">Norican</option>
-<option value="Oleo Script">Oleo Script</option>
-<option value="Over the Rainbow">Over the Rainbow</option>
-<option value="Pacifico">Pacifico</option>
-<option value="Papyrus">Papyrus</option>
-<option value="Parisienne">Parisienne</option>
-<option value="Pangolin">Pangolin</option>
-<option value="Permanent Marker">Permanent Marker</option>
-<option value="Pinyon Script">Pinyon Script</option>
-<option value="Poiret One">Poiret One</option>
-<option value="Raleway">Raleway</option>
-<option value="Satisfy">Satisfy</option>
-<option value="Shadows Into Light">Shadows Into Light</option>
-<option value="Snell Roundhand">Snell Roundhand</option>
-<option value="Special Elite">Special Elite</option>
-<option value="Times New Roman">Times New Roman</option>
-<option value="Trebuchet MS">Trebuchet MS</option>
-<option value="Verdana">Verdana</option>
-<option value="Zeyada">Zeyada</option>
-                <!-- Aggiungi altri font qui -->
-            </select>
-
-            <label for="colorPicker">Seleziona il colore dello sfondo:</label>
-<input type="color" id="colorPicker" value="#faf3e0">
-
-<label for="textColorPicker">Seleziona il colore del titolo:</label>
-<input type="color" id="textColorPicker" value="#5c7d3b">
-
-<label for="dateColorPicker">Seleziona il colore della testo:</label>
-<input type="color" id="dateColorPicker" value="#2f4f4f">
-
-<label for="titleColorPicker">Seleziona il colore del data:</label>
-<input type="color" id="titleColorPicker" value="#daa520">
-
-<label for="mainBoxColorPicker">Seleziona il colore del riquadro principale:</label>
-<input type="color" id="mainBoxColorPicker" value="#4682b4">
-
-<label for="paragraphBoxColorPicker">Seleziona il colore del riquadro del paragrafo:</label>
-<input type="color" id="paragraphBoxColorPicker" value="#5c7d3b">
-
-<label for="windowColorPicker">Seleziona il colore delle finestre:</label>
-<input type="color" id="windowColorPicker" value="#5c7d3b">
-
-<label for="buttonColorPicker">Seleziona il colore dei pulsanti:</label>
-<input type="color" id="buttonColorPicker" value="#4682b4">
-
-<label for="musicPlayerColorPicker">Seleziona il colore del music player:</label>
-<input type="color" id="musicPlayerColorPicker" value="#5c7d3b">
-
-<button class="close-settings" onclick="toggleSettings()">Chiudi</button>
-        </div>
-
-        <!-- Esempio di post del blog -->
-        <div class="entry">
-            <h2>12 Dicembre 2024</h2>
-            <p>Oggi evidentemente non è giornata per te. E per questo ti prometto che ti prenderò un magnifico peluche. Adesso vorrei poter essere li per abbracciarti. Ma non ci sono. Ricordati sempre che per te ci sono sempre. Se non riesci a dormire scrivimi, svegliami, mi fa solo piacere. Quindi non esitare mai. Preferisco stare sveglio tutta notte che lasciarti sola.
-        </div>
-
-         <div class="entry">
-            <h2>16 Dicembre 2024</h2>
-            <p>Oggi è stata una bella giornata. Hai risposto a Marrado Caurizio. Hai fatto dei disegni traumatici per chiedere quanto ce l’avessi lungo, ma va bene. Poi sono stato azzannato a un braccio. Che poi non ti ho detto niente, ma essenzialemente è un succhiotto. Ma va bene. A parte il male che ho alla spalla, oggi è stata una bella giornata. Anche se il male è stato risarcito da un abbraccio. Ora vado a dormire. Notte. Tvb🩶
-        </div>
-
-        <div class="entry">
-            <h2>17 Dicembre 2024</h2>
-            <p>Oggi ne ho un altro, so di non averti detto niente, ma perchè finché sorridi mi va bene. Puoi anche riempirmi le braccia, a me va bene, basta che tu sorrida. Perchè quando mi mordi, fai un sorriso bellissimo. Comunque credo che Ryan sia invidiosissimo. Sempre il primo a dirti su se mi mordi. Ma credo che se sentisse il mio stesso dolore cambierebbe idea. Si, fa molto male, ma per te, soffrirei 1000 volte di più. E poi, neanche me lo devi chiedere per una chiamata, al massimo di chiedo di aspettare massimo massimo 20 minuti. Se proprio è il momento sbagliato. Se va peggio ti dico di no, ma è raro. Poi te ancora non lo sai, ma ho già il tuo regalo nello zaino, sono sicuro che ti piacerà. In aggiunta, ho lasciato un bigliettino (orribile, ma di meglio non riuscivo a fare quando l’ho incartato, sorry, l’importante è il significato). So che il pacco non è bellissimo, ma è fatto con tanto amore, perchè ti voglio tanto tanto bene. Bye bye tata🩶
-        </div>
-                
-        <div class="entry">
-            <h2>18 Dicembre 2024</h2>
-            <p>Una cosa sola. Io… io… non riesco ad esprimermi. Oggi… oggi hai detto una frase che mi fa piangere ogni volta che ci penso. Se te lo chiedi, si, questo paragrafo lo sto scrivendo il 31 dicembre. Eppure sono ancora qui, che quando penso a te, penso a questa frase e piango. Rafay non si è voluto far interrogare, anche se doveva. Sono uscito io. La campanella è suonata. Tu sei uscita a pandere la merenda. Pensavo saresti rimasta fuori, invece no. Sei tornata e ti sei messa in prima fila. Finita l’interrogazione, il prof mi ha detto: “Vedrai poi te come vendicarti con il tuo compagno, scherzo ovviamente.” E tu, cos’hai risposto se non “Ci penso io, sono rancorosa anche per gli altri. Quelli a cui voglio bene.” Da in fondo alla classe si sente la voce di Ryan dire: “Cioè Tommy.” Il prof ha replicato: “La bocca della verità.” Scusa, devo piangere. Bye Anna
-        </div>
-
-        <div class="entry">
-            <h2>20 Dicembre 2024</h2>
-            <p>Anche se sono stato azzannato nei peggio modi, oggi è stata una bella giornata. Hai finalmente scritto a Bok, anche se hai paura. Mal che vada, io sono qui, per te libero anche quando non ho tempo. Ubi tu ubi ego (si, sono fissato con sta frase. Che poi è latina, non greca). Spero tutto vada bene…
-        </div>
-        
-        <div class="entry">
-            <h2>24 Dicembre 2024</h2>
-            <p>Siamo già al terzo giorno di vacanze. È la vigilia ma neanche me ne ero reso conto. Con te i giorni si riempiono sempre di bei ricordi che non puoi neanche pensare che sia passato così poco tempo. Poi ieri sono stato in discoteca per la prima volta. Mentre aspettavo in fila, mi è arrivata una foto di un abitante della Mongolia che sta viaggiando per il deserto del Gobi. Con una felpa nera sulla bocca, gli occhi talmente socchiusi che sembrava volesse uccidere qualcuno dalla rabbia. Ovviamente eri bellissima in quella foto. Poi, dopo un po’, me ne arriva un’altra che non può essere descritta, non è family frienldy, ma proprio per niente. <a href="https://www.instagram.com/reel/DDkhFdCtqbv/?igsh=MWppYm92enZpeXpjeA==" class="link-style">Ti dico solo una cosa: sei bellissima, sempre, non dubitarne mai.</a> Ti voglio bene🩶</p>
-        </div>
-        
-        <div class="entry">
-            <h2>29 Dicembre 2024</h2>
-            <p>Adesso qualcuno mi deve dire come non si fa ad adorare una ragazza così. Non centra l’essere bella, simpatica, quelle cose lì… Quelle sono caratteristiche che possono avere tutti, chi più e chi meno. Si, sei splendida, sei simpaticissima, parlare con te mi fa sorridere. Ma questo non è il punto di oggi. Oggi voglio parlare di come sia facile parlare di tutto con te. Ma tutto tutto. Ceh, io non credo di aver mai avuto conversazioni di questo genere con nessuno. Un ora e un quarto a parlare di come si viene. Non sono cose che di solito succedono. Concludo con questo: io di ste cose non parlo a nessuno, ma se succede, o mi stanno puntando una pistola alla tempia, o so che chi mi ascolta è una persona affidabile, che non ti giudica e che se hai bisogno ti aiuta. Notte, mia sceneggiatrice🩶
-        </p>
-        </div>
-        
-        <div class="entry">
-            <h2>30 Dicembre 2024</h2>
-            <p>Sono felicissimo, mi manchi da morire e stare in chiamata mi è piaciuto troppo. Però, poi, qualcuno è dovuto “andare in bagno”. Voglio abbracciarti!!! Mi manchi da morire. La sera, mentre faccio questa pagina che stai leggendo, ascolto la canzone “The Night We Men” (la trovi nella sezione della mia musica). Mi sento male, mordo il peluche che ho da quando sono nato e inizio a piangere. Ti voglio ♾️ bene🩶 Notte</p>
-        </div>
-        
-        <div class="entry">
-            <h2>1 Gennaio 2025</h2>
-            <p>Ciao, oggi è stata una giornata così così per entrambi. So che te stai male, ma pure io. Si, due mali diversi, ma entrambi dolorosi. Come ti dico nel paragrafo precedente, ho scritto un piccolo paragrafo per due ore. Poi l’ho registrato e ho impostato il telefono perchè te lo mandasse a mezzanotte. Io ho avuto per tutto il 31 dei dubbi, ma una mia amica mi ha detto che secondo lei era una cosa carina e speravo veramente ti sarebbe piaciuto. Poi sono ormai passate 21 ore e 48 minuti e ancora non mi hai detto niente. È tutto il giorno che sono in ansia pensando di averti dato fastidio, ma solo perchè pensavo non ti fosse piaciuto. Scusami, non volevo darti fastidio. Ora che sono le 22:04 e so che ti è piaciuto, sono contento. Notte. Ti voglio bene🩶</p>
-        </div>
-        
-        <div class="entry">
-            <h2>6 Gennaio 2025</h2>
-            <p>Ieri ho fatto un casino, lo so. Non dovevo dirti niente. Dovevo stare zitto e smettere di piangere. Te non centravi. Da ieri sera, ho sperato costantemente in un tuo messaggio, ma non è mai arrivato. Scusami ancora se ho esagerato. Nn vedo l’ora di vederti di persona, perchè stando a casa faccio solo disastri. O per lo più paranoie… Spero di non aver rovinato niente…</p>
-        </div>
-                
-        <div class="entry">
-            <h2>7 Gennaio 2025</h2>
-            <p>Oggi che ti ho vista, sono stato troppo felice. Mi mancavi veramente tanto…</p>
-        </div>
-                
-        <div class="entry">
-            <h2>13 Gennaio 2025</h2>
-            <p>Il tuo sorriso mi migliora ogni giornata. Se c’è qualcosa che nn va, penso a te che sorridi e sto meglio. Sto veramente bene con te. Poi sabato mi sono divertito un sacco (la mia carta meno). Ogni tanto dobbiamo rifarlo. Mi piace girare con te, chiacchierare, fare degli scherzi a Matte (a cui crederà per i prossimi 20 anni). Poi hai aperto sul mio telefono siti che, guarda, meglio non dire altro. Però mi sono divertito un sacco. Comunque credo che devo mettere una password a questo file, ma nn so come si faccia. Perchè forse non è la cosa migliore che venga letta da qualcuno se mi apre il Mac. Perchè quando uso il visore con altri mi connetto al computer così si vede. Solo che se uso io il visore per un attimo, qualcuno potrebbe leggere e non mi sembra il caso. Scusa se ti ho svegliata prima. Bye. Ti voglio bene🩶</p>
-        </div>
-                
-         <div class="entry">
-            <h2>21 Gennaio 2025</h2>
-            <p>È passata una settimana lo so, ma sono stato impegnato. Comunque, adesso che abbiamo gli iPad, ci divertiamo poi. Comunque pensavo, se mi continui a colpire nei coglioni, come vuoi fare poi a diventare la zia ricca? Però mi piace molto fare un giro con te dopo scuola, sei costosa da mantenere, dillo a Jack che mangi, se vuole ti posso mandare le uscite della mia carta da mandargli. Comunque adesso ti prendo Rafayel, te l’ho promesso e lo faccio. Bye bye. Ti voglio tanto tanto bene🩶</p>
-        </div>
-        
-        <div class="entry">
-            <h2>28 Gennaio 2025</h2>
-            <p>Anna, sinceramente, io non so come ringraziarti per tutto. Gli ultimi sono stati giorni bellissimi, ma molto molto molto belli. Scusa, ho perso il file originale, non ricordo bene quello che avevo scritto. Non volevo. <a href="https://photos.app.goo.gl/H1mVWZmy84tJh17E7" class="link-style">Oggi al MC mi è piaciuto molto.</a> Anche i messaggi che hai scritto ieri quando stavo male. Io voglio sempre esserci per te se hai bisogno. Voglio starti vicino come hai fatto te. Io nn so esprimermi, so solo che ti adoro, ti voglio un bene immenso, infinito, smisurato. Ti voglio troppo troppo troppo bene, non so esprimere quanto, ma veramente tanto che non riesco a dimostrarti neanche la più microscopica parte di quanto ti voglio bene. Ti voglio bene🩶</p>
-        </div>
-        
-        <div class="entry">
-            <h2>2 Febbraio 2025</h2>
-            <p>Sai, ho scoperto una cosa. Certe volte solo parlare con te mi fa troppo felice. So che può sembrar detto così, solo per fare il leccaculo. Invece no. Tutto il giorno ho pensato ai compiti, all’interrogazione, al compleanno. Poi mi sono trovato entrambe le Chiare a casa. E li ho capito. Dopo te lo dirò, ma la Chiara Simone aveva da dire su di te come sempre. Però ho continuato a difenderti. Perchè, dopo, quando mi hai risposto al video del visore dove c’era la madre di Scaramouche, mi sono reso conto che ho sorriso, ho guardato il cielo, ho visto quant’era bello, e ho sorriso. Così, solo per aver parlato con te. Mi metti gioia, nn so spiegare. Sono felice, punto. Non ho altro da dire, so solo di essere contentissimo. No, non contentissimo, non so spiegarmi, una sensazione di gioia profonda, di affetto, di… di tutto. Però, nonostante tutta la mia gioia, io vorrei dei grattini dato che l’altro giorno mi hanno detto che posso averli. Comunque sai, io spero veramente ti piaccia tutto questo. Ogni tanto ho un dubbio che possa non piacerti. Adesso, per esempio, sto avendo un po questo dubbio. So che 3 giorni fa mi hai detto che ti piacciono queste cose che ti scrivo, ma ogni tanto ho un dubbio. Però non voglio che diventi triste il testo. Quindi ti dico solo una cosa. Ti voglio troppo bene. Ma veramente tanto. Ma tanto. Poi io ho un'idea e spero tu possa accontentarla. Vorrei che quando arriva Rafayel, tu accettassi l’invito per venire a casa mia a pranzo per potertelo consegnare di persona, senza doverlo fare un po’ di nascosto, poi non credo ci stia nello zaino. Quindi io spero veramente che tu accetti di venire qui a pranzo. È passata un’ora da quando ho scritto tutto questo. Avevo già scritto “Ti voglio bene” ma mi sono reso conto che volevo scrivere un’altra cosa. Mi sono reso conto che la notte certe volte controllo dall’orologio se ci sono tue notifiche. Allora ho capito che forse lo faccio perchè spero di trovare un tuo messaggio, un buon giorno, una domanda, un “ti voglio bene”. Una qualsiasi cosa. Ora vado a dormire Ti voglio troppo bene. Notte tata🩶</p>
-        </div>
-                
-        <div class="entry">
-            <h2>7 Febbraio 2025</h2>
-            <p>Oggi mi ha scritto l’Ila per i posti. Dato che come sempre ha rovinato la giornata, o almeno una parte, mi ero un po’ rattristito. Allora te sei partita, con la musica dall’iPad hai iniziato a ballare e cantare. Mi hai fatto subito tornare il sorriso. Grazie. Non so come farei senza di te. Bye. Ti voglio bene🩶</p>
-        </div>
-        
-        <div class="entry">
-            <h2>12 Febbraio 2025</h2>
-            <p>Scusami per oggi. Ho capito che quando mi manchi inizio a fare così. Lo so, sono fastidioso certe volte. Scusa. Però ieri e l’altro ieri, sono stato troppo bene in chiamata con te. Adesso ti saluto che ho male agli occhi. Buona notte e scusa ancora.</p>
-        </div>
-        
-        <div class="entry">
-            <h2>16 febbraio 2025</h2>
-            <p>Che voglia che ho di abbracciarti. Quando mi hai dato quei 30 secondi di abbraccio e poi anche un bacio in fronte… Ero tipo troppo felice. Se penso a stasera mi vieni in mente te che mi fai la linguaccia perchè mi hai detto che il tè era buono nonostante 10 minuti prima non lo sapessi fare. Poi mi viene in mente l’abbraccio, mi mancavi da morire. Poi ovviamente non serve dirlo, eri molto bella. Com’eri vestita, com’eri truccata (saresti stata bellissima anche senza, non ho dubbi). Però sono stato molto contento che tu ci fossi, credo che mi sarebbe piaciuto molto meno senza di te. Bye. Tvb🩶</p>
-        </div>
-        
-        <div class="entry">
-            <h2>23 Febbraio 2025</h2>
-            <p>Questa settimana è stata splendida. Sono stato benissimo. Mi sei mancata un sacco mentre eri malata. Anche adesso mi manchi, devo recuperare. Scusa se ieri sera non ho detto di no hai miei amici o non ti ho chiesto di uscire a cena, era da tanto che cercavamo di organizzare. Però dopo in call sono stato molto bene. Poi ieri sera mi sono commosso quando hai risposto alle 5 domande a cui ti ho chiesto di rispondere. Dopo hi pianto per un’ora a pensare come farei senza di te. Se ti succedesse qualcosa. Ma meglio non ripensarci adesso. Credo di non aver mai voluto cosi bene a qualcuno, anzi, non lo credo, ne sono certo. Ti voglio bene🩶</p>
-        </div>
-        
-        <div class="entry">
-            <h2>6 Marzo 2025</h2>
-            <p>Si, se te lo chiedi si, credo che lentamente sto abbandonando il mio progetto, nn scrivo più sempre. Lo so, è brutto da dire, ma quando va tutto bene, sono così felice che non trovo il tempo per scriverlo, poi, quando succede qualcosa, non ho più niente da scrivere. Lo scopo di questo era tenere dei ricordi, farti vedere la mia visuale, farti vedere che tutti i dubbi che hai spesso non sono come credi. Però qualcosa da dire ce l’ho. Due giorni fa ero freddo e dopo solo due messaggi tu te ne eri resa conto. E subito ti sei affrettata ad aiutarmi. Sinceramente, credo che idea migliore non la potessi avere. Mi ha fatto stare molto bene pensare a te che mi venivi a fare le coccole. Mi ha rilassato molto. Sinceramente non so come dirti grazie. Ora però sono molto stanco. Notte. Ti voglio un mondo di bene🩶</p>
-        </div>
-
-        <div class="entry">
-            <h2>14 Marzo 2025</h2>
-            <p>Ops… potrei essermi un po’ scordato del file. Sorry. Va beh, sono venuto a vedere una tua partita venerdì scorso. Martedì ci stavamo per scannare nel parcheggio dell’Eurospin. Mi hai distrutto un braccio oggi facendomelo sanguinare. Ti piace Enea e vorresti tanto le sue mani. Boh nn so che altro dire. Direi fine. Bye, ti voglio bene🩶</p>
-        </div>
-
-        <div class="entry">
-            <h2>31 Marzo 2025</h2>
-            <p>Ne è passato di tempo. Va beh, non ho molto da dire, ma voglio ricordare alcune cose. Io e Matte siamo venuti a vedere la partita e a Matte i bimbi minchia maranzini gli hanno piegato la ruota e rubato il lucchetto ma va beh. Poi la sulla nostra panchina passo sempre dei momenti il lunedì. Oggi per esempio abbiamo preso le margherite. Poi tutta la cioccolata… Ma sabato… Troppo bello. So che ti sei divertita, ma anche io tanto. Cucinare, il karaoke, i cuscini 💀, quando guardavamo i reel… Beh, una serata splendida. Poi ti stava benissimo quella maglia che avevi, come quella di oggi. Va beh, adesso ti saluto che carico i giorni mancanti su Github (che non credo tu lo sappia ma ha come logo un gatto). Ah, adesso sto ascoltando Brooklyn Baby, che mi dà proprio l’ispirazione giusta per scrivere. Ma poi Enea ti ha detto che gli piaci. Domani Champagne. E poi che non si pensi che abbia perso l’entusiasmo per fare questa cosa, ma quando portavo l’iPad ho dovuto togliere il promemoria perchè lo vedeva Bega. Ora vado veramente. Ti voglio tanto bene🩶🩶🩶</p>
-        </div>
-
-        <div class="entry">
-            <h2>17 aprile 2025</h2>
-            <p>Ma quanto è passato. Ma pensavo meno. Pensavo di averlo fatto una settimana fa, invece. Wow. Va beh. Meglio tardi che mai. Ultimamente non si sa bene come va con Enea. Ma dettagli. Poi non vedo più i miei AirPods da un mese. Sono apparsi Tortellino e Mango. Poi c’è una certa soggetta che ha troppe tette. Ma va beh. Per il resto tutto bene, circa. Ma lunedì che te e Matte eravate terrorizzati quando mio padre è arrivato? Un po’ pure io, ma io per tutto il cibo che c’era in cucina. Adesso vado che vado avanti con quello che stai vedendo. Bye. Tvb🩶</p>
-        </div>
-
-        <div class="entry">
-            <h2>20 Aprile 2025</h2>
-            <p>Mi sveglio a causa di dei messaggi arrivati sull’orologio. Ho pensato: “È l’Anna che chiede perché le monti la cucina”. Mi alzo. Guardo il telefono. Apro WhatsApp. Cosa trovo? Un messaggio che mi ha fatto felicissimo. C’era scritto: “BUONA PASQUA TOMMY. TI VOGLIO BENE. (sei la prima persona a cui ho pensato oggi quando mi sono svegliata)”. Troppo felice. Mi ha reso più bella la giornata.</p>
-        </div>
-
-        <div class="entry">
-            <h2>29 Aprile 2025</h2>
-            <p>Anche oggi molto bello. 4,5 in geometria. “L’Antonella mi incula!!! Non uscirò mia più di casa!!! Niente iPhone, niente iPad, niente computer, niente di niente!!!” Dopo tutta questa ansia, andiamo alla panchina. Non mangiavi. Chiami l’Antonella. Lei calmissima dice: “No Anna, non preoccuparti, capisco che ci sei rimasta male.” tutta calma e comprensiva. Allora dopo l’Anna è diventa Anna Gioia. Allora dopo mangiava come sempre, poi si è messa con le gambe spiaggiata sulle mie e ha iniziato a scansionarmi la faccia per trovare dei punti neri. Mi ha tipo tutto bucato ma va beh. E niente. Poi ti ho fatto il solletico che ti stavi ribaltando e niente. Adesso Roblox e niente. Ah, poi l’Antonella a preso a Miss Drama un gelato. E ora, buona notte. Ti voglio bene🩶 </p>
-        </div>
-
-        <div class="entry">
-            <h2>7 Maggio 2025</h2>
-            <p>Buonasera. Lunedì, è stata una brutta giornata. Non sto a narrare, ma non mi piace quando mi chiami piangendo. Ieri cottura a casa mia e pranzo a casa tua. Povero piccione che bega l’ha compresso contro il muro. Oggi boh, niente di particolare. Va beh, mi verranno altre cose da scrivere nei prossimi giorni. Byeee</p>
-        </div>
-
-        <div class="entry">
-            <h2>4 Giugno 2025</h2>
-            <p>Madonna se sono rimasto indietro. Sai, tra verifiche, interrogazioni, Mini World, saggi, una cosa e l’altra… mi sono un po scordato. Ultimamente sono felicissimo, sto sempre benissimo con te. Poi da quando mi hai detto che quest’estate ci dovremo vedere così spesso che i nostri genitori non ci chiederanno più con chi usciamo, guarda. Quest’estate te lo dico, ci divertiremo davvero molto. Ma poi quando dopo il mio saggio mi hai chiesto per il fioraio non me lo aspettavo. Avrei voluto mettermi a piangere da quanto mi ero commosso ma mi sono trattenuto. Ora ti saluto che sto cercando id fare un mio progetto che probabilmente abbandonerò tra 10 minuti. Buona notte. Ti voglio un mondo di bene🩶</p>
-        </div>
-        
-        <div class="entry">
-            <h2>6 Giugno 2025</h2>
-            <p>Che bello sta sera, mi sono veramente divertito, dobbiamo farlo tutta l’estate. Molto bello girovagare di sera tardi a chiacchierare. Va beh, notte🩶</p>
-        </div>
-
+    <div id="canvas-container">
+        <div id="status"></div>
     </div>
 
-<script>
-    function toggleSettings() {
-    var settings = document.getElementById('settings');
-    var settingsButton = document.getElementById('settingsButton');
-    var overlay = document.getElementById('overlay');
-    var music = document.getElementById('music');
-    var musicButton = document.getElementById('musicButton');
-    if (settings.style.display === 'none' || settings.style.display === '') {
-        settings.style.display = 'block';
-        settingsButton.style.display = 'none';
-        overlay.style.display = 'block';
-        music.style.display = 'none';
-        musicButton.style.display = 'flex';
-    } else {
-        settings.style.display = 'none';
-        settingsButton.style.display = 'flex';
-        overlay.style.display = 'none';
-    }
-}
+    <div id="interface">
+       <div id="manual-input">
+    <input type="text" id="queryInput" placeholder="Scrivi qui la tua domanda">
+    <button onclick="submitQuery()">Invia</button>
+</div>
 
-function toggleMusic() {
-    var music = document.getElementById('music');
-    var musicButton = document.getElementById('musicButton');
-    var overlay = document.getElementById('overlay');
-    var settings = document.getElementById('settings');
-    var settingsButton = document.getElementById('settingsButton');
-    if (music.style.display === 'none' || music.style.display === '') {
-        music.style.display = 'block';
-        musicButton.style.display = 'none';
-        overlay.style.display = 'block';
-        settings.style.display = 'none';
-        settingsButton.style.display = 'flex';
-    } else {
-        music.style.display = 'none';
-        musicButton.style.display = 'flex';
-        overlay.style.display = 'none';
-    }
-}
 
-function closeWindows() {
-    var settings = document.getElementById('settings');
-    var settingsButton = document.getElementById('settingsButton');
-    var music = document.getElementById('music');
-    var musicButton = document.getElementById('musicButton');
-    var overlay = document.getElementById('overlay');
-    settings.style.display = 'none';
-    settingsButton.style.display = 'flex';
-    music.style.display = 'none';
-    musicButton.style.display = 'flex';
-    overlay.style.display = 'none';
-}
+    <script>
+        // Elementi DOM
+        const container = document.getElementById('canvas-container');
+        const interface = document.getElementById('interface');
+        const conversation = document.getElementById('conversation');
+        const micButton = document.getElementById('mic-button');
+        const statusIndicator = document.getElementById('status');
+        const visualizerBars = document.querySelectorAll('.bar');
 
-function playSong(songId) {
-    var audioPlayer = document.getElementById('audioPlayer');
-    var audioSource = document.getElementById('audioSource');
-    var musicMenu = document.getElementById('musicMenu');
-    var musicPlayer = document.getElementById('musicPlayer');
+        // Variabili per il riconoscimento vocale e la sintesi vocale
+        let recognition;
+        let speechSynthesis = window.speechSynthesis;
+        let speaking = false;
+        let listening = false;
+        let model;
+        let lastInteractionTime = Date.now();
+        let idleCheckInterval;
+        let audioContext;
+        let analyser;
+        let microphone;
+        let dataArray;
+        let animationFrameId;
 
-    // Imposta il percorso della canzone da riprodurre
-    audioSource.src = 'path-to-' + songId + '.mp3';
-    audioPlayer.load();
-    audioPlayer.play();
+        // Crea renderer e la scena THREE.js
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
+        container.appendChild(renderer.domElement);
 
-    // Mostra il lettore musicale e nascondi il menu
-    musicMenu.style.display = 'none';
-    musicPlayer.style.display = 'flex';
-}
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+        camera.position.set(0, 1, 5); // Allontana la camera per includere tutto il modello
 
-function showMenu() {
-    var musicMenu = document.getElementById('musicMenu');
-    var musicPlayer = document.getElementById('musicPlayer');
+        // Configurazione delle luci
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
 
-    // Mostra il menu e nascondi il lettore musicale
-    musicMenu.style.display = 'flex';
-    musicPlayer.style.display = 'none';
-}
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(2, 2, 2);
+        scene.add(dirLight);
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Imposta il colore iniziale per i color picker
-    document.getElementById('colorPicker').value = rgb2hex(getComputedStyle(document.body).backgroundColor);
-    document.getElementById('textColorPicker').value = rgb2hex(getComputedStyle(document.body).color);
-    document.getElementById('buttonColorPicker').value = rgb2hex(getComputedStyle(document.querySelector('.settings-button')).backgroundColor);
+        const backLight = new THREE.DirectionalLight(0x0084ff, 0.5);
+        backLight.position.set(-2, 1, -1);
+        scene.add(backLight);
 
-    document.getElementById('fontSelect').addEventListener('change', function() {
-        document.body.style.fontFamily = this.value;
-    });
+        // Carica il modello 3D
+        const loader = new THREE.GLTFLoader();
+        loader.load(
+            'https://raw.githubusercontent.com/TommyTommy10/Font-Selector/main/voice_assistant.glb',
+            (gltf) => {
+                model = gltf.scene;
+                scene.add(model);
 
-    document.getElementById('colorPicker').addEventListener('input', function() {
-        document.body.style.backgroundColor = this.value;
-    });
+                model.scale.set(0.8, 0.8, 0.8); // Modifica le dimensioni per migliorare visibilità
+                model.position.set(0, 0, 0); // Centra il modello
+                model.rotation.y = Math.PI / -4; // Rotazione iniziale
 
-    document.getElementById('textColorPicker').addEventListener('input', function() {
-        document.body.style.color = this.value;
-    });
+                // Imposta l'animazione di idle
+                startIdleAnimation();
+            },
+            undefined,
+            (error) => console.error('Errore durante il caricamento del modello:', error)
+        );
 
-    document.getElementById('buttonColorPicker').addEventListener('input', function() {
-        var buttons = document.querySelectorAll('.settings-button, .music-button');
-        buttons.forEach(function(button) {
-            button.style.backgroundColor = document.getElementById('buttonColorPicker').value;
+        // Gestione degli eventi del contenitore
+        container.addEventListener('click', () => {
+            toggleAssistant();
         });
-    });
 
-    // Nuovi color picker
-    document.getElementById('titleColorPicker').addEventListener('input', function() {
-        document.querySelectorAll('h2').forEach(title => {
-            title.style.color = this.value;
+        micButton.addEventListener('click', () => {
+            if (speaking) {
+                stopSpeaking();
+            } else if (listening) {
+                stopListening();
+            } else {
+                startListening();
+            }
         });
-    });
 
-    document.getElementById('mainBoxColorPicker').addEventListener('input', function() {
-        document.querySelector('.main-box').style.backgroundColor = this.value;
-    });
+        // Configurazione del riconoscimento vocale
+        function setupSpeechRecognition() {
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (window.SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'it-IT';
+                recognition.continuous = true; // Mantiene l'ascolto attivo
+                recognition.interimResults = true; // Risultati parziali durante l'ascolto
 
-    document.getElementById('paragraphBoxColorPicker').addEventListener('input', function() {
-        document.querySelectorAll('.paragraph-box').forEach(box => {
-            box.style.backgroundColor = this.value;
-        });
-    });
+                recognition.onstart = () => {
+                    listening = true;
+                    statusIndicator.className = 'listening';
+                    playPulseAnimation();
+                    updateMicButton();
+                };
 
-    document.getElementById('windowColorPicker').addEventListener('input', function() {
-        document.querySelectorAll('.window').forEach(window => {
-            window.style.backgroundColor = this.value;
-        });
-    });
+                recognition.onend = () => {
+                    listening = false;
+                    statusIndicator.className = '';
+                    stopPulseAnimation();
+                    updateMicButton();
+                };
 
-    document.getElementById('musicPlayerColorPicker').addEventListener('input', function() {
-        document.querySelector('.music-player').style.backgroundColor = this.value;
-    });
+              recognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                .map(result => result[0].transcript)
+                .join(' ');
+                addMessageToConversation('user', transcript);
+                processUserQuery(transcript);
+                };
 
-    document.getElementById('dateColorPicker').addEventListener('input', function() {
-        document.querySelectorAll('.date').forEach(date => {
-            date.style.color = this.value;
-        });
-    });
-
-    function rgb2hex(rgb) {
-        if (/^#[0-9A-F]{6}$/i.test(rgb)) {
-            return rgb;
+                recognition.onerror = (event) => {
+                    console.error('Errore nel riconoscimento vocale:', event.error);
+                    listening = false;
+                    statusIndicator.className = '';
+                    updateMicButton();
+                };
+            } else {
+                alert('Il riconoscimento vocale non è supportato dal tuo browser.');
+            }
         }
-        rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-        function hex(x) {
-            return ("0" + parseInt(x).toString(16)).slice(-2);
+
+        // Configurazione della sintesi vocale
+        function setupSpeechSynthesis() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis = window.speechSynthesis;
+            } else {
+                alert('La sintesi vocale non è supportata dal tuo browser.');
+            }
         }
-        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-    }
-});
 
-document.querySelectorAll('.music-item p span').forEach(span => {
-    const parentWidth = span.parentElement.offsetWidth;
-    const spanWidth = span.offsetWidth;
+        // Configura l'audio context per il visualizzatore
+        function setupAudioContext() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
 
-    if (spanWidth > parentWidth) {
-        span.style.animation = 'scrolling-text 10s linear infinite';
-    }
-});
+        // Funzione per attivare/disattivare l'assistente
+        function toggleAssistant() {
+            container.classList.toggle('active');
+            interface.classList.toggle('active');
+            
+            lastInteractionTime = Date.now();
+            
+            if (container.classList.contains('active')) {
+                playActivationAnimation();
+                
+                if (!recognition) {
+                    setupSpeechRecognition();
+                }
+                
+                if (!speechSynthesis) {
+                    setupSpeechSynthesis();
+                }
+                
+                if (!audioContext) {
+                    setupAudioContext();
+                }
+                
+                if (idleCheckInterval) {
+                    clearInterval(idleCheckInterval);
+                }
+                
+                idleCheckInterval = setInterval(checkIdle, 30000);
+                
+                speak("Ciao, come posso aiutarti oggi?");
+            } else {
+                if (idleCheckInterval) {
+                    clearInterval(idleCheckInterval);
+                    idleCheckInterval = null;
+                }
+                
+                if (speaking) {
+                    stopSpeaking();
+                }
+                
+                if (listening) {
+                    stopListening();
+                }
+            }
+        }
 
-function updateSongInfo(songTitle, songArtist) {
-    document.querySelector('.song-title').textContent = songTitle;
-    document.querySelector('.song-artist').textContent = songArtist;
+        // Funzione per aggiungere messaggi alla conversazione
+        function addMessageToConversation(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = text;
+            conversation.appendChild(messageDiv);
+            conversation.scrollTop = conversation.scrollHeight;
+            lastInteractionTime = Date.now();
+        }
+
+        // Funzione per parlare
+        function speak(text) {
+            if (!speechSynthesis) return;
+            
+            stopSpeaking();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'it-IT'; 
+            utterance.rate = 0.9; // Voce più naturale
+            utterance.pitch = 1.2; // Tonalità vivace
+            utterance.volume = 1; // Volume pieno
+
+            
+            utterance.onstart = () => {
+                speaking = true;
+                statusIndicator.className = 'speaking';
+                playTalkingAnimation();
+                updateMicButton();
+            };
+            
+            utterance.onend = () => {
+                speaking = false;
+                statusIndicator.className = '';
+                stopTalkingAnimation();
+                updateMicButton();
+            };
+            
+            utterance.onerror = (event) => {
+                console.error('Errore nella sintesi vocale:', event);
+                speaking = false;
+                statusIndicator.className = '';
+                updateMicButton();
+            };
+            
+            speechSynthesis.speak(utterance);
+        }
+
+        // Ferma la sintesi vocale
+        function stopSpeaking() {
+            if (speechSynthesis) {
+                speechSynthesis.cancel();
+                speaking = false;
+                statusIndicator.className = '';
+                stopTalkingAnimation();
+                updateMicButton();
+            }
+        }
+
+        // Inizia il riconoscimento vocale
+        function startListening() {
+            if (recognition && !listening && !speaking) {
+                try {
+                    recognition.start();
+                    startAudioVisualization();
+                } catch (error) {
+                    console.error('Errore nell\'avvio del riconoscimento vocale:', error);
+                }
+            }
+        }
+
+        // Ferma il riconoscimento vocale
+        function stopListening() {
+            if (recognition && listening) {
+                recognition.stop();
+                stopAudioVisualization();
+            }
+        }
+
+        // Aggiorna l'aspetto del pulsante del microfono
+        function updateMicButton() {
+            if (speaking) {
+                micButton.innerHTML = '<i>🔊</i>';
+                micButton.style.backgroundColor = '#2196F3';
+            } else if (listening) {
+                micButton.innerHTML = '<i>⏹️</i>';
+                micButton.style.backgroundColor = '#4CAF50';
+            } else {
+                micButton.innerHTML = '<i>🎤</i>';
+                micButton.style.backgroundColor = '#2196F3';
+            }
+        }
+// Funzione per elaborare le query dell'utente
+function processUserQuery(query) {
+    // Mostra l'indicatore di elaborazione
+    statusIndicator.className = 'processing';
+
+    // Endpoint del proxy su Netlify
+    const endpoint = "https://app.netlify.com/sites/starlit-beijinho-87144d/.netlify/functions/openaiProxy";
+
+    const body = {
+        model: "gpt-3.5-turbo", // Modello OpenAI
+        messages: [
+            { role: "system", content: "Sei un assistente vocale amichevole e utile. Rispondi in modo chiaro e semplice." },
+            { role: "user", content: query }
+        ],
+        max_tokens: 200, // Numero massimo di parole nella risposta
+        temperature: 0.7 // Creatività della risposta (0 = logico, 1 = più creativo)
+    };
+
+    // Chiamata al proxy
+    fetch(endpoint, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Se la risposta dell'API è valida
+        if (data.choices && data.choices.length > 0) {
+            const aiResponse = data.choices[0].message.content;
+            addMessageToConversation('assistant', aiResponse); // Mostra la risposta nella conversazione
+            speak(aiResponse); // Sintesi vocale della risposta
+        } else {
+            // In caso di errore nella risposta
+            const errorMsg = "Mi dispiace, non sono riuscito a trovare una risposta.";
+            addMessageToConversation('assistant', errorMsg);
+            speak(errorMsg);
+        }
+    })
+    .catch(error => {
+        // Gestione degli errori
+        console.error("Errore nell'integrazione con OpenAI:", error);
+        const errorMsg = "Si è verificato un errore. Riprova più tardi.";
+        addMessageToConversation('assistant', errorMsg);
+        speak(errorMsg);
+    })
+    .finally(() => {
+        // Ripristina l'indicatore di elaborazione
+        statusIndicator.className = "";
+    });
 }
-</script>
+
+        // Verifica l'inattività per chiudere l'assistente
+        function checkIdle() {
+            const now = Date.now();
+            if (now - lastInteractionTime > 60000 && !speaking && !listening) { // 1 minuto
+                if (container.classList.contains('active')) {
+                    speak("Sembra che tu sia inattivo. Entrerò in modalità standby.");
+                    setTimeout(() => {
+                        toggleAssistant();
+                    }, 3000);
+                }
+            }
+        }
+
+        // Animazioni del modello 3D
+        function startIdleAnimation() {
+            if (!model) return;
+            
+            const idleAnimation = () => {
+                model.rotation.y += Math.sin(Date.now() * 0.001) * 0.0008;
+                
+                requestAnimationFrame(idleAnimation);
+            };
+            
+            idleAnimation();
+        }
+
+        function playActivationAnimation() {
+            if (!model) return;
+            
+            const duration = 1000; // ms
+            const startTime = Date.now();
+            const startRotationY = model.rotation.y;
+            const targetRotationY = startRotationY + Math.PI * 2; // Rotazione completa
+            
+            const animate = () => {
+                const elapsedTime = Date.now() - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                // Funzione di easing
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                
+                model.rotation.y = startRotationY + (targetRotationY - startRotationY) * easedProgress;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+        }
+
+        function playTalkingAnimation() {
+            if (!model) return;
+            
+            let talkingScale = 1;
+            const baseTalkingSpeed = 0.1;
+            
+            const talkAnimation = () => {
+                if (!speaking) return;
+                
+                // Simula movimento durante il parlato
+                talkingScale = 1 + Math.sin(Date.now() * baseTalkingSpeed) * 0.05;
+                model.scale.set(0.5 * talkingScale, 0.5, 0.5 * talkingScale);
+                
+                // Piccole rotazioni per simulare movimenti naturali
+                model.rotation.x = Math.sin(Date.now() * 0.002) * 0.05;
+                model.rotation.z = Math.cos(Date.now() * 0.001) * 0.03;
+                
+                if (speaking) {
+                    requestAnimationFrame(talkAnimation);
+                }
+            };
+            
+            talkAnimation();
+        }
+
+        function stopTalkingAnimation() {
+            if (!model) return;
+            
+            // Ripristina la scala e rotazione originale con animazione
+            const duration = 300; // ms
+            const startTime = Date.now();
+            const startScale = { x: model.scale.x, y: model.scale.y, z: model.scale.z };
+            const targetScale = { x: 0.5, y: 0.5, z: 0.5 };
+            const startRotation = { x: model.rotation.x, z: model.rotation.z };
+            const targetRotation = { x: 0, z: 0 };
+            
+            const animate = () => {
+                const elapsedTime = Date.now() - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                // Funzione di easing
+                const easedProgress = 1 - Math.pow(1 - progress, 2);
+                
+                model.scale.set(
+                    startScale.x + (targetScale.x - startScale.x) * easedProgress,
+                    startScale.y + (targetScale.y - startScale.y) * easedProgress,
+                    startScale.z + (targetScale.z - startScale.z) * easedProgress
+                );
+                
+                model.rotation.x = startRotation.x + (targetRotation.x - startRotation.x) * easedProgress;
+                model.rotation.z = startRotation.z + (targetRotation.z - startRotation.z) * easedProgress;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+        }
+
+        function playPulseAnimation() {
+            if (!model) return;
+            
+            let pulseScale = 1;
+            
+            const pulseAnimation = () => {
+                if (!listening) return;
+                
+                // Effetto pulsante
+                pulseScale = 1 + Math.sin(Date.now() * 0.005) * 0.04;
+                model.scale.set(0.5 * pulseScale, 0.5 * pulseScale, 0.5 * pulseScale);
+                
+                // Colore blu pulsante
+                if (backLight) {
+                    backLight.intensity = 0.5 + Math.sin(Date.now() * 0.005) * 0.3;
+                }
+                
+                if (listening) {
+                    requestAnimationFrame(pulseAnimation);
+                }
+            };
+            
+            pulseAnimation();
+        }
+
+        function stopPulseAnimation() {
+            if (!model) return;
+            
+            // Ripristina la scala e l'intensità della luce
+            if (backLight) {
+                backLight.intensity = 0.5;
+            }
+            
+            // Animazione per tornare alle dimensioni normali
+            const duration = 300; // ms
+            const startTime = Date.now();
+            const startScale = { x: model.scale.x, y: model.scale.y, z: model.scale.z };
+            const targetScale = { x: 0.5, y: 0.5, z: 0.5 };
+            
+            const animate = () => {
+                const elapsedTime = Date.now() - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                // Funzione di easing
+                const easedProgress = 1 - Math.pow(1 - progress, 2);
+                
+                model.scale.set(
+                    startScale.x + (targetScale.x - startScale.x) * easedProgress,
+                    startScale.y + (targetScale.y - startScale.y) * easedProgress,
+                    startScale.z + (targetScale.z - startScale.z) * easedProgress
+                );
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+        }
+
+        // Visualizzatore audio
+        function startAudioVisualization() {
+            if (!audioContext) return;
+            
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        microphone = audioContext.createMediaStreamSource(stream);
+                        microphone.connect(analyser);
+                        
+                        updateVisualization();
+                    })
+                    .catch(error => {
+                        console.error('Errore nell\'accesso al microfono:', error);
+                    });
+            }
+        }
+
+        function updateVisualization() {
+            if (!listening || !analyser || !dataArray) {
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+                return;
+            }
+            
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Calcola la media e aggiorna le barre del visualizzatore
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+            }
+            
+            const average = sum / dataArray.length;
+            
+            // Aggiorna le barre con altezze casuali basate sul volume
+            visualizerBars.forEach(bar => {
+                const height = Math.max(5, Math.min(average * (0.7 + Math.random() * 0.5), 30));
+                bar.style.height = `${height}px`;
+            });
+            
+            animationFrameId = requestAnimationFrame(updateVisualization);
+        }
+
+        function stopAudioVisualization() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            
+            if (microphone) {
+                microphone.disconnect();
+                microphone = null;
+            }
+            
+            // Ripristina le barre del visualizzatore
+            visualizerBars.forEach(bar => {
+                bar.style.height = '5px';
+            });
+        }
+
+        // Funzione di rendering principale
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Se il contenitore è stato ridimensionato, aggiorna camera e renderer
+            if (renderer.domElement.width !== container.offsetWidth || 
+                renderer.domElement.height !== container.offsetHeight) {
+                
+                camera.aspect = container.offsetWidth / container.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.offsetWidth, container.offsetHeight);
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Avvia animazione
+        animate();
+
+        // Handler per il resize della finestra
+        window.addEventListener('resize', () => {
+            if (container.classList.contains('active')) {
+                // Aggiorna le dimensioni in base alle dimensioni della finestra
+                const newSize = Math.min(window.innerWidth * 0.4, 350); // Max 40% della larghezza o 350px
+                container.style.width = `${newSize}px`;
+                container.style.height = `${newSize}px`;
+                
+                // Aggiorna anche l'interfaccia
+                interface.style.maxWidth = `${Math.min(window.innerWidth * 0.4, 400)}px`;
+            }
+        });
+
+        function submitQuery() {
+    const query = document.getElementById("queryInput").value;
+    if (query.trim() !== "") {
+        processUserQuery(query); // Chiama la funzione di elaborazione
+        document.getElementById("queryInput").value = ""; // Pulisce il campo di input
+    }
+}
+    </script>
 </body>
 </html>
